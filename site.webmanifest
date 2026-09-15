@@ -1,0 +1,31 @@
+{
+  "name": "Ahmed El-Bourgy — Author",
+  "short_name": "El-Bourgy",
+  "description": "Quiet, Japanese-inspired fiction about the magic hiding in ordinary moments.",
+  "lang": "en",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#fdf8f0",
+  "theme_color": "#fdf8f0",
+  "icons": [
+    {
+      "src": "assets/img/icon/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/img/icon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/img/icon/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
