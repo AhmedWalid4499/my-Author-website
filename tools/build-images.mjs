@@ -9,13 +9,16 @@
  */
 import sharp from 'sharp';
 import path from 'path';
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const COVERS = path.join(ROOT, 'assets/img/covers');
 const AUTHOR = path.join(ROOT, 'assets/img/author');
 
-const SLUGS = ['from-tomorrow', 'sakura-slice-cafe', 'the-perfect-sunrise'];
+// Slugs come from books.json so adding a book is a data-only change.
+const SLUGS = JSON.parse(readFileSync(path.join(ROOT, 'tools/books.json'), 'utf8'))
+  .books.map((b) => b.slug);
 const COVER_WIDTHS = [300, 450, 600, 900];
 const PORTRAIT_WIDTHS = [320, 480, 720];
 

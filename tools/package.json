@@ -5,12 +5,13 @@
   "description": "Build and QA scripts for the Ahmed El-Bourgy author site. Nothing here ships to the site itself.",
   "scripts": {
     "serve": "node serve.mjs",
-    "check": "node check.mjs",
+    "render": "node render.mjs",
+    "check": "node render.mjs --check && node check.mjs",
     "images": "node build-images.mjs",
     "og": "node build-og.mjs",
     "icons": "node build-icons.mjs",
     "fonts": "node build-fonts.mjs",
-    "build": "node build-images.mjs && node build-og.mjs && node build-icons.mjs"
+    "build": "node build-images.mjs && node build-og.mjs && node build-icons.mjs && node render.mjs"
   },
   "dependencies": {
     "node-html-parser": "^7.0.1",

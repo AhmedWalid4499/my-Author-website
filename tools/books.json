@@ -1,0 +1,86 @@
+{
+  "site": "https://ahmedwalid4499.github.io/my-Author-website",
+  "goodreadsAuthor": "https://www.goodreads.com/author/show/70192932.Ahmed_El_Bourgy",
+  "books": [
+    {
+      "slug": "from-tomorrow",
+      "title": "From Tomorrow",
+      "titleHtml": "From <em>Tomorrow</em>",
+      "jp": "明日から",
+      "kana": "明日",
+      "status": "published",
+      "asin": "B0GXLP6ZJM",
+      "goodreads": "https://www.goodreads.com/book/show/252070076-from-tomorrow",
+      "coverAlt": "Cover of From Tomorrow: two students on facing railway platforms beneath an orange sunset.",
+      "blurb": "A train line closing in three days. Notes exchanged between two strangers — each dated a day they haven’t lived yet. A story about time, loss, and the moments we almost miss.",
+      "shortBlurb": "Time, loss, and the moments we almost miss.",
+      "og": {
+        "hook": [
+          "A train line closing in three days.",
+          "Notes from a day she hasn’t lived yet."
+        ],
+        "tag": "Out now on Kindle"
+      }
+    },
+    {
+      "slug": "sakura-slice-cafe",
+      "title": "Sakura Slice Café",
+      "titleHtml": "Sakura Slice <em>Café</em>",
+      "jp": "桜スライス・カフェ",
+      "kana": "桜",
+      "status": "published",
+      "asin": "B0H1499X4M",
+      "goodreads": "https://www.goodreads.com/book/show/252016598-sakura-slice-caf",
+      "coverAlt": "Cover of Sakura Slice Café: a barista, a rabbit, an owl and a fox serving guests in a warm pink café.",
+      "blurb": "Thirteen quiet stories from a café that was never just a café. A place where people arrive carrying something — and leave a little lighter. Your table is already waiting.",
+      "shortBlurb": "Being seen — thirteen quiet stories from the café.",
+      "og": {
+        "hook": [
+          "Thirteen quiet stories from a café",
+          "that was never just a café."
+        ],
+        "tag": "Out now on Kindle"
+      }
+    },
+    {
+      "slug": "the-perfect-sunrise",
+      "title": "The Perfect Sunrise",
+      "titleHtml": "The Perfect <em>Sunrise</em>",
+      "jp": "完璧な日の出",
+      "kana": "日の出",
+      "status": "published",
+      "asin": "B0H26LS329",
+      "goodreads": null,
+      "coverAlt": "Cover of The Perfect Sunrise: a girl on a shoreline holding a photograph as the sun rises over the sea.",
+      "blurb": "Every morning, Hikari chases the perfect sunrise. Then a photograph falls from the sky — already developed, already perfect, and dated tomorrow. A story about memory, loss, and the people we love who never truly leave.",
+      "shortBlurb": "Memory, loss, and the people who never truly leave.",
+      "og": {
+        "hook": [
+          "A photograph falls from the sky —",
+          "already perfect, and dated tomorrow."
+        ],
+        "tag": "Out now on Kindle"
+      }
+    },
+    {
+      "slug": "when-you-were-there",
+      "title": "When You Were There",
+      "titleHtml": "When You Were <em>There</em>",
+      "jp": "君がいたとき",
+      "kana": "君",
+      "status": "published",
+      "asin": "B0H27T4LNX",
+      "goodreads": null,
+      "coverAlt": "Cover of When You Were There: two schoolboys on a riverside path at sunset, one listening to a cassette player.",
+      "blurb": "Sou’s grandmother leaves him a cassette tape. When he plays it, he hears his own voice — older, crying, begging someone not to leave. A story about grief, attention, and the one direction time moves in.",
+      "shortBlurb": "Grief, attention, and the one direction time moves in.",
+      "og": {
+        "hook": [
+          "On the tape, his own voice —",
+          "older, begging someone not to leave."
+        ],
+        "tag": "Out now on Kindle"
+      }
+    }
+  ]
+}

@@ -239,6 +239,76 @@ for (const file of htmlFiles) {
   }
 }
 
+/* ---- books.json is the source of truth: make sure the site agrees ---- */
+{
+  const data = JSON.parse(readFileSync(path.join(ROOT, 'tools/books.json'), 'utf8'));
+  const books = data.books;
+
+  for (const b of books) {
+    const page = `${b.slug}.html`;
+    if (!existsSync(path.join(ROOT, page))) {
+      note('books.json', 'book', `${b.slug}: no page at ${page}`);
+      continue;
+    }
+    // Derivatives the templates reference, plus the press-kit master.
+    const needed = ['full.jpg'];
+    for (const w of [300, 450, 600, 900]) needed.push(`${w}.jpg`, `${w}.webp`);
+    for (const suffix of needed) {
+      const f = `assets/img/covers/${b.slug}-${suffix}`;
+      if (!existsSync(path.join(ROOT, f))) {
+        note('books.json', 'book', `${b.slug}: missing ${f} — run npm run images`);
+      }
+    }
+    if (!existsSync(path.join(ROOT, `assets/img/og/og-${b.slug}.jpg`))) {
+      note('books.json', 'book', `${b.slug}: missing social card — run npm run og`);
+    }
+    // A published book must actually show its buy link.
+    if (b.status === 'published') {
+      const src = readFileSync(path.join(ROOT, page), 'utf8');
+      if (!src.includes(b.asin)) {
+        note(page, 'book', `${b.slug} is published but its ASIN ${b.asin} is not on the page`);
+      }
+    }
+  }
+
+  // The books.html structured-data list must match books.json, in order.
+  const booksHtml = readFileSync(path.join(ROOT, 'books.html'), 'utf8');
+  const ld = booksHtml.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  if (!ld) {
+    note('books.html', 'jsonld', 'no JSON-LD block found');
+  } else {
+    try {
+      const graph = JSON.parse(ld[1])['@graph'] || [];
+      const list = graph.find((n) => n['@type'] === 'ItemList');
+      if (!list) {
+        note('books.html', 'jsonld', 'no ItemList in the JSON-LD graph');
+      } else {
+        const got = (list.itemListElement || []).map((i) => i.item && i.item.name);
+        const want = books.map((b) => b.title);
+        if (got.join('|') !== want.join('|')) {
+          note('books.html', 'jsonld',
+            `booklist does not match books.json\n       have: ${got.join(', ')}\n       want: ${want.join(', ')}`);
+        }
+        if (list.numberOfItems !== books.length) {
+          note('books.html', 'jsonld', `numberOfItems is ${list.numberOfItems}, expected ${books.length}`);
+        }
+      }
+    } catch (e) {
+      note('books.html', 'jsonld', `JSON-LD does not parse: ${e.message}`);
+    }
+  }
+
+  // Every real page should be discoverable; 404 deliberately is not.
+  const sitemap = readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
+  for (const file of htmlFiles) {
+    if (file === '404.html') continue;
+    const loc = file === 'index.html' ? `${BASE}/` : `${BASE}/${file}`;
+    if (!sitemap.includes(`<loc>${loc}</loc>`)) {
+      note('sitemap.xml', 'sitemap', `missing ${loc}`);
+    }
+  }
+}
+
 /* ---- report ---- */
 const byFile = new Map();
 for (const p of problems) {

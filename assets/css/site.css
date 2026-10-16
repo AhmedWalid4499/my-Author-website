@@ -608,6 +608,23 @@ a { color: var(--gold-deep); }
   align-items: start;
 }
 
+/* A four-book grid is the one case auto-fit gets wrong: at middling widths it
+   lays out three across and strands the fourth alone on a second row. Pair
+   them two-by-two until there is room for the whole shelf in one line.
+   Browsers without :has() keep the auto-fit behaviour, which still works. */
+@media (min-width: 560px) {
+  .books-grid:has(> .book-card:nth-child(4)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .books-grid:has(> .book-card:nth-child(4)) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--space-md);
+  }
+}
+
 .book-card {
   display: flex;
   flex-direction: column;

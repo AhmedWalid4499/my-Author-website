@@ -1,7 +1,7 @@
 # Ahmed El-Bourgy — author website
 
 The official site for Ahmed El-Bourgy, author of *From Tomorrow*, *Sakura Slice
-Café* and the forthcoming *The Perfect Sunrise*.
+Café*, *The Perfect Sunrise* and *When You Were There* — all on Kindle.
 
 **Live:** https://ahmedwalid4499.github.io/my-Author-website/
 
@@ -31,10 +31,11 @@ Pages does.
 
 ```
 index.html                  Home
-books.html                  All three books
+books.html                  Every book
 from-tomorrow.html          Book page
 sakura-slice-cafe.html      Book page
-the-perfect-sunrise.html    Book page (not yet published)
+the-perfect-sunrise.html    Book page
+when-you-were-there.html    Book page
 about.html                  Full biography
 press.html                  Press kit — bios, cover art, headshot, book details
 contact.html                Contact and reading list
@@ -87,16 +88,25 @@ needs to change. The form already carries a honeypot field for spam, and the
 
 ### Add a book
 
-1. Drop the cover in as `assets/img/covers/<slug>-full.jpg`.
-2. `cd tools && npm run images` — generates every width in webp and jpg.
-3. Add the book to `tools/build-og.mjs` `BOOKS` and run `npm run og` for its
+`tools/books.json` is the source of truth. The book grids, the footer book
+lists, the press-kit cover downloads and the press-kit fact tables are all
+generated from it, so you never edit those by hand.
+
+1. Drop the cover in as `assets/img/covers/<slug>-full.jpg` (900 × 1436).
+2. Add an entry to `tools/books.json`. Copy an existing one — `status` is
+   `published` or `coming-soon`, and `og.hook` is the two italic lines on the
    social card.
-4. Copy `from-tomorrow.html` to `<slug>.html` and replace the content, the
-   metadata block and the JSON-LD.
-5. Add a card to `index.html`, `books.html` and the "More stories" block on the
-   other book pages, plus links in the footer of every page.
-6. Add the page to `sitemap.xml`.
-7. `npm run check`.
+3. `cd tools && npm run build` — covers, social card and all generated markup.
+4. Copy a book page to `<slug>.html` and replace the prose, the metadata block
+   and the JSON-LD. Everything below "More stories" regenerates itself.
+5. Add the page to `sitemap.xml`, and the book to the `ItemList` in
+   `books.html`'s JSON-LD.
+6. If the title uses new Japanese characters, add them to `JP_GLYPHS` in
+   `tools/build-fonts.mjs` and run `npm run fonts`.
+7. `npm run check` — it fails if any of steps 3–6 were missed.
+
+Changing a book later (a new ASIN, a book going from coming-soon to published)
+is usually just `books.json` plus `npm run render`.
 
 ### Use a custom domain
 
@@ -132,6 +142,12 @@ styles, class names that do not exist in `site.css`, missing or wrong
 canonical/Open Graph metadata, unlabelled form inputs, invalid JSON-LD,
 leading-slash paths that would break on the Pages sub-path, and Japanese
 characters used on a page but missing from the subset webfont.
+
+It also cross-checks the site against `tools/books.json`: every book has a page,
+a full set of cover derivatives and a social card; a published book shows its
+ASIN; the `books.html` structured-data list matches, in order; every page is in
+`sitemap.xml`; and the generated markup is current (`npm run render` would be a
+no-op).
 
 Run it after any edit. It should print `No problems found.`
 

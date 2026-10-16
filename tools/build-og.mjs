@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import { mkdirSync } from 'fs';
+import { mkdirSync, readFileSync } from 'fs';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -63,41 +63,37 @@ async function render(name, svg, composites = []) {
 }
 
 // ---------------------------------------------------------------- book cards
-const BOOKS = [
-  {
-    slug: 'from-tomorrow',
-    lines: [['From ', 'Tomorrow']],
-    jp: '明日から',
-    hook: 'A train line closing in three days.',
-    hook2: 'Notes from a day she hasn’t lived yet.',
-    tag: 'Out now on Kindle',
-  },
-  {
-    slug: 'sakura-slice-cafe',
-    lines: [['Sakura Slice', ' Café']],
-    jp: '桜スライス・カフェ',
-    hook: 'Thirteen quiet stories from a café',
-    hook2: 'that was never just a café.',
-    tag: 'Out now on Kindle',
-  },
-  {
-    slug: 'the-perfect-sunrise',
-    lines: [['The Perfect', ' Sunrise']],
-    jp: '完璧な日の出',
-    hook: 'A photograph falls from the sky —',
-    hook2: 'already perfect, and dated tomorrow.',
-    tag: 'Coming soon',
-  },
-];
+// Driven by books.json: adding a book needs no edit here.
+const DATA = JSON.parse(readFileSync(path.join(ROOT, 'tools/books.json'), 'utf8'));
+const BOOKS = DATA.books.map((b) => {
+  const m = b.titleHtml.match(/^(.*?)<em>(.*?)<\/em>$/);
+  return {
+    slug: b.slug,
+    plain: m ? m[1] : b.title,
+    em: m ? m[2] : '',
+    jp: b.jp,
+    hook: b.og.hook[0],
+    hook2: b.og.hook[1],
+    tag: b.og.tag,
+  };
+});
+
+// Georgia runs about 0.5em per character. Shrink the title rather than let a
+// long one ("When You Were There") run past the right edge of the card.
+function titleSize(text, max = 66, room = 672) {
+  const est = text.length * max * 0.5;
+  return est <= room ? max : Math.max(42, Math.floor((room / est) * max));
+}
 
 const CW = 296, CH = 472, CX = 96, CY = 79;
 
 for (const b of BOOKS) {
-  const [a, em] = b.lines[0];
+  const a = b.plain, em = b.em;
   const x = 470;
+  const ts = titleSize(a + em);
   const svg = bg(plate(CX, CY, CW, CH)) + `
     ${eyebrow(x, 150, 'Ahmed El-Bourgy')}
-    <text x="${x}" y="228" font-family="${SERIF}" font-size="66" fill="${INK}">${esc(a)}<tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">${esc(em)}</tspan></text>
+    <text x="${x}" y="228" font-family="${SERIF}" font-size="${ts}" fill="${INK}">${esc(a)}<tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">${esc(em)}</tspan></text>
     <text x="${x}" y="272" font-family="${JP}" font-size="23" letter-spacing="3" fill="${INK_SOFT}">${esc(b.jp)}</text>
     ${rule(x, 312, 72)}
     <text x="${x}" y="372" font-family="${SERIF_I}" font-style="italic" font-size="30" fill="${INK_SOFT}">${esc(b.hook)}</text>
@@ -110,9 +106,9 @@ for (const b of BOOKS) {
 }
 
 // ---------------------------------------------------------------- home / books
-async function threeCovers(y, h, gap, centerX) {
+async function coverRow(y, h, gap, centerX) {
   const w = Math.round(h * (900 / 1436));
-  const total = w * 3 + gap * 2;
+  const total = w * BOOKS.length + gap * (BOOKS.length - 1);
   let x = Math.round(centerX - total / 2);
   const plates = [];
   const comps = [];
@@ -129,7 +125,7 @@ async function threeCovers(y, h, gap, centerX) {
 }
 
 {
-  const { plates, comps } = await threeCovers(300, 250, 30, 600);
+  const { plates, comps } = await coverRow(300, 242, 26, 600);
   const svg = bg(plates) + `
     <text x="600" y="150" text-anchor="middle" font-family="${SERIF}" font-size="76" fill="${INK}">Ahmed <tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">El-Bourgy</tspan></text>
     <text x="600" y="196" text-anchor="middle" font-family="${JP}" font-size="22" letter-spacing="6" fill="${INK_SOFT}">物語を紡ぐ人</text>
@@ -139,11 +135,11 @@ async function threeCovers(y, h, gap, centerX) {
 }
 
 {
-  const { plates, comps } = await threeCovers(290, 258, 34, 600);
+  const { plates, comps } = await coverRow(292, 250, 28, 600);
   const svg = bg(plates) + `
-    ${eyebrow(600, 118, 'Published & Coming Soon')}
+    ${eyebrow(600, 118, 'The Complete Collection')}
     <text x="600" y="196" text-anchor="middle" font-family="${SERIF}" font-size="70" fill="${INK}">The <tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">Books</tspan></text>
-    <text x="600" y="242" text-anchor="middle" font-family="${SERIF_I}" font-style="italic" font-size="27" fill="${INK_SOFT}">Three worlds, each with its own heartbeat.</text>
+    <text x="600" y="242" text-anchor="middle" font-family="${SERIF_I}" font-style="italic" font-size="27" fill="${INK_SOFT}">Four worlds, each with its own heartbeat.</text>
   `;
   await render('og-books', svg.replace('<text x="600" y="118"', '<text text-anchor="middle" x="600" y="118"'), comps);
 }

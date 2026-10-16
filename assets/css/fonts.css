@@ -51,5 +51,5 @@
   font-weight: 400;
   font-display: swap;
   src: url('../fonts/noto-serif-jp-400-subset.woff2') format('woff2');
-  unicode-range: U+304b-304c, U+304f-3050, U+306a, U+306e, U+3089, U+3092, U+3099, U+30a4, U+30a7, U+30ab-30ac, U+30b9-30ba, U+30d5-30d6, U+30e9, U+30fb, U+4e09, U+4eba, U+51fa, U+5341, U+5922, U+5b8c, U+65e5, U+660e, U+685c, U+7269, U+74a7, U+7d21, U+8a9e, U+9727, U+9759;
+  unicode-range: U+3044, U+304b-3050, U+305f-3060, U+3068-306a, U+306e, U+3089, U+3092, U+3099, U+30a4, U+30a7, U+30ab-30ac, U+30b9-30ba, U+30d5-30d6, U+30e9, U+30fb, U+4e09, U+4eba, U+51fa, U+5341, U+541b, U+5922, U+5b8c, U+65e5, U+660e, U+685c, U+7269, U+74a7, U+7d21, U+8a9e, U+9727, U+9759;
 }
