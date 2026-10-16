@@ -2,3 +2,8 @@ node_modules/
 .DS_Store
 *.log
 .claude/
+
+# ARC campaign: reader addresses and the unreleased manuscript never get committed.
+tools/arc/readers.csv
+tools/arc/out/
+tools/arc/*.epub

@@ -1,0 +1,25 @@
+{
+  "_comment": "One ARC campaign. Everything the email says comes from here or from template.mjs.",
+
+  "book": "the-blue-bookmark-bookshop",
+  "titlePlain": "The Blue Bookmark Bookshop",
+  "titleJp": "青い栞",
+
+  "from":    { "name": "Ahmed El-Bourgy", "email": "ahmedwalid4499@gmail.com" },
+  "replyTo": "ahmedwalid4499@gmail.com",
+
+  "subject": "A key to the Blue Bookmark Bookshop, before it opens",
+
+  "epub": "",
+  "epubFilename": "The Blue Bookmark Bookshop - Ahmed El-Bourgy (ARC).epub",
+
+  "releaseDate": "",
+  "reviewBy": "",
+
+  "verifyUrl": "https://ahmedwalid4499.github.io/my-Author-website/arc.html",
+  "siteUrl":   "https://ahmedwalid4499.github.io/my-Author-website/",
+  "goodreads": "https://www.goodreads.com/author/show/70192932.Ahmed_El_Bourgy",
+
+  "heroImage": "../../assets/img/promo/blue-bookmark-bookshop-1200.jpg",
+  "heroAlt": "A cobalt blue bookshop under cherry blossom, a cat on the step, the sea beyond."
+}

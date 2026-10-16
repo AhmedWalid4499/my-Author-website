@@ -55,7 +55,8 @@ function card(b, o, isFirst) {
       ? 'fetchpriority="high" decoding="async"'
       : 'loading="lazy" decoding="async"';
 
-  const badge = published ? '' : `\n              <span class="badge">Coming soon</span>`;
+  // books.json can override the badge, e.g. when the grid image is not the final cover.
+  const badge = published ? '' : `\n              <span class="badge">${esc(b.badge || 'Coming soon')}</span>`;
   const eyebrow =
     o.eyebrow === 'yes'
       ? `\n          <p class="eyebrow">${published ? 'Available on Kindle' : 'Coming soon'}</p>`

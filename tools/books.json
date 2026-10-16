@@ -81,6 +81,28 @@
         ],
         "tag": "Out now on Kindle"
       }
+    },
+    {
+      "slug": "the-blue-bookmark-bookshop",
+      "title": "The Blue Bookmark Bookshop",
+      "titleHtml": "The Blue Bookmark <em>Bookshop</em>",
+      "jp": "青い栞",
+      "kana": "栞",
+      "status": "coming-soon",
+      "badge": "Cover reveal soon",
+      "asin": null,
+      "goodreads": null,
+      "promo": "assets/img/promo/blue-bookmark-bookshop",
+      "coverAlt": "The Blue Bookmark Bookshop: a cobalt blue bookshop under cherry blossom, a cat on the step and a lantern-lit window full of books.",
+      "blurb": "A bookshop called 青い栞 — the Blue Bookmark — on a blossom-lined street above the sea. A chalkboard that promises something warm on rainy days, an umbrella stand that asks only that you bring it back, and a cat who has decided the step belongs to her.",
+      "shortBlurb": "A blue bookshop above the sea, and whoever walks in.",
+      "og": {
+        "hook": [
+          "A blue bookshop above the sea —",
+          "and whoever walks through the door."
+        ],
+        "tag": "Coming soon"
+      }
     }
   ]
 }

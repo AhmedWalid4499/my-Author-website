@@ -175,6 +175,7 @@ const simple = (name, label, title, em, l1, l2) => {
 
 await simple('og-press', 'Press & Media', 'Press ', 'Kit', 'Bios, cover art, headshots and book details', 'for press, bloggers and booksellers.');
 await simple('og-contact', 'Reach Out', 'Let’s ', 'Connect', 'Talk about the books, share what a story meant', 'to you, or simply say hello.');
+await simple('og-arc', 'Advance copies', 'Is this really ', 'from me?', 'The advance campaign I am actually running,', 'and how to check an email came from me.');
 await simple('og-404', 'Page Not Found', 'Lost in the ', 'Fog', 'This page slipped through to a day', 'that hasn’t happened yet.');
 
 console.log('og cards done');
