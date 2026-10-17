@@ -1,0 +1,135 @@
+{
+  "title": "Which Pastry Are You?",
+  "subtitle": "Hare has been watching you. He already knows. Seven questions to find out what Mirai would bake for you.",
+  "results": {
+    "cheesecake": {
+      "name": "Strawberry Cheesecake",
+      "nickname": "The Quiet Dreamer",
+      "image": "assets/cheesecake.png",
+      "description": "Charming, dependable, and the friend everyone can rely on. But somewhere on a shelf, you've put away a dream you once loved. You tell yourself there's no time for it anymore. There is. Someone has been waiting for you to pick it up again, and one slice is enough to start.",
+      "bookmark": "The moment you stop being yourself is the moment you start losing who you truly are.",
+      "chapter": "Chapter One · One Slice Is Enough"
+    },
+    "tart": {
+      "name": "Blueberry Tart",
+      "nickname": "The Bright Heart",
+      "image": "assets/tart.png",
+      "description": "Bright on top, a little tart underneath. You feel everything deeply and hold on tightly to the people you love, even the ones who are no longer beside you. Your loyalty is your greatest gift. Just remember that letting new people in isn't the same as letting old ones go.",
+      "bookmark": "If we always remember those who have left us, did they ever truly leave us?",
+      "chapter": "Chapter Two · The Half-Eaten Blueberry Tart"
+    },
+    "millefeuille": {
+      "name": "Mille-Feuille",
+      "nickname": "The Many-Layered",
+      "image": "assets/millefeuille.png",
+      "description": "You're everyone's favourite friend: you remember their birthdays, their orders, their bad days. But you show the world only the layer you think it wants. The real you, the one under all those thin, careful layers, is the best part. The people who love you would love that one even more.",
+      "bookmark": "Don't ever let anyone steal who you are.",
+      "chapter": "Chapter Three · The Mille-Feuille That Sold Out"
+    },
+    "creampuff": {
+      "name": "Cream Puff",
+      "nickname": "Soft in the Middle",
+      "image": "assets/creampuff.png",
+      "description": "Crisp and a little tough on the outside, so nobody gets too close. But inside you're all softness, and you know it, even if you'd never admit it out loud. Kindness is still in you. It always has been. It's just waiting for you to let it out.",
+      "bookmark": "Kindness can be forgotten, but never unlearned.",
+      "chapter": "Chapter Four · One Cream Puff Isn't Enough"
+    },
+    "eclair": {
+      "name": "Éclair",
+      "nickname": "The Perfectionist with a Big Heart",
+      "image": "assets/eclair.png",
+      "description": "Precise, hard-working, and always measuring twice. You want everything you make to be perfect for the people you love. But somewhere along the way you forgot to taste it yourself. Put down the measuring cup for a moment. It was never about perfect. It was always about who it's for.",
+      "bookmark": "Things made with love will always taste right.",
+      "chapter": "Chapter Five · A Pinch of Salt"
+    },
+    "hotchocolate": {
+      "name": "Hot Chocolate with a Pinch of Salt",
+      "nickname": "The Keeper of Umbrellas",
+      "image": "assets/mug.png",
+      "description": "You're the one people come to when it rains. You notice who's lost before they do, and you always have something warm ready. A little sweetness, a little salt, and just the right balance. Just remember: the one who holds the umbrella deserves shelter too.",
+      "bookmark": "Please return the umbrella. Someone else might need their day.",
+      "chapter": "The Prologue · Warm Drinks on Rainy Days"
+    }
+  },
+  "questions": [
+    {
+      "q": "It's raining and you have nowhere to be. You…",
+      "answers": [
+        ["Pull out a notebook and finally write down that idea", "cheesecake"],
+        ["Call someone you've been missing", "tart"],
+        ["Check the group chat to see what everyone else wants to do", "millefeuille"],
+        ["Stay in, headphones on, and pretend you're not cold", "creampuff"],
+        ["Reorganise your shelves until they're exactly right", "eclair"],
+        ["Make a big pot of something warm, in case anyone drops by", "hotchocolate"]
+      ]
+    },
+    {
+      "q": "A grey-and-white cat stares at you, meows once, and walks away. You…",
+      "answers": [
+        ["Follow. This feels like the start of a story", "cheesecake"],
+        ["Follow, a little nervously, hoping it leads somewhere familiar", "tart"],
+        ["Look around to see if anyone else noticed it first", "millefeuille"],
+        ["Try to pet it. It swats you. You follow out of spite", "creampuff"],
+        ["Check the time. You have exactly ten minutes. Fine.", "eclair"],
+        ["Say hello. You have a feeling you two will be friends", "hotchocolate"]
+      ]
+    },
+    {
+      "q": "Your friends would describe you as…",
+      "answers": [
+        ["The dreamer with a hundred ideas", "cheesecake"],
+        ["Bright, but you feel everything deeply", "tart"],
+        ["Easy to get along with, always says the right thing", "millefeuille"],
+        ["A bit prickly until they really know you", "creampuff"],
+        ["The one who always has a plan", "eclair"],
+        ["The one everyone calls when things go wrong", "hotchocolate"]
+      ]
+    },
+    {
+      "q": "Pick an umbrella from the box by the door:",
+      "answers": [
+        ["A clear one, so you can watch the rain", "cheesecake"],
+        ["Yellow, with a tiny dinosaur on it", "tart"],
+        ["Light blue, with white flowers", "millefeuille"],
+        ["Green and brown, plain and sturdy", "creampuff"],
+        ["Polka dots, obviously", "eclair"],
+        ["None. Leave them for someone who needs one more", "hotchocolate"]
+      ]
+    },
+    {
+      "q": "What do you secretly need to hear right now?",
+      "answers": [
+        ["\"It's not too late to start again.\"", "cheesecake"],
+        ["\"They're still with you.\"", "tart"],
+        ["\"The real you is enough.\"", "millefeuille"],
+        ["\"You're kinder than you think.\"", "creampuff"],
+        ["\"It doesn't have to be perfect.\"", "eclair"],
+        ["\"You're allowed to rest, too.\"", "hotchocolate"]
+      ]
+    },
+    {
+      "q": "Mirai pours you a drink. What's in the cup?",
+      "answers": [
+        ["Jasmine tea, to calm your nerves", "cheesecake"],
+        ["Hot chocolate, extra marshmallows", "tart"],
+        ["Lavender tea, gentle and quiet", "millefeuille"],
+        ["Hōjicha, warm and toasty", "creampuff"],
+        ["Spiced coffee with ginger and cinnamon", "eclair"],
+        ["Whatever's in the pot, as long as you get to pour for everyone else", "hotchocolate"]
+      ]
+    },
+    {
+      "q": "At the pastry display, you…",
+      "answers": [
+        ["Pick the one that looks like it has a story", "cheesecake"],
+        ["Choose the one you used to share with someone", "tart"],
+        ["Let your friend choose first. You'll have whatever's left", "millefeuille"],
+        ["Say you don't like sweets. Then eat two", "creampuff"],
+        ["Inspect the glaze. Critically.", "eclair"],
+        ["Buy a whole box for the people waiting at home", "hotchocolate"]
+      ]
+    }
+  ],
+  "scoring": "Each answer adds one point to its pastry. Highest total wins. On a tie, the pastry chosen in the latest question among the tied ones wins.",
+  "shareText": "I'm {name} ({nickname}) from The Blue Bookmark Bookshop. Which pastry are you?"
+}

@@ -168,7 +168,7 @@ for (const file of htmlFiles) {
   if (!src.includes("classList.add('js')")) note(file, 'shell', 'missing the inline js-class script');
   if (!doc.querySelector('script[src$="site.js"][defer]')) note(file, 'shell', 'missing deferred site.js');
   const navLinks = doc.querySelectorAll('.nav__link');
-  if (navLinks.length !== 4) note(file, 'shell', `${navLinks.length} nav links (expected 4)`);
+  if (navLinks.length !== 5) note(file, 'shell', `${navLinks.length} nav links (expected 5)`);
   const current = doc.querySelectorAll('.nav__link[aria-current="page"]');
   if (current.length > 1) note(file, 'shell', `${current.length} nav links marked aria-current`);
 

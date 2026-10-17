@@ -1,0 +1,21 @@
+{
+  "title": "Music for Aoi Shiori",
+  "subtitle": "The songs that kept me company while I wrote The Blue Bookmark Bookshop. Best with rain on the window.",
+  "spotifyPlaylistId": "0Qz6NFLvhXobERUOsr3WHf",
+  "spotifyUrl": "https://open.spotify.com/playlist/0Qz6NFLvhXobERUOsr3WHf",
+  "tracks": [
+    { "title": "Suzume", "artist": "RADWIMPS feat. Toaka", "moment": "Prologue · A door opens, and it starts to rain" },
+    { "title": "Dream Lantern (夢灯籠)", "artist": "RADWIMPS", "moment": "Chapter One · The song Tateyama hears under the umbrella" },
+    { "title": "Zenzenzense (English Version)", "artist": "RADWIMPS", "moment": "Chapter One · The film that made him want to write" },
+    { "title": "ただ声一つ (Just One Voice)", "artist": "Rokudenashi", "moment": "Interlude One & Chapter Two · For Haru, and the words he couldn't say" },
+    { "title": "勇者 (The Brave)", "artist": "YOASOBI", "moment": "Chapter Three · Kazuya, seen through his friends' eyes" },
+    { "title": "沈める街", "artist": "Yoeko Kurahashi", "moment": "Interlude · Rain on the bookshop window" },
+    { "title": "Basrah w Atooh", "artist": "Cairokee", "moment": "Chapter Four · Daichi's long walk along the boardwalk at night" },
+    { "title": "secret base ～君がくれたもの～ (10 years after Ver.)", "artist": "Kayano Ai, Tomatsu Haruka, Hayami Saori", "moment": "Chapter Five · Fumi, and everything her grandmother gave her" },
+    { "title": "Sparkle (movie ver.)", "artist": "RADWIMPS", "moment": "Ending · A Pinch of Salt opens its doors" }
+  ],
+  "bonus": [
+    { "title": "Grand Escape (feat. Toko Miura)", "artist": "RADWIMPS" },
+    { "title": "انا نجم (Ana Negm) – from Reevo", "artist": "Reevo Show" }
+  ]
+}

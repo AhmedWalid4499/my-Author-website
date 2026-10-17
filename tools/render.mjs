@@ -27,6 +27,15 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DATA = JSON.parse(readFileSync(path.join(ROOT, 'tools/books.json'), 'utf8'));
 const BOOKS = DATA.books;
 
+
+/** Straight quotes to typographic ones. Presentation only — source files are
+ *  left exactly as written. */
+function typo(str) {
+  return String(str)
+    .replace(/"([^"]*)"/g, '\u201c$1\u201d')
+    .replace(/'/g, '\u2019');
+}
+
 const esc = (s) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -161,11 +170,68 @@ ${b.jp ? `
   }).join('\n\n') + '\n';
 }
 
+
+/* ---- Aoi Shiori page: quiz data and tracklist ------------------------- */
+
+const QUIZ = JSON.parse(readFileSync(path.join(ROOT, 'tools/quiz.json'), 'utf8'));
+const PLAYLIST = JSON.parse(readFileSync(path.join(ROOT, 'tools/playlist.json'), 'utf8'));
+
+/**
+ * The quiz runs in the browser, so its data is inlined at build time rather
+ * than fetched: one request fewer, and it cannot half-load. Image paths are
+ * rewritten from the content pack's layout to the repo's, so quiz.json stays
+ * exactly as the author wrote it.
+ */
+function quizData() {
+  const data = JSON.parse(JSON.stringify(QUIZ));
+  data.title = typo(data.title);
+  data.subtitle = typo(data.subtitle);
+  data.shareText = typo(data.shareText);
+  for (const q of data.questions) {
+    q.q = typo(q.q);
+    q.answers = q.answers.map(([text, key]) => [typo(text), key]);
+  }
+  for (const r of Object.values(data.results)) {
+    for (const k of ['name', 'nickname', 'description', 'bookmark', 'chapter']) {
+      r[k] = typo(r[k]);
+    }
+    const base = r.image.replace(/^assets\//, '').replace(/\.png$/, '');
+    r.image = `assets/img/pastry/${base}`;      // -320.webp / -640.webp
+  }
+  return '\n      <script type="application/json" id="quiz-data">'
+    + JSON.stringify(data) + '</script>';
+}
+
+/** The tracklist is server-rendered so the page is worth reading with JS off. */
+function tracklist() {
+  const rows = PLAYLIST.tracks
+    .filter((t) => t.title)
+    .map((t, i) => `        <li class="track">
+          <span class="track__no">${String(i + 1).padStart(2, '0')}</span>
+          <span class="track__body">
+            <span class="track__title">${esc(typo(t.title))}</span>
+            <span class="track__artist">${esc(typo(t.artist))}</span>
+            ${t.moment ? `<span class="track__moment">${esc(typo(t.moment))}</span>` : ''}
+          </span>
+        </li>`);
+  return '\n' + rows.join('\n') + '\n      ';
+}
+
+function bonusTracks() {
+  const rows = (PLAYLIST.bonus || PLAYLIST.bonusTracks || [])
+    .filter((t) => t.title)
+    .map((t) => `        <li><span class="track__title">${esc(typo(t.title))}</span> <span class="track__artist">${esc(typo(t.artist))}</span></li>`);
+  return '\n' + rows.join('\n') + '\n      ';
+}
+
 const REGIONS = {
   'books-grid': booksGrid,
   'footer-books': footerBooks,
   'cover-downloads': coverDownloads,
   'book-facts': bookFacts,
+  'quiz-data': quizData,
+  'tracklist': tracklist,
+  'bonus-tracks': bonusTracks,
 };
 
 // --check verifies the pages are already up to date without writing.
@@ -181,7 +247,20 @@ for (const file of readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort()) 
   for (const [name, build] of Object.entries(REGIONS)) {
     // Replace from the marker up to the close of its container. Cards contain
     // no <div> and footer rows no <ul>, so the first close tag is the right one.
-    const close = name === 'footer-books' ? '</ul>' : '</div>';
+    if (name === 'quiz-data') {
+      // This region replaces a whole <script> element rather than the text
+      // inside one, because a script's content is raw text: a marker comment
+      // placed inside it would be parsed as part of the JSON.
+      const re = new RegExp(`(<!--\\s*gen:${name}([^>]*?)-->)[\\s\\S]*?<\\/script>`, 'g');
+      after = after.replace(re, (_m, marker, rawOpts) => {
+        hits.push(name);
+        return marker + build(opts(rawOpts));
+      });
+      continue;
+    }
+
+    const close = (name === 'footer-books' || name === 'tracklist' || name === 'bonus-tracks')
+      ? '</ul>' : '</div>';
     // Consume everything between the marker and the closing tag, including the
     // final newline + indent, so repeated runs cannot accumulate blank lines.
     const re = new RegExp(

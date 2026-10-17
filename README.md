@@ -38,6 +38,7 @@ sakura-slice-cafe.html      Book page
 the-perfect-sunrise.html    Book page
 when-you-were-there.html    Book page
 the-blue-bookmark-bookshop.html  Book page (announcement, not yet released)
+aoi-shiori.html             The pastry quiz and the playlist
 arc.html                    Advance copies: what is running, how to verify it
 about.html                  Full biography
 press.html                  Press kit — bios, cover art, headshot, book details
@@ -171,6 +172,39 @@ site is built from those two materials.
   sky by `tools/extract-wordmark.mjs` and saved to `assets/img/wordmark/`. It
   is cream and pink, so it only reads on a dark ground — that is why both its
   hero and the home hero are cobalt. Never place it on paper.
+
+---
+
+## The Aoi Shiori page
+
+`aoi-shiori.html` holds two things: the "Which Pastry Are You?" quiz and the
+playlist. Both are driven by data files, so the words live in one place:
+
+- `tools/quiz.json` — 7 questions, 6 results, the scoring rule, the share text
+- `tools/playlist.json` — the tracks and the moment in the book each belongs to
+
+Run `npm run render` after editing either. The quiz data is **inlined into the
+page** at build time rather than fetched, so nothing can half-load; the
+tracklist is server-rendered so the page is still worth reading with JavaScript
+off.
+
+Three things worth knowing before you change it:
+
+- **Punctuation is normalised at render time.** Your JSON keeps its straight
+  apostrophes; the page gets the site's curly ones. The files stay byte-for-byte
+  as you wrote them.
+- **Spotify is click-to-load.** The player is only fetched once a reader asks
+  for it, so the page makes no third-party request and sets no cookie on its
+  own. The whole site otherwise loads nothing from anyone else, and an
+  always-on embed would have quietly ended that. Verified: zero third-party
+  requests until the button is pressed.
+- **New Japanese needs new glyphs.** Several track titles are in Japanese, so
+  `JP_GLYPHS` in `tools/build-fonts.mjs` grew to cover them. Add a track with
+  new characters and you must add them too, then `npm run fonts`.
+
+The result card is drawn with `<canvas>` at 1080×1350 — Instagram's portrait
+size — from the same images the page already uses, so it needs no network and
+the canvas is never tainted.
 
 ---
 

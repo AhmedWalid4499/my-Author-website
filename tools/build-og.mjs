@@ -95,7 +95,7 @@ for (const b of BOOKS) {
   const svg = bg(plate(CX, CY, Math.round(CH * b.aspect), CH)) + `
     ${eyebrow(x, 150, 'Ahmed El-Bourgy')}
     <text x="${x}" y="228" font-family="${SERIF}" font-size="${ts}" fill="${INK}">${esc(a)}<tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">${esc(em)}</tspan></text>
-    <text x="${x}" y="272" font-family="${JP}" font-size="23" letter-spacing="3" fill="${INK_SOFT}">${esc(b.jp)}</text>
+    ${b.jp ? `<text x="${x}" y="272" font-family="${JP}" font-size="23" letter-spacing="3" fill="${INK_SOFT}">${esc(b.jp)}</text>` : ''}
     ${rule(x, 312, 72)}
     ${b.hook ? `<text x="${x}" y="372" font-family="${SERIF_I}" font-style="italic" font-size="30" fill="${INK_SOFT}">${esc(b.hook)}</text>` : ''}
     ${b.hook2 ? `<text x="${x}" y="414" font-family="${SERIF_I}" font-style="italic" font-size="30" fill="${INK_SOFT}">${esc(b.hook2)}</text>` : ''}
@@ -164,6 +164,37 @@ const simple = (name, label, title, em, l1, l2) => {
 await simple('og-about', 'The Author', 'About ', 'Me', 'An Egyptian boy who had always dreamt of magic', 'and writes it down. Cairo, Egypt.');
 await simple('og-press', 'Press & Media', 'Press ', 'Kit', 'Bios, cover art, headshots and book details', 'for press, bloggers and booksellers.');
 await simple('og-contact', 'Reach Out', 'Let’s ', 'Connect', 'Talk about the books, share what a story meant', 'to you, or simply say hello.');
+// ---------------------------------------------------------------- aoi shiori
+{
+  const DESSERTS = ['cheesecake', 'tart', 'millefeuille', 'creampuff', 'eclair', 'mug'];
+  // Sized so the widest row (mille-feuille and cream puff are near 1.4:1)
+  // still clears the 1200px card with a margin.
+  const H = 150, GAP = 20, Y = 392;
+  const comps = [];
+  const sized = [];
+  for (const d of DESSERTS) {
+    const f = path.join(OUT, 'pastry', `${d}-320.webp`);
+    const m = await sharp(f).metadata();
+    const w = Math.round(H * (m.width / m.height));
+    sized.push({ f, w });
+  }
+  const total = sized.reduce((a, s2) => a + s2.w, 0) + GAP * (sized.length - 1);
+  let x = Math.round(600 - total / 2);
+  for (const s2 of sized) {
+    comps.push({
+      input: await sharp(s2.f).resize({ height: H, fit: 'inside' }).png().toBuffer(),
+      left: x, top: Y,
+    });
+    x += s2.w + GAP;
+  }
+  const svg = bg() + `
+    ${eyebrow(600, 150, 'From The Blue Bookmark Bookshop', GOLD).replace('<text', '<text text-anchor="middle"')}
+    <text x="600" y="246" text-anchor="middle" font-family="${SERIF}" font-size="74" fill="${INK}">Which Pastry <tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">Are You?</tspan></text>
+    <text x="600" y="306" text-anchor="middle" font-family="${SERIF_I}" font-style="italic" font-size="29" fill="${INK_SOFT}">Seven questions, and whatever Mirai decides to bake for you.</text>
+  `;
+  await render('og-aoi-shiori', svg, comps);
+}
+
 await simple('og-arc', 'Advance copies', 'Is this really ', 'from me?', 'The advance campaign I am actually running,', 'and how to check an email came from me.');
 await simple('og-404', 'Page Not Found', 'Lost in the ', 'Fog', 'This page slipped through to a day', 'that hasn’t happened yet.');
 
