@@ -1,12 +1,42 @@
 # ARC mailer
 
-Builds one ready-to-send email per advance reader, with the EPUB attached,
-themed to the book. It writes files. It never sends anything.
+Writes and sends the advance-copy email: themed to the book, EPUB attached.
+
+## The panel
 
 ```bash
-cd tools
+cd tools && npm run arc
+```
+
+Then open **http://127.0.0.1:8787**. One page with the campaign fields, the
+reader list, a live preview of the email, and buttons to build the `.eml`
+files or send.
+
+### Why it is not on the website
+
+The site is static files on GitHub Pages — there is no server behind it, so it
+cannot send mail, read your reader list, or hold a password. And a send-mail
+page on a public URL would let anyone who found it send mail as you.
+
+So the panel runs on your Mac instead. It binds to `127.0.0.1`, which means
+nothing else on your network can reach it (verified: the machine's own LAN
+address refuses the connection), and it stops when you close the terminal.
+
+### Sending
+
+Gmail needs an **app password**, not your normal one: Google Account →
+Security → 2-Step Verification → App passwords. Type it into the panel; it is
+held in memory for the length of one send and never written to disk.
+
+Use **Dry run** first — it lists exactly who would receive the mail and sends
+nothing. Then **Send test** to your own address. Only then **Send to all**,
+which asks you to confirm.
+
+## Or from the command line
+
+```bash
 node arc/build.mjs --preview     # just look at the email
-node arc/build.mjs --one         # first reader only, for a test send to yourself
+node arc/build.mjs --one         # first reader only
 node arc/build.mjs               # every reader in arc/readers.csv
 ```
 
@@ -21,14 +51,18 @@ node arc/build.mjs               # every reader in arc/readers.csv
 `readers.csv`, `arc/out/` and any `.epub` are git-ignored. Reader addresses and
 an unreleased manuscript should not end up in a public repo.
 
-## Sending
+## The .eml files
 
-Each `.eml` is a complete message. Open one and send it from your own mail
-client — drag it into Drafts in Apple Mail or Thunderbird, or use any client
-that opens `.eml`.
+Each is a complete message. If you would rather not use the panel's send, open
+one and send it from your own mail client — drag it into Drafts in Apple Mail
+or Thunderbird, or any client that opens `.eml`.
 
-Send one to yourself first. Check: the picture appears, the EPUB opens, and
-nothing in the letter is still a placeholder.
+Either way, send one to yourself first. Check that the picture appears, the
+EPUB opens, and nothing in the letter is still a placeholder.
+
+**Size.** A 5.3 MB EPUB becomes about 7.6 MB once base64-encoded into the
+message. Gmail's ceiling is 25 MB, so that is fine, but some recipients'
+servers are stricter — the panel warns above 20 MB.
 
 ## About "proof that this is really me"
 
@@ -61,8 +95,11 @@ signing is already correct.
 ## Editing the email
 
 All copy and design is in `arc/template.mjs` — `subject()`, `html()`, `text()`.
-`build.mjs` handles MIME, attachments and per-reader output and does not need
-touching when the words change.
+
+`lib.mjs` holds the MIME builder and the campaign/reader IO. Both `build.mjs`
+and the panel go through it, so the message you preview, the `.eml` you inspect
+and the mail that actually leaves are assembled by the same code from the same
+bytes.
 
 Keep the plain-text version in step with the HTML. Some readers only ever see
 that one, and a message with no text alternative scores worse with spam filters.

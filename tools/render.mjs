@@ -76,15 +76,15 @@ function card(b, o, isFirst) {
                              ${p}${img}-450.jpg 450w,
                              ${p}${img}-600.jpg 600w"
                      sizes="(max-width: 720px) 60vw, 300px"
-                     width="900" height="1436"
+                     width="${b.coverW}" height="${b.coverH}"
                      alt="${esc(b.coverAlt)}"
                      ${loading}>
               </picture>
             </span>
             <h${L} class="book-card__title mt-md">${esc(b.title)}</h${L}>
             <p class="jp book-card__jp">${b.jp}</p>
-          </a>${eyebrow}
-          <p class="book-card__blurb">${blurb}</p>
+          </a>${eyebrow}${blurb ? `
+          <p class="book-card__blurb">${blurb}</p>` : ''}
           <a class="text-link" href="${p}${b.slug}.html">Read more <span class="text-link__arrow" aria-hidden="true">↗</span><span class="visually-hidden"> about ${esc(b.title)}</span></a>
         </article>`;
 }
@@ -116,13 +116,13 @@ function coverDownloads() {
                    srcset="${img}-300.jpg 300w,
                            ${img}-450.jpg 450w"
                    sizes="96px"
-                   width="900" height="1436"
+                   width="${b.coverW}" height="${b.coverH}"
                    alt="${esc(b.coverAlt)}"
                    loading="lazy" decoding="async">
             </picture>
           </span>
           <h3 class="download-card__title">${esc(b.title)} — cover</h3>
-          <p class="download-card__meta">JPEG · 900 × 1436</p>
+          <p class="download-card__meta">JPEG · ${b.coverW} × ${b.coverH}</p>
           <a class="text-link" href="${img}-full.jpg" download="${b.slug}-cover-ahmed-el-bourgy.jpg">Download <span class="text-link__arrow" aria-hidden="true">↓</span><span class="visually-hidden"> the cover of ${esc(b.title)}</span></a>
         </article>`;
   }).join('\n\n') + '\n';

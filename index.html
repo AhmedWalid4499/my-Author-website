@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Ahmed El-Bourgy — Author of From Tomorrow and Sakura Slice Café</title>
-<meta name="description" content="Ahmed El-Bourgy writes quiet, Japanese-inspired fiction about the magic hiding in ordinary moments. Four books, all on Kindle.">
+<meta name="description" content="Ahmed El-Bourgy writes quiet, Japanese-inspired fiction about the magic hiding in ordinary moments. Four books on Kindle, with a fifth coming.">
 <meta name="author" content="Ahmed El-Bourgy">
 <meta name="theme-color" content="#fdf8f0">
 <link rel="canonical" href="https://ahmedwalid4499.github.io/my-Author-website/">
@@ -67,47 +67,55 @@
 <main id="main">
 
   <!-- ============================================ HERO -->
-  <section class="hero" data-petals>
-    <div class="hero__bg" aria-hidden="true"></div>
-    <div class="hero__glow" aria-hidden="true"></div>
-    <div class="hero__kana" aria-hidden="true">物語</div>
+  <!-- The landing page leads with the newest book. The author's name stays in
+       the header on every screen and in the page title and JSON-LD. -->
+  <section class="hero hero--book" data-petals>
+    <div class="hero__kana" aria-hidden="true">栞</div>
 
-    <div class="wrap hero__inner">
-      <p class="eyebrow hero__eyebrow reveal-up">Author &amp; Storyteller</p>
-      <h1 class="display-1 hero__title reveal-up">Ahmed<br><em>El-Bourgy</em></h1>
-      <p class="jp hero__jp reveal-up">物語を紡ぐ人</p>
-      <p class="hero__desc reveal-up">Stories about the quiet magic hiding in ordinary moments — train stations, café tables, and the space between one day and the next.</p>
-      <div class="btn-row hero__actions reveal-up">
-        <a class="btn btn--primary" href="books.html">Explore the books</a>
-        <a class="btn btn--outline" href="about.html">About me</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================ COMING SOON -->
-  <section class="section section--tight" aria-labelledby="announce-heading">
-    <div class="wrap">
-      <div class="announce fade-in">
-        <a class="announce__art" href="the-blue-bookmark-bookshop.html" tabindex="-1" aria-hidden="true">
+    <div class="wrap hero__book">
+      <div class="hero__book-cover reveal-up">
+        <span class="cover">
           <picture>
             <source type="image/webp"
-                    srcset="assets/img/promo/blue-bookmark-bookshop-800.webp 800w,
-                            assets/img/promo/blue-bookmark-bookshop-1200.webp 1200w"
-                    sizes="(max-width: 860px) 92vw, 600px">
-            <img src="assets/img/promo/blue-bookmark-bookshop-800.jpg"
-                 srcset="assets/img/promo/blue-bookmark-bookshop-800.jpg 800w,
-                         assets/img/promo/blue-bookmark-bookshop-1200.jpg 1200w"
-                 sizes="(max-width: 860px) 92vw, 600px"
-                 width="1672" height="941"
-                 alt="" loading="lazy" decoding="async">
+                    srcset="assets/img/covers/the-blue-bookmark-bookshop-300.webp 300w,
+                            assets/img/covers/the-blue-bookmark-bookshop-450.webp 450w,
+                            assets/img/covers/the-blue-bookmark-bookshop-600.webp 600w"
+                    sizes="(max-width: 860px) 58vw, 340px">
+            <img src="assets/img/covers/the-blue-bookmark-bookshop-450.jpg"
+                 srcset="assets/img/covers/the-blue-bookmark-bookshop-300.jpg 300w,
+                         assets/img/covers/the-blue-bookmark-bookshop-450.jpg 450w,
+                         assets/img/covers/the-blue-bookmark-bookshop-600.jpg 600w"
+                 sizes="(max-width: 860px) 58vw, 340px"
+                 width="1024" height="1536"
+                 alt="The cover of The Blue Bookmark Bookshop: a cobalt blue bookshop under cherry blossom, a cat on the step, the title hand-lettered across the sky."
+                 fetchpriority="high" decoding="async">
           </picture>
-        </a>
-        <div class="announce__body">
-          <p class="eyebrow">The next book</p>
-          <h2 class="display-3 announce__title" id="announce-heading">The Blue Bookmark <em>Bookshop</em></h2>
-          <p class="jp announce__jp">青い栞</p>
-          <p class="announce__text">A bookshop at the top of a stone street, above the sea. A chalkboard that promises something warm on rainy days, an umbrella stand that asks only that you bring it back, and a cat who has decided the step belongs to her.</p>
-          <a class="text-link" href="the-blue-bookmark-bookshop.html">Step inside <span class="text-link__arrow" aria-hidden="true">↗</span><span class="visually-hidden"> — about The Blue Bookmark Bookshop</span></a>
+        </span>
+      </div>
+
+      <div>
+        <p class="eyebrow reveal-up">Ahmed El-Bourgy &middot; the next book</p>
+        <h1 class="hero__book-title reveal-up">
+          <picture>
+            <source type="image/webp"
+                    srcset="assets/img/wordmark/blue-bookmark-bookshop-400.webp 400w,
+                            assets/img/wordmark/blue-bookmark-bookshop-776.webp 776w"
+                    sizes="(max-width: 860px) 84vw, 520px">
+            <img class="wordmark"
+                 src="assets/img/wordmark/blue-bookmark-bookshop-776.png"
+                 srcset="assets/img/wordmark/blue-bookmark-bookshop-400.png 400w,
+                         assets/img/wordmark/blue-bookmark-bookshop-776.png 776w"
+                 sizes="(max-width: 860px) 84vw, 520px"
+                 width="775" height="340"
+                 alt="The Blue Bookmark Bookshop"
+                 fetchpriority="high" decoding="async">
+          </picture>
+        </h1>
+        <p class="jp hero__jp reveal-up">青い栞</p>
+        <p class="hero__desc reveal-up">Stories about the quiet magic hiding in ordinary moments &mdash; train stations, caf&eacute; tables, and the space between one day and the next.</p>
+        <div class="btn-row hero__actions reveal-up">
+          <a class="btn btn--on-ink" href="the-blue-bookmark-bookshop.html">About the book</a>
+          <a class="btn btn--ghost" href="books.html">All the books</a>
         </div>
       </div>
     </div>
@@ -153,7 +161,7 @@
   <section class="section" aria-labelledby="books-heading">
     <div class="wrap">
       <div class="section__head">
-        <p class="eyebrow">Four books, out now</p>
+        <p class="eyebrow">On Kindle now</p>
         <h2 class="display-2" id="books-heading">The <em>Stories</em></h2>
         <p class="lede">Four worlds, each with its own heartbeat. Each one an invitation to slow down, pay attention, and believe that ordinary places hold extraordinary things.</p>
       </div>
@@ -268,7 +276,7 @@
         <article class="book-card fade-in">
           <a class="book-card__link" href="the-blue-bookmark-bookshop.html">
             <span class="cover">
-              <span class="badge">Cover reveal soon</span>
+              <span class="badge">Coming soon</span>
               <picture>
                 <source type="image/webp"
                         srcset="assets/img/covers/the-blue-bookmark-bookshop-300.webp 300w,
@@ -280,15 +288,14 @@
                              assets/img/covers/the-blue-bookmark-bookshop-450.jpg 450w,
                              assets/img/covers/the-blue-bookmark-bookshop-600.jpg 600w"
                      sizes="(max-width: 720px) 60vw, 300px"
-                     width="900" height="1436"
-                     alt="The Blue Bookmark Bookshop: a cobalt blue bookshop under cherry blossom, a cat on the step and a lantern-lit window full of books."
+                     width="1024" height="1536"
+                     alt="The cover of The Blue Bookmark Bookshop: a cobalt blue bookshop under cherry blossom, a cat on the step, the title hand-lettered across the sky."
                      loading="lazy" decoding="async">
               </picture>
             </span>
             <h3 class="book-card__title mt-md">The Blue Bookmark Bookshop</h3>
             <p class="jp book-card__jp">青い栞</p>
           </a>
-          <p class="book-card__blurb">A bookshop called 青い栞 — the Blue Bookmark — on a blossom-lined street above the sea. A chalkboard that promises something warm on rainy days, an umbrella stand that asks only that you bring it back, and a cat who has decided the step belongs to her.</p>
           <a class="text-link" href="the-blue-bookmark-bookshop.html">Read more <span class="text-link__arrow" aria-hidden="true">↗</span><span class="visually-hidden"> about The Blue Bookmark Bookshop</span></a>
         </article>
 
@@ -299,23 +306,7 @@
   <!-- ============================================ ABOUT TEASER -->
   <section class="section section--alt" aria-labelledby="about-heading">
     <div class="wrap">
-      <div class="about-grid fade-in">
-        <div class="portrait">
-          <picture>
-            <source type="image/webp"
-                    srcset="assets/img/author/ahmed-el-bourgy-320.webp 320w,
-                            assets/img/author/ahmed-el-bourgy-480.webp 480w"
-                    sizes="(max-width: 720px) 240px, 260px">
-            <img src="assets/img/author/ahmed-el-bourgy-320.jpg"
-                 srcset="assets/img/author/ahmed-el-bourgy-320.jpg 320w,
-                         assets/img/author/ahmed-el-bourgy-480.jpg 480w"
-                 sizes="(max-width: 720px) 240px, 260px"
-                 width="480" height="640"
-                 alt="Ahmed El-Bourgy, smiling, wearing round glasses and a navy polo shirt."
-                 loading="lazy" decoding="async">
-          </picture>
-          <span class="portrait__kana" aria-hidden="true">夢</span>
-        </div>
+      <div class="fade-in">
         <div>
           <p class="eyebrow">The author</p>
           <h2 class="display-2" id="about-heading">About <em>Me</em></h2>
@@ -427,7 +418,6 @@
       "@id": "https://ahmedwalid4499.github.io/my-Author-website/#person",
       "name": "Ahmed El-Bourgy",
       "url": "https://ahmedwalid4499.github.io/my-Author-website/",
-      "image": "https://ahmedwalid4499.github.io/my-Author-website/assets/img/author/ahmed-el-bourgy-720.jpg",
       "jobTitle": "Author",
       "email": "mailto:ahmedwalid4499@gmail.com",
       "address": {

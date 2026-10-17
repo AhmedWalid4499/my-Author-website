@@ -5,6 +5,7 @@
   "description": "Build and QA scripts for the Ahmed El-Bourgy author site. Nothing here ships to the site itself.",
   "scripts": {
     "serve": "node serve.mjs",
+    "arc": "node arc/panel.mjs",
     "render": "node render.mjs",
     "check": "node render.mjs --check && node check.mjs",
     "images": "node build-images.mjs",
@@ -15,6 +16,7 @@
   },
   "dependencies": {
     "node-html-parser": "^7.0.1",
+    "nodemailer": "^10.1.2",
     "sharp": "^0.34.5"
   }
 }

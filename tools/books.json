@@ -12,6 +12,8 @@
       "asin": "B0GXLP6ZJM",
       "goodreads": "https://www.goodreads.com/book/show/252070076-from-tomorrow",
       "coverAlt": "Cover of From Tomorrow: two students on facing railway platforms beneath an orange sunset.",
+      "coverW": 900,
+      "coverH": 1436,
       "blurb": "A train line closing in three days. Notes exchanged between two strangers — each dated a day they haven’t lived yet. A story about time, loss, and the moments we almost miss.",
       "shortBlurb": "Time, loss, and the moments we almost miss.",
       "og": {
@@ -32,6 +34,8 @@
       "asin": "B0H1499X4M",
       "goodreads": "https://www.goodreads.com/book/show/252016598-sakura-slice-caf",
       "coverAlt": "Cover of Sakura Slice Café: a barista, a rabbit, an owl and a fox serving guests in a warm pink café.",
+      "coverW": 900,
+      "coverH": 1436,
       "blurb": "Thirteen quiet stories from a café that was never just a café. A place where people arrive carrying something — and leave a little lighter. Your table is already waiting.",
       "shortBlurb": "Being seen — thirteen quiet stories from the café.",
       "og": {
@@ -52,6 +56,8 @@
       "asin": "B0H26LS329",
       "goodreads": null,
       "coverAlt": "Cover of The Perfect Sunrise: a girl on a shoreline holding a photograph as the sun rises over the sea.",
+      "coverW": 900,
+      "coverH": 1436,
       "blurb": "Every morning, Hikari chases the perfect sunrise. Then a photograph falls from the sky — already developed, already perfect, and dated tomorrow. A story about memory, loss, and the people we love who never truly leave.",
       "shortBlurb": "Memory, loss, and the people who never truly leave.",
       "og": {
@@ -72,6 +78,8 @@
       "asin": "B0H27T4LNX",
       "goodreads": null,
       "coverAlt": "Cover of When You Were There: two schoolboys on a riverside path at sunset, one listening to a cassette player.",
+      "coverW": 900,
+      "coverH": 1436,
       "blurb": "Sou’s grandmother leaves him a cassette tape. When he plays it, he hears his own voice — older, crying, begging someone not to leave. A story about grief, attention, and the one direction time moves in.",
       "shortBlurb": "Grief, attention, and the one direction time moves in.",
       "og": {
@@ -89,20 +97,29 @@
       "jp": "青い栞",
       "kana": "栞",
       "status": "coming-soon",
-      "badge": "Cover reveal soon",
+      "badge": "Coming soon",
       "asin": null,
       "goodreads": null,
       "promo": "assets/img/promo/blue-bookmark-bookshop",
-      "coverAlt": "The Blue Bookmark Bookshop: a cobalt blue bookshop under cherry blossom, a cat on the step and a lantern-lit window full of books.",
-      "blurb": "A bookshop called 青い栞 — the Blue Bookmark — on a blossom-lined street above the sea. A chalkboard that promises something warm on rainy days, an umbrella stand that asks only that you bring it back, and a cat who has decided the step belongs to her.",
-      "shortBlurb": "A blue bookshop above the sea, and whoever walks in.",
+      "coverAlt": "The cover of The Blue Bookmark Bookshop: a cobalt blue bookshop under cherry blossom, a cat on the step, the title hand-lettered across the sky.",
+      "coverW": 1024,
+      "coverH": 1536,
+      "blurb": null,
+      "shortBlurb": null,
       "og": {
-        "hook": [
-          "A blue bookshop above the sea —",
-          "and whoever walks through the door."
-        ],
+        "hook": [],
         "tag": "Coming soon"
-      }
+      },
+      "wordmark": "assets/img/wordmark/blue-bookmark-bookshop",
+      "pastries": [
+        "cheesecake",
+        "chocolate-pastry",
+        "cream-puff",
+        "mille-feuille",
+        "birthday-cake",
+        "blueberry-tart",
+        "hot-chocolate"
+      ]
     }
   ]
 }

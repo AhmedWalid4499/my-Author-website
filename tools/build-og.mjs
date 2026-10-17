@@ -69,11 +69,12 @@ const BOOKS = DATA.books.map((b) => {
   const m = b.titleHtml.match(/^(.*?)<em>(.*?)<\/em>$/);
   return {
     slug: b.slug,
+    aspect: b.coverW / b.coverH,
     plain: m ? m[1] : b.title,
     em: m ? m[2] : '',
     jp: b.jp,
-    hook: b.og.hook[0],
-    hook2: b.og.hook[1],
+    hook: b.og.hook[0] || '',
+    hook2: b.og.hook[1] || '',
     tag: b.og.tag,
   };
 });
@@ -85,38 +86,40 @@ function titleSize(text, max = 66, room = 672) {
   return est <= room ? max : Math.max(42, Math.floor((room / est) * max));
 }
 
-const CW = 296, CH = 472, CX = 96, CY = 79;
+const CH = 472, CY = 79, CX = 96;   // covers share a height, not a width
 
 for (const b of BOOKS) {
   const a = b.plain, em = b.em;
   const x = 470;
   const ts = titleSize(a + em);
-  const svg = bg(plate(CX, CY, CW, CH)) + `
+  const svg = bg(plate(CX, CY, Math.round(CH * b.aspect), CH)) + `
     ${eyebrow(x, 150, 'Ahmed El-Bourgy')}
     <text x="${x}" y="228" font-family="${SERIF}" font-size="${ts}" fill="${INK}">${esc(a)}<tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">${esc(em)}</tspan></text>
     <text x="${x}" y="272" font-family="${JP}" font-size="23" letter-spacing="3" fill="${INK_SOFT}">${esc(b.jp)}</text>
     ${rule(x, 312, 72)}
-    <text x="${x}" y="372" font-family="${SERIF_I}" font-style="italic" font-size="30" fill="${INK_SOFT}">${esc(b.hook)}</text>
-    <text x="${x}" y="414" font-family="${SERIF_I}" font-style="italic" font-size="30" fill="${INK_SOFT}">${esc(b.hook2)}</text>
-    ${eyebrow(x, 492, b.tag)}
+    ${b.hook ? `<text x="${x}" y="372" font-family="${SERIF_I}" font-style="italic" font-size="30" fill="${INK_SOFT}">${esc(b.hook)}</text>` : ''}
+    ${b.hook2 ? `<text x="${x}" y="414" font-family="${SERIF_I}" font-style="italic" font-size="30" fill="${INK_SOFT}">${esc(b.hook2)}</text>` : ''}
+    ${eyebrow(x, b.hook ? 492 : 380, b.tag)}
   `;
+  const cw = Math.round(CH * b.aspect);
   const cover = await sharp(path.join(COVERS, `${b.slug}-600.jpg`))
-    .resize({ width: CW, height: CH, fit: 'cover' }).png().toBuffer();
+    .resize({ height: CH, fit: 'inside' }).png().toBuffer();
   await render(`og-${b.slug}`, svg, [{ input: cover, left: CX, top: CY }]);
 }
 
 // ---------------------------------------------------------------- home / books
 async function coverRow(y, h, gap, centerX) {
-  const w = Math.round(h * (900 / 1436));
-  const total = w * BOOKS.length + gap * (BOOKS.length - 1);
+  const widths = BOOKS.map((b) => Math.round(h * b.aspect));
+  const total = widths.reduce((a, w) => a + w, 0) + gap * (BOOKS.length - 1);
   let x = Math.round(centerX - total / 2);
   const plates = [];
   const comps = [];
-  for (const b of BOOKS) {
+  for (let i = 0; i < BOOKS.length; i++) {
+    const w = widths[i];
     plates.push(plate(x, y, w, h));
     comps.push({
-      input: await sharp(path.join(COVERS, `${b.slug}-450.jpg`))
-        .resize({ width: w, height: h, fit: 'cover' }).png().toBuffer(),
+      input: await sharp(path.join(COVERS, `${BOOKS[i].slug}-450.jpg`))
+        .resize({ height: h, fit: 'inside' }).png().toBuffer(),
       left: x, top: y,
     });
     x += w + gap;
@@ -125,7 +128,7 @@ async function coverRow(y, h, gap, centerX) {
 }
 
 {
-  const { plates, comps } = await coverRow(300, 242, 26, 600);
+  const { plates, comps } = await coverRow(304, 232, 22, 600);
   const svg = bg(plates) + `
     <text x="600" y="150" text-anchor="middle" font-family="${SERIF}" font-size="76" fill="${INK}">Ahmed <tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">El-Bourgy</tspan></text>
     <text x="600" y="196" text-anchor="middle" font-family="${JP}" font-size="22" letter-spacing="6" fill="${INK_SOFT}">物語を紡ぐ人</text>
@@ -135,30 +138,15 @@ async function coverRow(y, h, gap, centerX) {
 }
 
 {
-  const { plates, comps } = await coverRow(292, 250, 28, 600);
+  const { plates, comps } = await coverRow(296, 240, 24, 600);
   const svg = bg(plates) + `
     ${eyebrow(600, 118, 'The Complete Collection')}
     <text x="600" y="196" text-anchor="middle" font-family="${SERIF}" font-size="70" fill="${INK}">The <tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">Books</tspan></text>
-    <text x="600" y="242" text-anchor="middle" font-family="${SERIF_I}" font-style="italic" font-size="27" fill="${INK_SOFT}">Four worlds, each with its own heartbeat.</text>
+    <text x="600" y="242" text-anchor="middle" font-family="${SERIF_I}" font-style="italic" font-size="27" fill="${INK_SOFT}">Five worlds, each with its own heartbeat.</text>
   `;
   await render('og-books', svg.replace('<text x="600" y="118"', '<text text-anchor="middle" x="600" y="118"'), comps);
 }
 
-// ---------------------------------------------------------------- about
-{
-  const PW = 300, PH = 400, PX = 118, PY = 115;
-  const svg = bg(plate(PX, PY, PW, PH)) + `
-    ${eyebrow(510, 178, 'The Author')}
-    <text x="510" y="262" font-family="${SERIF}" font-size="70" fill="${INK}">About <tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">Me</tspan></text>
-    ${rule(510, 306, 72)}
-    <text x="510" y="366" font-family="${SERIF_I}" font-style="italic" font-size="29" fill="${INK_SOFT}">An Egyptian boy who had always dreamt</text>
-    <text x="510" y="406" font-family="${SERIF_I}" font-style="italic" font-size="29" fill="${INK_SOFT}">of magic — and writes it down.</text>
-    ${eyebrow(510, 478, 'Cairo, Egypt')}
-  `;
-  const photo = await sharp(path.join(OUT, 'author', 'ahmed-el-bourgy-480.jpg'))
-    .resize({ width: PW, height: PH, fit: 'cover' }).png().toBuffer();
-  await render('og-about', svg, [{ input: photo, left: PX, top: PY }]);
-}
 
 // ---------------------------------------------------------------- press / contact
 const simple = (name, label, title, em, l1, l2) => {
@@ -173,6 +161,7 @@ const simple = (name, label, title, em, l1, l2) => {
   return render(name, svg);
 };
 
+await simple('og-about', 'The Author', 'About ', 'Me', 'An Egyptian boy who had always dreamt of magic', 'and writes it down. Cairo, Egypt.');
 await simple('og-press', 'Press & Media', 'Press ', 'Kit', 'Bios, cover art, headshots and book details', 'for press, bloggers and booksellers.');
 await simple('og-contact', 'Reach Out', 'Let’s ', 'Connect', 'Talk about the books, share what a story meant', 'to you, or simply say hello.');
 await simple('og-arc', 'Advance copies', 'Is this really ', 'from me?', 'The advance campaign I am actually running,', 'and how to check an email came from me.');

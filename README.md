@@ -162,6 +162,15 @@ site is built from those two materials.
 - **Covers are objects**: a spine gradient, a 3px fore-edge sliver sitting
   *outside* the box, and a shadow mixed from the book's own accent. This is why
   `.cover` must never get `overflow: hidden`.
+- **Covers are not all the same shape.** The Blue Bookmark is 2:3, the other
+  four are 900×1436. `.cover` carries no `aspect-ratio`; each image's own
+  `width`/`height` attributes reserve its space, so nothing is ever cropped and
+  there is still no layout shift. `coverW`/`coverH` in `books.json` feed those
+  attributes.
+- **The Blue Bookmark title is the lettering from its cover**, lifted off the
+  sky by `tools/extract-wordmark.mjs` and saved to `assets/img/wordmark/`. It
+  is cream and pink, so it only reads on a dark ground — that is why both its
+  hero and the home hero are cobalt. Never place it on paper.
 
 ---
 
@@ -171,15 +180,21 @@ site is built from those two materials.
 book, with the EPUB attached.
 
 ```bash
-cd tools
-node arc/build.mjs --preview     # look at the email in a browser
-node arc/build.mjs               # one .eml per reader in arc/readers.csv
+cd tools && npm run arc        # the panel, at http://127.0.0.1:8787
 ```
 
-It writes files and sends nothing — you send each message from your own mail
-client. That matters: a message that genuinely leaves your Gmail carries
-Google's DKIM signature, and *that* is what proves it came from you. A
-well-designed email proves nothing on its own.
+A local admin page: campaign fields, the reader list, a live preview, and
+buttons to build the `.eml` files or send. **It cannot live on the website** —
+GitHub Pages has no server behind it, so it could not send mail or hold a
+password, and a public send-mail page would let anyone send as you. The panel
+binds to `127.0.0.1` and dies with the terminal.
+
+Sending goes through your own Gmail with an app password you type into the
+page, which is what makes it provably you: a message that genuinely leaves your
+account carries Google's DKIM signature. A well-designed email proves nothing
+on its own.
+
+`node arc/build.mjs` does the same thing without the UI.
 
 The other half is `arc.html`, which states the campaign actually running. The
 email points readers at it so they can check independently. **Keep that page

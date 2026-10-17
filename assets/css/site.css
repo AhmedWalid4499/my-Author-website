@@ -51,6 +51,8 @@
                              /*  Bookmark shopfront; safe for text  */
   --blue-deep:    #1e4a7d;   /*  8.5:1 — headings and links         */
   --blue-light:   #a8c8e4;
+  --sky:          #bcd8f5;   /*  9.1:1 on --ink-blue — pale text and
+                                rules inside the cobalt hero          */
   --blue-wash:    rgba(43, 100, 163, .07);
 
   /* The deepest ground --wash-warm can produce, over --cream-2. Every accent
@@ -163,6 +165,13 @@ img, picture, svg, video {
   display: block;
   max-width: 100%;
 }
+
+/* Every img carries width/height attributes so the browser can reserve space.
+   Those attributes also set the height property, so any rule that sets only
+   width leaves the height pinned to the attribute and the image stretches.
+   Default it back to auto; the few images that genuinely want a fixed height
+   set it themselves. This is what was distorting the press-kit thumbnails. */
+img { height: auto; }
 
 input, button, textarea, select { font: inherit; color: inherit; }
 
@@ -706,7 +715,6 @@ a { color: var(--gold-deep); }
 .cover {
   position: relative;
   display: block;
-  aspect-ratio: 900 / 1436;
   background: var(--cream-2);
   border-radius: 2px 9px 9px 2px;
   box-shadow: var(--shadow-cover);
@@ -748,8 +756,7 @@ a { color: var(--gold-deep); }
 
 .cover img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
 }
 
 .book-card__link:hover .cover,
@@ -909,50 +916,7 @@ a { color: var(--gold-deep); }
   align-items: start;
 }
 
-.portrait {
-  position: relative;
-  width: 100%;
-}
-
-.portrait img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  border: 3px solid var(--gold-light);
-}
-
 /* Two offset hairline frames — the "pinned photograph" motif. */
-.portrait::before,
-.portrait::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-}
-
-.portrait::before {
-  inset: -9px;
-  border: 1px solid var(--gold-light);
-  rotate: 1.6deg;
-}
-
-.portrait::after {
-  inset: -17px;
-  border: 1px solid rgba(200, 145, 90, .22);
-  rotate: -1deg;
-}
-
-.portrait__kana {
-  position: absolute;
-  right: -.9rem;
-  bottom: -1.4rem;
-  font-family: var(--font-jp);
-  font-size: 3rem;
-  line-height: 1;
-  color: rgba(200, 145, 90, .16);
-  user-select: none;
-  pointer-events: none;
-}
-
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -973,8 +937,7 @@ a { color: var(--gold-deep); }
 
 @media (max-width: 720px) {
   .about-grid { grid-template-columns: 1fr; justify-items: center; }
-  .portrait { max-width: 240px; }
-}
+  }
 
 
 /* 12. Newsletter ================================================== */
@@ -1391,123 +1354,6 @@ a { color: var(--gold-deep); }
 }
 
 
-/* 16. Announcement ================================================ */
-
-/* Full-bleed artwork above a book hero. Capped so a 16:9 image does not eat a
-   whole desktop viewport before the title appears. */
-.promo-banner {
-  margin: 0;
-  overflow: hidden;
-  line-height: 0;
-  aspect-ratio: 1672 / 941;
-  max-height: min(68vh, 600px);
-  background: var(--cream-2);
-}
-
-.promo-banner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 46%;
-}
-
-/* The announcement hero carries no cover column — the banner above is the
-   artwork — so it is a plain stacked block rather than the two-up book hero. */
-.book-hero--announce {
-  padding-block: var(--space-xl) var(--space-2xl);
-  background:
-    radial-gradient(ellipse 70% 60% at 30% 40%, var(--blue-wash) 0%, transparent 70%),
-    var(--cream);
-}
-
-/* Colour comes from [data-book] in §18 — nothing to repeat here. */
-
-/* A sign lifted out of the artwork: the chalkboard, the umbrella stand. */
-.sign-card {
-  max-width: 32rem;
-  margin: var(--space-lg) auto;
-  padding: var(--space-md) var(--space-md) calc(var(--space-md) - .25rem);
-  text-align: center;
-  background: var(--cream-3);
-  border: 1px solid var(--gold-line);
-  box-shadow: var(--shadow-card);
-}
-
-.sign-card__jp {
-  font-family: var(--font-jp);
-  font-size: var(--text-md);
-  line-height: 2.15;
-  letter-spacing: .12em;
-  color: var(--blue-deep);
-}
-
-.sign-card__en {
-  margin-top: var(--space-xs);
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: var(--text-md);
-  line-height: 1.8;
-  color: var(--ink-soft);
-}
-
-
-/* 17. Home announcement =========================================== */
-
-/* The next book, given a block of its own above the rest of the page. */
-.announce {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: clamp(1.5rem, 1rem + 3vw, 3.25rem);
-  align-items: center;
-  padding: clamp(1.25rem, .9rem + 1.6vw, 2rem);
-  background:
-    radial-gradient(ellipse 80% 120% at 88% 50%, var(--blue-wash) 0%, transparent 70%),
-    var(--cream-3);
-  border: 1px solid var(--gold-line);
-  box-shadow: var(--shadow-card);
-}
-
-.announce__art {
-  display: block;
-  overflow: hidden;
-  line-height: 0;
-  box-shadow: var(--shadow-cover);
-  transition: transform .5s var(--ease), box-shadow .5s var(--ease);
-}
-
-.announce__art img {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  object-position: center 48%;
-}
-
-.announce:hover .announce__art,
-.announce:focus-within .announce__art {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-cover-hi);
-}
-
-.announce__body { min-width: 0; }
-.announce__title { margin-top: var(--space-2xs); }
-.announce__title em { color: var(--blue); font-style: italic; }
-.announce__jp { font-size: var(--text-sm); margin-top: .15rem; }
-
-.announce__text {
-  margin-top: var(--space-sm);
-  font-size: var(--text-sm);
-  line-height: 1.95;
-  color: var(--ink-soft);
-}
-
-.announce .text-link { margin-top: var(--space-sm); }
-
-@media (max-width: 860px) {
-  .announce { grid-template-columns: 1fr; }
-}
-
-
 /* 18. Per-book accent ============================================= */
 
 /* Each book page sets --accent (decoration: washes, hairlines, the kana
@@ -1571,4 +1417,138 @@ a { color: var(--gold-deep); }
     initial-letter: 2;
     margin-inline-end: .09em;
   }
+}
+
+
+/* 20. Blue Bookmark hero ========================================== */
+
+/* The cover's title is hand-lettered on a blue sky, so the wordmark lifted
+   from it is cream and pink and only reads on a dark ground. This hero is
+   that ground. Both stops are deep enough that pale text clears 7:1. */
+[data-book] .book-hero--blue {
+  background: linear-gradient(170deg, #17406e 0%, #1e4a7d 100%);
+  color: var(--on-ink-soft);
+}
+
+[data-book] .book-hero--blue .book-hero__kana { color: rgba(188, 216, 245, .13); }
+[data-book] .book-hero--blue .eyebrow { color: var(--sky, #bcd8f5); }
+[data-book] .book-hero--blue .jp { color: rgba(253, 248, 240, .78); }
+[data-book] .book-hero--blue .book-meta { border-color: rgba(188, 216, 245, .22); }
+[data-book] .book-hero--blue .book-meta__label { color: var(--sky, #bcd8f5); }
+[data-book] .book-hero--blue .book-meta__item > span:last-child { color: var(--on-ink); }
+[data-book] .book-hero--blue .badge {
+  background: #17406e;
+  border-color: rgba(188, 216, 245, .4);
+  color: #bcd8f5;
+}
+[data-book] .book-hero--blue :focus-visible { outline-color: var(--sky, #bcd8f5); }
+
+/* The title is the lettering from the cover, not type. */
+[data-book] .book-hero--blue .book-hero__title {
+  margin: 0 0 var(--space-xs);
+  line-height: 1;
+}
+
+.wordmark {
+  width: min(100%, 500px);
+  height: auto;
+}
+
+/* On the blue ground the cover needs a cooler, deeper contact shadow than the
+   warm one the paper pages use. */
+[data-book] .book-hero--blue .cover { box-shadow: 10px 18px 46px rgba(8, 24, 45, .42); }
+
+
+/* 21. Pastries ==================================================== */
+
+/* The author's own illustrations of pastries from the book. Square, on cards,
+   deliberately plain — they are the content, not a frame for it. */
+/* Flex rather than grid: there are seven of these, so every column count
+   leaves an orphan. Flex centres the last row instead of stranding it left. */
+.pastry-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+.pastry {
+  flex: 0 1 clamp(128px, 20%, 188px);
+  background: var(--cream-3);
+  border: 1px solid var(--gold-line);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+}
+
+.pastry img { width: 100%; height: auto; }
+
+.pastry:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-cover);
+}
+
+
+/* 22. Ghost button ================================================ */
+
+/* An outline button for dark grounds — .btn--outline's ink border vanishes. */
+.btn--ghost {
+  border-color: rgba(188, 216, 245, .5);
+  color: var(--on-ink);
+  background: transparent;
+}
+
+.btn--ghost:hover {
+  border-color: var(--sky, #bcd8f5);
+  color: #fff;
+}
+
+
+/* 23. Home hero: the newest book ================================== */
+
+/* The landing page leads with the current release on the cobalt of its own
+   cover, which is also the only ground the lifted wordmark reads on. */
+.hero--book {
+  background: linear-gradient(168deg, #17406e 0%, #1e4a7d 58%, #24568f 100%);
+  color: var(--on-ink-soft);
+  min-height: min(88vh, 780px);
+}
+
+.hero--book .hero__kana { color: rgba(188, 216, 245, .12); }
+.hero--book .eyebrow { color: var(--sky); }
+.hero--book .hero__jp { color: rgba(253, 248, 240, .76); }
+.hero--book .hero__desc { color: var(--on-ink-soft); max-width: 44ch; margin-inline: 0; }
+.hero--book .hero__actions { justify-content: flex-start; }
+.hero--book :focus-visible { outline-color: var(--sky); }
+.hero--book .cover { box-shadow: 14px 26px 60px rgba(6, 20, 40, .48); }
+
+.hero__book {
+  display: grid;
+  grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+  gap: clamp(2rem, 1rem + 4vw, 4.5rem);
+  align-items: center;
+}
+
+.hero__book-cover { width: 100%; }
+
+.hero__book-title {
+  margin: var(--space-2xs) 0 var(--space-xs);
+  line-height: 1;
+}
+
+/* The petals fall over the blue, continuing the blossom in the cover art. */
+.hero--book .petal { color: rgba(244, 196, 216, .5) !important; }
+
+@media (max-width: 860px) {
+  .hero__book {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  .hero__book-cover { max-width: 260px; }
+  .hero--book .hero__desc { margin-inline: auto; }
+  .hero--book .hero__actions { justify-content: center; }
 }
