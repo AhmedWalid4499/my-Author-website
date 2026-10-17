@@ -104,10 +104,13 @@
       "coverAlt": "The cover of The Blue Bookmark Bookshop: a cobalt blue bookshop under cherry blossom, a cat on the step, the title hand-lettered across the sky.",
       "coverW": 1024,
       "coverH": 1536,
-      "blurb": null,
-      "shortBlurb": null,
+      "blurb": "The cat finds you first. He leads you to Aoi Shiori, a little bookshop that wasn’t there yesterday and won’t be there tomorrow. Everyone who finds this place has lost something along the way.",
+      "shortBlurb": "A bookshop that wasn’t there yesterday and won’t be there tomorrow.",
       "og": {
-        "hook": [],
+        "hook": [
+          "The cat finds you first.",
+          "You follow, because something already knows."
+        ],
         "tag": "Coming soon"
       },
       "wordmark": "assets/img/wordmark/blue-bookmark-bookshop",

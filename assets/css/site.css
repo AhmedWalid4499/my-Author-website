@@ -1405,6 +1405,22 @@ a { color: var(--gold-deep); }
    sits high and the wrap indents wrongly. Where initial-letter is missing
    (Firefox today) the letter simply renders at text size in the accent
    colour, which is a clean fallback rather than a broken one. */
+/* An opening line that carries a synopsis on its own, where the first
+   paragraph is too short to wrap around a sunk initial. */
+.prose-hook {
+  font-family: var(--font-display);
+  font-size: var(--display-4);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ink);
+  max-width: 32ch;
+}
+
+
+/* Only use .prose--lead where the first paragraph is long enough to wrap
+   around the initial. On a one-line opening the sink pushes the NEXT
+   paragraph sideways instead, which is why the Blue Bookmark synopsis leads
+   with a .lede line rather than a drop cap. */
 .prose--lead > p:first-of-type::first-letter {
   font-family: var(--font-display);
   font-weight: 500;
@@ -1418,6 +1434,21 @@ a { color: var(--gold-deep); }
     margin-inline-end: .09em;
   }
 }
+
+
+/* A pullquote that stands alone rather than running beside prose: centred,
+   with the brushstroke edge replaced by a rule above and below. */
+.pullquote--center {
+  max-width: 34rem;
+  margin: var(--space-lg) auto 0;
+  padding: var(--space-md) 0 0;
+  text-align: center;
+  font-size: var(--text-lg);
+  color: var(--accent-ink, var(--ember));
+  border-top: 1px solid var(--gold-line);
+}
+
+.pullquote--center::before { content: none; }
 
 
 /* 20. Blue Bookmark hero ========================================== */

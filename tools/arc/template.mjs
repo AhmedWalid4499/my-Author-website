@@ -26,6 +26,9 @@ const C = {
 
 const SERIF = "Georgia, 'Times New Roman', Times, serif";
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
+// Same stack; font-style does the work. Named separately so italic runs are
+// obvious at the call site.
+const SERIF_I = SERIF;
 
 const firstName = (name) => (name || '').trim().split(/\s+/)[0] || 'there';
 
@@ -35,24 +38,37 @@ export function subject(c) {
 
 /* ------------------------------------------------------------------ plain text */
 export function text(c, reader) {
-  const when = c.releaseDate ? ` It opens properly on ${c.releaseDate}.` : ' It opens properly soon.';
+  const when = c.releaseDate
+    ? ` The shop opens properly on ${c.releaseDate}; you are getting in early.`
+    : ' The shop opens properly soon; you are getting in early.';
   const by = c.reviewBy
     ? `around release day — ideally by ${c.reviewBy}`
     : 'around release day';
 
   return `Dear ${firstName(reader.name)},
 
-There is a bookshop at the top of a stone street, above the sea. It is painted a
-blue you can see from the harbour, a cat has decided the front step belongs to
-her, and the chalkboard outside has said the same thing since the day it opened:
-on rainy days, something warm to drink.
-
-It is called the Blue Bookmark.${when}
-
-You are getting in early.
-
 Attached to this email is the full advance copy of ${c.titlePlain}, as an EPUB.
-It is yours to read however you like.
+It is yours to read however you like.${when}
+
+Here is what it is.
+
+  The cat finds you first.
+
+  Grey and white, one blue eye and one green, and absolutely no patience. He
+  meows once, like an order, and walks away. You follow, because something in
+  you already knows you should.
+
+  He leads you to Aoi Shiori, a little bookshop that wasn't there yesterday
+  and won't be there tomorrow. The light inside is warm. Its owner, Mirai,
+  smiles as if she has been waiting for you all day. And from a sky without a
+  single cloud, it begins to rain.
+
+  Everyone who finds this place has lost something along the way. A dream. A
+  goodbye. A piece of themselves. Mirai never asks which. She pours you
+  something warm, and before you go, she asks you to take an umbrella from the
+  box by the door.
+
+  Step beneath it, and the rain falls silent.
 
 WHAT I WOULD LOVE, IF THE BOOK EARNS IT
 An honest review ${by}, wherever you normally leave them: Amazon, Goodreads, a
@@ -74,10 +90,7 @@ That page is on my own website and lists the ARC campaign I am actually running.
 If an email about my books ever reaches you and that page does not mention it,
 it did not come from me.
 
-There is an umbrella stand by the shop door with a small sign on it:
-go-shiyou-go wa o-kaeshi kudasai. Dare ka no ichinichi ni hitsuyou kamo
-shiremasen. Please bring it back when you are done; someone else might need it
-for their day. That is more or less the whole book, if you want it in one line.
+Please return the umbrella. Someone else might need their day.
 
 Thank you for reading something before anybody has told you what to think of it.
 That is a rarer kindness than it sounds.
@@ -95,8 +108,8 @@ you off the list — no explanation needed.`;
 /* ------------------------------------------------------------------ html */
 export function html(c, reader) {
   const when = c.releaseDate
-    ? `It opens properly on <strong style="color:${C.ink};">${esc(c.releaseDate)}</strong>.`
-    : 'It opens properly soon.';
+    ? `The shop opens properly on <strong style="color:${C.ink};">${esc(c.releaseDate)}</strong>, so you are getting in early.`
+    : 'The shop opens properly soon, so you are getting in early.';
   const by = c.reviewBy
     ? `around release day &mdash; ideally by <strong>${esc(c.reviewBy)}</strong>`
     : 'around release day';
@@ -143,9 +156,21 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
     <!-- letter -->
     <tr><td style="padding:28px 40px 0;">
       <p style="${p}">Dear ${esc(firstName(reader.name))},</p>
-      <p style="${p}">There is a bookshop at the top of a stone street, above the sea. It is painted a blue you can see from the harbour, a cat has decided the front step belongs to her, and the chalkboard outside has said the same thing since the day it opened: <em>on rainy days, something warm to drink</em>.</p>
-      <p style="${p}">It is called the Blue Bookmark. ${when}</p>
-      <p style="${p}">You are getting in early.</p>
+      <p style="${p}">Your advance copy of <em>${esc(c.titlePlain)}</em> is attached to this email, as an EPUB. ${when}</p>
+    </td></tr>
+
+    <!-- the book's own words, set apart from the letter -->
+    <tr><td style="padding:6px 40px 0;">
+      <p style="${label}">About the book</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;background:${C.creamWarm};">
+        <tr><td style="padding:22px 24px;">
+          <p style="margin:0 0 15px;font-family:${SERIF_I};font-style:italic;font-size:17px;line-height:1.7;color:${C.ink};">The cat finds you first.</p>
+          <p style="margin:0 0 15px;font-family:${SERIF};font-size:15px;line-height:1.78;color:${C.inkSoft};">Grey and white, one blue eye and one green, and absolutely no patience. He meows once, like an order, and walks away. You follow, because something in you already knows you should.</p>
+          <p style="margin:0 0 15px;font-family:${SERIF};font-size:15px;line-height:1.78;color:${C.inkSoft};">He leads you to Aoi Shiori, a little bookshop that wasn&rsquo;t there yesterday and won&rsquo;t be there tomorrow. The light inside is warm. Its owner, Mirai, smiles as if she has been waiting for you all day. And from a sky without a single cloud, it begins to rain.</p>
+          <p style="margin:0 0 15px;font-family:${SERIF};font-size:15px;line-height:1.78;color:${C.inkSoft};">Everyone who finds this place has lost something along the way. A dream. A goodbye. A piece of themselves. Mirai never asks which. She pours you something warm, and before you go, she asks you to take an umbrella from the box by the door.</p>
+          <p style="margin:0;font-family:${SERIF_I};font-style:italic;font-size:16px;line-height:1.7;color:${C.cobaltDeep};">Step beneath it, and the rain falls silent.</p>
+        </td></tr>
+      </table>
     </td></tr>
 
     <!-- attachment -->
@@ -154,10 +179,10 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
         <tr><td style="padding:20px 22px;">
           <p style="${label}">Attached to this email</p>
           <p style="margin:9px 0 0;font-family:${SERIF};font-size:16px;line-height:1.6;color:${C.ink};">
-            The full advance copy of <em>${esc(c.titlePlain)}</em>, as an EPUB.
+            The complete book, unedited by anyone else&rsquo;s opinion of it.
           </p>
           <p style="margin:6px 0 0;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.inkSoft};">
-            Yours to read however you like.
+            EPUB &middot; opens on Kindle, phone, tablet or computer.
           </p>
         </td></tr>
       </table>
@@ -203,10 +228,8 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
 
     <!-- closing -->
     <tr><td style="padding:28px 40px 0;">
-      <p style="${p}">There is an umbrella stand by the shop door with a small sign on it:</p>
       <p style="margin:0 0 10px;font-family:${SERIF};font-size:15px;line-height:1.9;color:${C.cobaltDeep};text-align:center;">ご使用後はお返しください。<br>誰かの一日に必要かもしれません。</p>
-      <p style="margin:0 0 18px;font-family:${SERIF};font-style:italic;font-size:15px;line-height:1.8;color:${C.inkSoft};text-align:center;">Please bring it back when you are done.<br>Someone else might need it for their day.</p>
-      <p style="${p}">That is more or less the whole book, if you want it in one line.</p>
+      <p style="margin:0 0 20px;font-family:${SERIF_I};font-style:italic;font-size:16px;line-height:1.8;color:${C.inkSoft};text-align:center;">Please return the umbrella.<br>Someone else might need their day.</p>
       <p style="${p}">Thank you for reading something before anybody has told you what to think of it. That is a rarer kindness than it sounds.</p>
       <p style="${p}margin-bottom:4px;">Warmly,</p>
       <p style="margin:0;font-family:${SERIF};font-size:21px;color:${C.ink};">Ahmed El-Bourgy</p>
