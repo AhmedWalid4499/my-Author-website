@@ -39,18 +39,24 @@ export function subject(c) {
 /* ------------------------------------------------------------------ plain text */
 export function text(c, reader) {
   const when = c.releaseDate
-    ? ` The shop opens properly on ${c.releaseDate}; you are getting in early.`
-    : ' The shop opens properly soon; you are getting in early.';
+    ? `The shop opens properly on ${c.releaseDate}. You are getting in before it does.`
+    : 'The shop opens properly soon. You are getting in before it does.';
+  // reviewBy stays wired: fill it in and the ask names a date instead of
+  // leaving "around release day" to mean whatever the reader decides.
   const by = c.reviewBy
-    ? `around release day — ideally by ${c.reviewBy}`
-    : 'around release day';
+    ? `around release day, ideally by ${c.reviewBy},`
+    : 'around release day,';
 
   return `Dear ${firstName(reader.name)},
 
-Attached to this email is the full advance copy of ${c.titlePlain}, as an EPUB.
-It is yours to read however you like.${when}
+Here it is. The book is attached, as an EPUB - yours to read however you like.
+${when}
 
-Here is what it is.
+I have read these pages so many times that I can no longer hear them. You are
+going to hear them for the first time. I am a little nervous about that, and
+sending it anyway.
+
+It starts like this.
 
   The cat finds you first.
 
@@ -70,49 +76,67 @@ Here is what it is.
 
   Step beneath it, and the rain falls silent.
 
-WHAT I WOULD LOVE, IF THE BOOK EARNS IT
-An honest review ${by}, wherever you normally leave them: Amazon, Goodreads, a
-post, a message to one friend who would like it. Honest is the important word.
-If the book does not work for you, I would genuinely rather know. And if life
-gets in the way and you never finish it, that is completely fine — no reply
-needed and no awkwardness, now or later.
+WHAT I WOULD ASK, IF THE BOOK EARNS IT
+An honest review ${by} wherever you normally leave them - Amazon, Goodreads, or
+a message to one friend who would like it.
+
+Honest is the word that matters. If the book does not land for you, say so; I
+would rather read something true about it than something kind. A kind review
+written for my sake is no use to the next person standing there deciding.
+
+And if the week swallows it and you never finish, that is fine. No reply
+needed, and nothing awkward between us later.
 
 OPENING THE EPUB
   Kindle   - forward this email to your Send-to-Kindle address, or open the file
              in the Kindle app
   iPhone   - tap the attachment and choose Books
   Android  - open it with Google Play Books
-  Computer - Calibre, Apple Books, or any EPUB reader
+  Computer - Apple Books, Calibre, or any EPUB reader
 
 MAKING SURE THIS IS REALLY FROM ME
 ${c.verifyUrl}
-That page is on my own website and lists the ARC campaign I am actually running.
-If an email about my books ever reaches you and that page does not mention it,
-it did not come from me.
+That page is on my own site, and it lists the advance-copy campaign I am
+actually running. If an email about my books ever reaches you and that page
+does not mention it, it did not come from me.
 
+This email proves nothing by itself - anybody can type my name into a From
+line. The page is the thing to check, and you can reach it without trusting a
+word in here.
+
+go-shiyou-go wa o-kaeshi kudasai.
+Dare ka no ichinichi ni hitsuyou kamo shiremasen.
 Please return the umbrella. Someone else might need their day.
 
-Thank you for reading something before anybody has told you what to think of it.
-That is a rarer kindness than it sounds.
+Thank you for reading it now, while there is nothing around it yet - no
+reviews, no quotes on the cover, nobody to tell you what it is. A book only
+gets read like that once.
+
+If something in it stays with you, tell me which part. From in here I can never
+tell which part will.
+
+I hope the light is on when you get there.
 
 Warmly,
 Ahmed El-Bourgy
 Cairo
 
 ${c.siteUrl}
-You are getting this because you said yes to an advance copy. If that was a
-while ago and you would rather not, just reply with "no thanks" and I will take
-you off the list — no explanation needed.`;
+You are getting this because you said yes to an advance copy. If you have
+changed your mind since, reply with "no thanks" and I will take you off the
+list. No explanation needed.`;
 }
 
 /* ------------------------------------------------------------------ html */
 export function html(c, reader) {
   const when = c.releaseDate
-    ? `The shop opens properly on <strong style="color:${C.ink};">${esc(c.releaseDate)}</strong>, so you are getting in early.`
-    : 'The shop opens properly soon, so you are getting in early.';
+    ? `The shop opens properly on <strong style="color:${C.ink};">${esc(c.releaseDate)}</strong>. You are getting in before it does.`
+    : 'The shop opens properly soon. You are getting in before it does.';
+  // reviewBy stays wired: fill it in and the ask names a date instead of
+  // leaving "around release day" to mean whatever the reader decides.
   const by = c.reviewBy
-    ? `around release day &mdash; ideally by <strong>${esc(c.reviewBy)}</strong>`
-    : 'around release day';
+    ? `around release day, ideally by <strong>${esc(c.reviewBy)}</strong>,`
+    : 'around release day,';
 
   const p = `margin:0 0 18px;font-family:${SERIF};font-size:16px;line-height:1.75;color:${C.inkSoft};`;
   const label = `margin:0;font-family:${SANS};font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${C.amber};`;
@@ -156,12 +180,13 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
     <!-- letter -->
     <tr><td style="padding:28px 40px 0;">
       <p style="${p}">Dear ${esc(firstName(reader.name))},</p>
-      <p style="${p}">Your advance copy of <em>${esc(c.titlePlain)}</em> is attached to this email, as an EPUB. ${when}</p>
+      <p style="${p}">Here it is. The book is attached, as an EPUB &mdash; yours to read however you like. ${when}</p>
+      <p style="${p}">I have read these pages so many times that I can no longer hear them. You are going to hear them for the first time. I am a little nervous about that, and sending it anyway.</p>
     </td></tr>
 
     <!-- the book's own words, set apart from the letter -->
     <tr><td style="padding:6px 40px 0;">
-      <p style="${label}">About the book</p>
+      <p style="${label}">It starts like this</p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;background:${C.creamWarm};">
         <tr><td style="padding:22px 24px;">
           <p style="margin:0 0 15px;font-family:${SERIF_I};font-style:italic;font-size:17px;line-height:1.7;color:${C.ink};">The cat finds you first.</p>
@@ -179,10 +204,10 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
         <tr><td style="padding:20px 22px;">
           <p style="${label}">Attached to this email</p>
           <p style="margin:9px 0 0;font-family:${SERIF};font-size:16px;line-height:1.6;color:${C.ink};">
-            The complete book, unedited by anyone else&rsquo;s opinion of it.
+            The whole book, unedited by anyone else&rsquo;s opinion of it.
           </p>
-          <p style="margin:6px 0 0;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.inkSoft};">
-            EPUB &middot; opens on Kindle, phone, tablet or computer.
+          <p style="margin:6px 0 0;font-family:${SERIF};font-size:15px;line-height:1.65;color:${C.inkSoft};">
+            An EPUB &mdash; it opens on a Kindle, a phone or a computer.
           </p>
         </td></tr>
       </table>
@@ -190,9 +215,10 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
 
     <!-- the ask -->
     <tr><td style="padding:26px 40px 0;">
-      <p style="${label}">What I would love, if the book earns it</p>
-      <p style="${p}margin-top:12px;">An honest review ${by}, wherever you normally leave them &mdash; Amazon, Goodreads, a post, a message to one friend who would like it.</p>
-      <p style="${p}"><em>Honest</em> is the important word there. If the book does not work for you, I would genuinely rather know. And if life gets in the way and you never finish it, that is completely fine &mdash; no reply needed and no awkwardness, now or later.</p>
+      <p style="${label}">What I would ask, if the book earns it</p>
+      <p style="${p}margin-top:12px;">An honest review ${by} wherever you normally leave them &mdash; Amazon, Goodreads, or a message to one friend who would like it.</p>
+      <p style="${p}"><em>Honest</em> is the word that matters. If the book does not land for you, say so; I would rather read something true about it than something kind. A kind review written for my sake is no use to the next person standing there deciding.</p>
+      <p style="${p}">And if the week swallows it and you never finish, that is fine. No reply needed, and nothing awkward between us later.</p>
     </td></tr>
 
     <!-- how to open -->
@@ -203,7 +229,7 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
           ['Kindle', 'forward this email to your Send-to-Kindle address, or open the file in the Kindle app'],
           ['iPhone', 'tap the attachment and choose Books'],
           ['Android', 'open it with Google Play Books'],
-          ['Computer', 'Calibre, Apple Books, or any EPUB reader'],
+          ['Computer', 'Apple Books, Calibre, or any EPUB reader'],
         ].map(([k, v]) => `<tr>
           <td valign="top" style="padding:0 14px 7px 0;white-space:nowrap;color:${C.cobaltDeep};font-weight:bold;">${k}</td>
           <td valign="top" style="padding:0 0 7px;">${v}</td>
@@ -218,9 +244,14 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
           <p style="${label}">Making sure this is really from me</p>
           <p style="margin:9px 0 0;font-family:${SANS};font-size:13.5px;line-height:1.7;color:${C.inkSoft};">
             <a href="${esc(c.verifyUrl)}" style="color:${C.cobaltDeep};">${esc(c.verifyUrl.replace(/^https?:\/\//, ''))}</a><br>
-            That page is on my own website and lists the ARC campaign I am actually
-            running. If an email about my books ever reaches you and that page does
-            not mention it, it did not come from me.
+            That page is on my own site, and it lists the advance-copy campaign I
+            am actually running. If an email about my books ever reaches you and
+            that page does not mention it, it did not come from me.
+          </p>
+          <p style="margin:11px 0 0;font-family:${SANS};font-size:13.5px;line-height:1.7;color:${C.inkSoft};">
+            This email proves nothing by itself &mdash; anybody can type my name
+            into a From line. The page is the thing to check, and you can reach it
+            without trusting a word in here.
           </p>
         </td></tr>
       </table>
@@ -230,7 +261,9 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
     <tr><td style="padding:28px 40px 0;">
       <p style="margin:0 0 10px;font-family:${SERIF};font-size:15px;line-height:1.9;color:${C.cobaltDeep};text-align:center;">ご使用後はお返しください。<br>誰かの一日に必要かもしれません。</p>
       <p style="margin:0 0 20px;font-family:${SERIF_I};font-style:italic;font-size:16px;line-height:1.8;color:${C.inkSoft};text-align:center;">Please return the umbrella.<br>Someone else might need their day.</p>
-      <p style="${p}">Thank you for reading something before anybody has told you what to think of it. That is a rarer kindness than it sounds.</p>
+      <p style="${p}">Thank you for reading it now, while there is nothing around it yet &mdash; no reviews, no quotes on the cover, nobody to tell you what it is. A book only gets read like that once.</p>
+      <p style="${p}">If something in it stays with you, tell me which part. From in here I can never tell which part will.</p>
+      <p style="${p}">I hope the light is on when you get there.</p>
       <p style="${p}margin-bottom:4px;">Warmly,</p>
       <p style="margin:0;font-family:${SERIF};font-size:21px;color:${C.ink};">Ahmed El-Bourgy</p>
       <p style="margin:2px 0 0;font-family:${SANS};font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:${C.amber};">Cairo</p>
@@ -243,9 +276,9 @@ Your advance copy of ${esc(c.titlePlain)} is attached, as an EPUB.
       <p style="margin:18px 0 0;font-family:${SANS};font-size:11.5px;line-height:1.8;color:#7d6250;">
         <a href="${esc(c.siteUrl)}" style="color:#7d6250;">${esc(c.siteUrl.replace(/^https?:\/\//, "").replace(/\/$/, ""))}</a> &middot;
         <a href="${esc(c.goodreads)}" style="color:#7d6250;">Goodreads</a><br>
-        You are getting this because you said yes to an advance copy. If that was a
-        while ago and you would rather not, reply with &ldquo;no thanks&rdquo; and I
-        will take you off the list &mdash; no explanation needed.
+        You are getting this because you said yes to an advance copy. If you have
+        changed your mind since, reply with &ldquo;no thanks&rdquo; and I will take
+        you off the list. No explanation needed.
       </p>
     </td></tr>
 
