@@ -1623,7 +1623,9 @@ a { color: var(--gold-deep); }
 @keyframes quiz-in { from { opacity: 0; transform: translateY(10px); } }
 
 .quiz__subtitle { margin-inline: auto; }
-.quiz__actions { justify-content: center; margin-top: var(--space-lg); }
+/* The dessert art has transparent margin at the bottom, so a gap that measures
+   44px reads as about half that. Give it more than it needs. */
+.quiz__actions { justify-content: center; margin-top: var(--space-xl); }
 
 /* The six desserts, small, on the intro screen. */
 .dessert-row {

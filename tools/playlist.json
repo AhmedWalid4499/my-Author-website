@@ -4,67 +4,17 @@
   "spotifyPlaylistId": "0Qz6NFLvhXobERUOsr3WHf",
   "spotifyUrl": "https://open.spotify.com/playlist/0Qz6NFLvhXobERUOsr3WHf",
   "tracks": [
-    {
-      "title": "Suzume",
-      "artist": "RADWIMPS feat. Toaka",
-      "moment": "Prologue · A door opens, and it starts to rain"
-    },
-    {
-      "title": "Dream Lantern (夢灯籠)",
-      "artist": "RADWIMPS",
-      "moment": "Chapter One · The song Tateyama hears under the umbrella"
-    },
-    {
-      "title": "Zenzenzense (English Version)",
-      "artist": "RADWIMPS",
-      "moment": "Chapter One · The film that made him want to write"
-    },
-    {
-      "title": "ただ声一つ (Just One Voice)",
-      "artist": "Rokudenashi",
-      "moment": "Interlude One & Chapter Two · For Haru, and the words he couldn't say"
-    },
-    {
-      "title": "勇者 (The Brave)",
-      "artist": "YOASOBI",
-      "moment": "Chapter Three · Kazuya, seen through his friends' eyes"
-    },
-    {
-      "title": "沈める街",
-      "artist": "Yoeko Kurahashi",
-      "moment": "Interlude · Rain on the bookshop window"
-    },
-    {
-      "title": "Basrah w Atooh",
-      "artist": "Cairokee",
-      "moment": "Chapter Four · Daichi's long walk along the boardwalk at night"
-    },
-    {
-      "title": "secret base ～君がくれたもの～ (10 years after Ver.)",
-      "artist": "Kayano Ai, Tomatsu Haruka, Hayami Saori",
-      "moment": "Chapter Five · Fumi, and everything her grandmother gave her"
-    },
-    {
-      "title": "Sparkle (movie ver.)",
-      "artist": "RADWIMPS",
-      "moment": "Ending · A Pinch of Salt opens its doors"
-    },
-    {
-      "title": "青い栞",
-      "artist": "Galileo Galilei",
-      "moment": ""
-    }
-  ],
-  "bonus": [
-    {
-      "title": "Grand Escape (feat. Toko Miura)",
-      "artist": "RADWIMPS",
-      "moment": "Also for Haru"
-    },
-    {
-      "title": "انا نجم (Ana Negm) – from Reevo",
-      "artist": "Reevo Show",
-      "moment": "Also for Tateyama"
-    }
+    { "title": "青い栞 (Aoi Shiori)", "artist": "Galileo Galilei", "moment": "The bookshop · The song that gave Aoi Shiori its name" },
+    { "title": "Suzume", "artist": "RADWIMPS feat. Toaka", "moment": "Prologue · A door opens, and it starts to rain" },
+    { "title": "Dream Lantern (夢灯籠)", "artist": "RADWIMPS", "moment": "Chapter One · The song Tateyama hears under the umbrella" },
+    { "title": "انا نجم (Ana Negm) – from Reevo", "artist": "Reevo Show", "moment": "Chapter One · For Tateyama, and the dream he put on a shelf" },
+    { "title": "Zenzenzense (English Version)", "artist": "RADWIMPS", "moment": "Chapter One · The film that made him want to write" },
+    { "title": "ただ声一つ (Just One Voice)", "artist": "Rokudenashi", "moment": "Interlude One & Chapter Two · For Haru, and the words he couldn't say" },
+    { "title": "Grand Escape (feat. Toko Miura)", "artist": "RADWIMPS", "moment": "Chapter Two · For Haru, learning to let new people in" },
+    { "title": "勇者 (The Brave)", "artist": "YOASOBI", "moment": "Chapter Three · Kazuya, seen through his friends' eyes" },
+    { "title": "沈める街", "artist": "Yoeko Kurahashi", "moment": "Interlude · Rain on the bookshop window" },
+    { "title": "Basrah w Atooh", "artist": "Cairokee", "moment": "Chapter Four · Daichi's long walk along the boardwalk at night" },
+    { "title": "secret base ～君がくれたもの～ (10 years after Ver.)", "artist": "Kayano Ai, Tomatsu Haruka, Hayami Saori", "moment": "Chapter Five · Fumi, and everything her grandmother gave her" },
+    { "title": "Sparkle (movie ver.)", "artist": "RADWIMPS", "moment": "Ending · A Pinch of Salt opens its doors" }
   ]
 }

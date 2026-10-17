@@ -19,7 +19,8 @@
  *
  * Run:  node tools/render.mjs        (or npm run render)
  */
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs';
+import { createHash } from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -228,6 +229,33 @@ function bonusTracks() {
   return '\n' + rows.join('\n') + '\n      ';
 }
 
+
+/** Eight hex characters of the file's content, for cache-busting its URL. */
+function assetHash(rel) {
+  const abs = path.join(ROOT, rel);
+  if (!existsSync(abs)) return null;
+  return createHash('sha1').update(readFileSync(abs)).digest('hex').slice(0, 8);
+}
+
+/**
+ * Stamp ?v=<hash> on the stylesheets and scripts every page links to. Without
+ * it, a CSS fix can sit live for ten minutes while the browser still paints the
+ * old rules, and the only clue is that nothing appears to have changed.
+ */
+function stampAssets(html) {
+  const assets = ['assets/css/fonts.css', 'assets/css/site.css',
+                  'assets/js/site.js', 'assets/js/quiz.js'];
+  for (const rel of assets) {
+    const h = assetHash(rel);
+    if (!h) continue;
+    const file = rel.split('/').pop();
+    // Matches both the plain path and one already carrying a ?v=
+    const re = new RegExp(`((?:\\.\\./)*(?:/my-Author-website/)?assets/(?:css|js)/${file.replace('.', '\\.')})(\\?v=[0-9a-f]+)?`, 'g');
+    html = html.replace(re, `$1?v=${h}`);
+  }
+  return html;
+}
+
 const REGIONS = {
   'books-grid': booksGrid,
   'footer-books': footerBooks,
@@ -276,6 +304,8 @@ for (const file of readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort()) 
       return marker + build(opts(rawOpts)) + tail;
     });
   }
+
+  after = stampAssets(after);
 
   if (after !== before) {
     if (CHECK) {

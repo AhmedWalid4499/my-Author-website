@@ -171,7 +171,10 @@ for (const file of htmlFiles) {
   if (!doc.querySelector('footer.site-footer')) note(file, 'shell', 'missing .site-footer');
   if (!doc.querySelector('main#main')) note(file, 'shell', 'missing <main id="main">');
   if (!src.includes("classList.add('js')")) note(file, 'shell', 'missing the inline js-class script');
-  if (!doc.querySelector('script[src$="site.js"][defer]')) note(file, 'shell', 'missing deferred site.js');
+  // src carries a ?v=<hash> cache-buster, so match on the path, not the suffix.
+  const siteScript = [...doc.querySelectorAll('script[defer]')]
+    .some((t) => /(^|\/)site\.js(\?|$)/.test(t.getAttribute('src') || ''));
+  if (!siteScript) note(file, 'shell', 'missing deferred site.js');
   const navLinks = doc.querySelectorAll('.nav__link');
   if (navLinks.length !== 5) note(file, 'shell', `${navLinks.length} nav links (expected 5)`);
   const current = doc.querySelectorAll('.nav__link[aria-current="page"]');
