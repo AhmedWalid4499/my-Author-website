@@ -220,7 +220,11 @@ function tracklist() {
 function bonusTracks() {
   const rows = (PLAYLIST.bonus || PLAYLIST.bonusTracks || [])
     .filter((t) => t.title)
-    .map((t) => `        <li><span class="track__title">${esc(typo(t.title))}</span> <span class="track__artist">${esc(typo(t.artist))}</span></li>`);
+    .map((t) => `        <li>
+          <span class="track__title">${esc(typo(t.title))}</span>
+          <span class="track__artist">${esc(typo(t.artist))}</span>
+          ${t.moment ? `<span class="track__moment">${esc(typo(t.moment))}</span>` : ''}
+        </li>`);
   return '\n' + rows.join('\n') + '\n      ';
 }
 

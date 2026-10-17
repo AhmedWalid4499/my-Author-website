@@ -1567,14 +1567,27 @@ a { color: var(--gold-deep); }
   isolation: isolate;
   padding-block: var(--space-2xl);
   text-align: center;
-  background: linear-gradient(168deg, #17406e 0%, #1e4a7d 62%, #24568f 100%);
+  /* The shopfront, blurred to 2 KB: its colour and window-light without any
+     detail to compete with the lettering. The cobalt over it is what keeps the
+     overlaid text legible — the brightest part of the blur on its own measures
+     only 2.8:1 against --sky. */
+  background:
+    linear-gradient(180deg,
+      rgba(22, 48, 79, .80) 0%,
+      rgba(22, 48, 79, .72) 48%,
+      rgba(22, 48, 79, .86) 100%),
+    url('../img/promo/bookshop-blur.webp') center / cover no-repeat,
+    #16304f;
   color: var(--on-ink-soft);
 }
 
 .shop-hero__inner { position: relative; }
 .shop-hero .eyebrow { color: var(--sky); }
-/* The heading is the lettering lifted from the cover, not type. */
+/* The heading is the lettering lifted from the cover, not type. The image is
+   display:block, so text-align on the parent does nothing to it — it needs its
+   own auto margins. */
 .shop-hero__title { margin: var(--space-2xs) 0 0; line-height: 1; }
+.shop-hero__title .wordmark { margin-inline: auto; }
 
 .shop-hero__lede {
   max-width: 40ch;
@@ -1596,24 +1609,6 @@ a { color: var(--gold-deep); }
 .shop-hero__links .text-link:hover { color: #fff; border-bottom-color: #fff; }
 .shop-hero :focus-visible { outline-color: var(--sky); }
 
-/* Rain: two tiled gradient sheets drifting at different speeds. From a sky
-   without a single cloud, it begins to rain. */
-.rain {
-  position: absolute;
-  inset: -20% 0 0;
-  pointer-events: none;
-  z-index: -1;
-  background-image:
-    repeating-linear-gradient(104deg, transparent 0 7px, rgba(216, 234, 252, .20) 7px 8px),
-    repeating-linear-gradient(99deg, transparent 0 13px, rgba(216, 234, 252, .13) 13px 14px);
-  background-size: 140px 180px, 190px 240px;
-  animation: rain-near 1.05s linear infinite, rain-far 1.9s linear infinite;
-  opacity: .55;
-}
-
-@keyframes rain-near { to { background-position: -38px 180px, 0 0; } }
-@keyframes rain-far  { to { background-position: 0 0, -46px 240px; } }
-
 
 /* 25. The pastry quiz ============================================= */
 
@@ -1628,7 +1623,7 @@ a { color: var(--gold-deep); }
 @keyframes quiz-in { from { opacity: 0; transform: translateY(10px); } }
 
 .quiz__subtitle { margin-inline: auto; }
-.quiz__actions { justify-content: center; }
+.quiz__actions { justify-content: center; margin-top: var(--space-lg); }
 
 /* The six desserts, small, on the intro screen. */
 .dessert-row {
@@ -1948,12 +1943,16 @@ a { color: var(--gold-deep); }
   gap: var(--space-2xs);
 }
 
-.bonus__list li { font-size: var(--text-sm); color: var(--ink-soft); }
+.bonus__list li {
+  display: grid;
+  gap: .1rem;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
 .bonus__list .track__title { font-size: var(--text-base); }
 .bonus__list .track__artist { color: var(--ink-mute); }
 
 @media (prefers-reduced-motion: reduce) {
-  .rain { animation: none; opacity: .3; }
   .result__art { animation: none; }
   .quiz__panel { animation: none; }
 }
