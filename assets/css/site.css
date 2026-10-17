@@ -30,25 +30,65 @@
   --cream-2:      #f7efe2;   /* alternating section ground          */
   --cream-3:      #fffdf8;   /* raised cards                        */
   --ink:          #2c1f14;   /* 15.1:1 — headings, dark sections    */
-  --ink-soft:     #6b5040;   /*  6.9:1 — body copy                  */
-  --ink-mute:     #7d6250;   /*  5.3:1 — secondary copy             */
+  --ink-soft:     #5a4332;   /*  8.7:1 — body copy                  */
+  --ink-mute:     #74594a;   /*  6.1:1 — secondary copy             */
   --gold:         #c8915a;   /*  2.6:1 — decoration only on cream;  */
                              /*  5.8:1 on --ink, safe for text there*/
-  --gold-deep:    #8f6029;   /*  5.1:1 on cream, 4.8:1 on --cream-2  */
-                             /*  — the variant safe for gold TEXT    */
+  --ember:        #a83f0b;   /*  5.9 / 5.3 / 4.8 on cream / cream-2 /*/
+                             /*  --paper-deep. The default accent    */
+                             /*  ink, and the only one safe under a  */
+                             /*  wash. Supersedes #8f6029 (4.19 on   */
+                             /*  --paper-deep — a latent failure).   */
+  --gold-deep:    var(--ember);
   --gold-light:   #e8c9a0;
-  --gold-line:    rgba(200, 145, 90, .28);
+  --gold-line:    rgba(160, 92, 34, .34);   /* was rgba(200,145,90,.28),
+                               which resolved to 1.27:1 — not a line at all */
   --gold-wash:    rgba(200, 145, 90, .10);
   --pink:         #d4687a;
-  --pink-deep:    #b03f54;   /*  5.4:1 — pink text on cream         */
+  --rose-deep:    #b23453;   /*  5.7 / 5.1 / 4.6 — Sakura accent    */
+  --pink-deep:    var(--rose-deep);
   --blue:         #2b64a3;   /*  5.8:1 — sampled from the Blue      */
                              /*  Bookmark shopfront; safe for text  */
   --blue-deep:    #1e4a7d;   /*  8.5:1 — headings and links         */
   --blue-light:   #a8c8e4;
   --blue-wash:    rgba(43, 100, 163, .07);
 
+  /* The deepest ground --wash-warm can produce, over --cream-2. Every accent
+     ink above clears 4.5:1 against THIS, not just against flat cream. Do not
+     deepen it without re-checking all five. */
+  --paper-deep:   #f0e0cb;
+
+  /* One accent per book, sampled from its own cover and darkened until it is
+     safe as text on cream. Used for the em in that book's title and nothing
+     else — five accents need one rule or the site loses its centre. */
+  --amber-deep:   #875922;   /*  5.7 / 5.2 / 4.7 — Perfect Sunrise   */
+  --olive-deep:   #6b6224;   /*  5.9 / 5.3 / 4.8 — When You Were There*/
+  --cobalt:       #2663a1;   /*  5.9 / 5.3 / 4.8 — Blue Bookmark     */
+
+  /* Per-book slots, reset by [data-book] below. --accent is DECORATION only
+     (hairlines, blooms, washes); --accent-ink is the text-safe variant. */
+  --accent:       #e4733a;
+  --accent-ink:   var(--ember);
+  --accent-rgb:   228 115 58;   /* for rgb(var(--accent-rgb) / a) washes */
+
+  /* The covers all do the same thing: saturated colour at the top dissolving
+     into bare paper where the type sits. Alternating sections borrow it. */
+  --wash-warm: linear-gradient(to bottom,
+                 rgba(226, 139, 74, .13) 0%,
+                 rgba(226, 139, 74, .035) 30%,
+                 transparent 58%);
+
+  /* Paper tooth. Also dithers the washes above, which would otherwise band on
+     8-bit panels. Rides under content, never over it. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E");
+
+  /* Dark sections were the same warm brown as the body ink, which reads as
+     leather rather than evening. Navy is cooler, pairs with the new book, and
+     every value below is re-verified against it. */
+  --ink-blue:     #16304f;
+
   --on-ink:       rgba(253, 248, 240, .92);
-  --on-ink-soft:  rgba(253, 248, 240, .66);
+  --on-ink-soft:  rgba(253, 248, 240, .72);  /* 7.3:1 on --ink-blue */
   --on-ink-line:  rgba(253, 248, 240, .12);
 
   /* Type */
@@ -58,7 +98,7 @@
 
   --text-xs:   .72rem;
   --text-sm:   .82rem;
-  --text-base: clamp(.95rem, .92rem + .15vw, 1.02rem);
+  --text-base: clamp(1rem, .96rem + .2vw, 1.1rem);
   --text-md:   clamp(1.02rem, .98rem + .2vw, 1.12rem);
   --text-lg:   clamp(1.2rem, 1.12rem + .4vw, 1.45rem);
   --display-1: clamp(2.9rem, 2rem + 4.2vw, 5.4rem);
@@ -67,7 +107,8 @@
   --display-4: clamp(1.35rem, 1.25rem + .5vw, 1.7rem);
 
   --tracking-wide: .18em;
-  --tracking-xwide: .3em;
+  --tracking-xwide: .22em;  /* was .3em — every direction flagged it as
+                                the most austere detail on the page */
 
   /* Space */
   --space-2xs: .4rem;
@@ -108,11 +149,11 @@ html {
 
 body {
   font-family: var(--font-body);
-  font-weight: 300;
+  font-weight: 400;
   font-size: var(--text-base);
-  line-height: 1.8;
+  line-height: 1.72;
   color: var(--ink-soft);
-  background: var(--cream);
+  background: var(--grain), var(--cream);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -169,17 +210,23 @@ p, li, h1, h2, h3, h4, dd, dt { overflow-wrap: break-word; }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 300;
+  font-weight: 500;
   line-height: 1.12;
   color: var(--ink);
   letter-spacing: -.005em;
 }
 
-h1 em, h2 em, h3 em { font-style: italic; color: var(--gold-deep); }
+/* The italic file's axis stops at 400. Inheriting 500 would make the browser
+   synthesise a fake bold on every emphasised word in a heading. */
+h1 em, h2 em, h3 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold-deep);
+}
 
-.display-1 { font-size: var(--display-1); }
-.display-2 { font-size: var(--display-2); }
-.display-3 { font-size: var(--display-3); }
+.display-1 { font-size: var(--display-1); line-height: 1.06; }
+.display-2 { font-size: var(--display-2); line-height: 1.08; }
+.display-3 { font-size: var(--display-3); font-weight: 400; }
 .display-4 { font-size: var(--display-4); font-weight: 400; }
 
 .eyebrow {
@@ -203,16 +250,16 @@ h1 em, h2 em, h3 em { font-style: italic; color: var(--gold-deep); }
 
 .lede {
   font-size: var(--text-md);
-  line-height: 1.95;
+  line-height: 1.85;
   color: var(--ink-soft);
-  max-width: 56ch;
+  max-width: 54ch;
 }
 
 .rule {
-  width: 64px;
+  width: 92px;
   height: 1px;
   border: 0;
-  background: var(--gold-light);
+  background: linear-gradient(to right, var(--gold) 0%, rgba(200, 145, 90, .15) 100%);
   margin: var(--space-md) 0;
 }
 
@@ -222,11 +269,11 @@ a { color: var(--gold-deep); }
 
 /* Flowing body copy (book synopses, bio, press blurbs). */
 .prose > * + * { margin-top: var(--space-sm); }
-.prose p { line-height: 2; max-width: 68ch; }
+.prose p { line-height: 1.85; max-width: 64ch; }
 .prose em { font-style: italic; }
 .prose h2 { font-size: var(--display-3); margin-top: var(--space-lg); }
 .prose h3 { font-size: var(--display-4); margin-top: var(--space-md); font-weight: 400; }
-.prose ul { padding-left: 1.2rem; max-width: 68ch; }
+.prose ul { padding-left: 1.2rem; max-width: 64ch; }
 .prose li + li { margin-top: var(--space-2xs); }
 
 .pullquote {
@@ -236,9 +283,20 @@ a { color: var(--gold-deep); }
   font-weight: 300;
   line-height: 1.85;
   color: var(--ink-mute);
-  border-left: 2px solid var(--gold-light);
+  position: relative;
   padding-left: var(--space-sm);
   max-width: 46ch;
+}
+
+/* A brushstroke rather than a ruled border: full strength at the top, gone by
+   the bottom, like the edge of a wash. */
+.pullquote::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: .15em .3em;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--gold) 0%, rgba(200, 145, 90, .08) 100%);
 }
 
 
@@ -254,10 +312,10 @@ a { color: var(--gold-deep); }
 
 .section { padding-block: var(--space-2xl); }
 .section--tight { padding-block: var(--space-xl); }
-.section--alt { background: var(--cream-2); }
+.section--alt { background: var(--wash-warm), var(--grain), var(--cream-2); }
 
 .section--ink {
-  background: var(--ink);
+  background: var(--ink-blue);
   color: var(--on-ink-soft);
 }
 .section--ink h1, .section--ink h2, .section--ink h3 { color: var(--cream); }
@@ -511,7 +569,7 @@ a { color: var(--gold-deep); }
   translate: -50% -50%;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(200, 145, 90, .2) 0%, transparent 70%);
-  animation: glow-pulse 9s ease-in-out infinite;
+  animation: glow-pulse 17s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -650,8 +708,42 @@ a { color: var(--gold-deep); }
   display: block;
   aspect-ratio: 900 / 1436;
   background: var(--cream-2);
+  border-radius: 2px 9px 9px 2px;
   box-shadow: var(--shadow-cover);
   transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+}
+
+.cover img { border-radius: inherit; }
+
+/* The spine, where the cover turns away from the light. */
+.cover::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 9px;
+  z-index: 2;
+  border-start-start-radius: 2px;
+  border-end-start-radius: 2px;
+  background: linear-gradient(to right,
+    rgba(44, 31, 20, .30) 0%,
+    rgba(44, 31, 20, .07) 52%,
+    rgba(255, 253, 248, .16) 100%);
+  pointer-events: none;
+}
+
+/* The fore-edge: the stack of pages, sitting just outside the cover. This is
+   why .cover must never get overflow: hidden. */
+.cover::after {
+  content: '';
+  position: absolute;
+  inset-block: 3px;
+  inset-inline-end: -3px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: repeating-linear-gradient(to bottom,
+    #f7efe2 0 1px, #dfcdb4 1px 2px);
+  pointer-events: none;
 }
 
 .cover img {
@@ -827,7 +919,6 @@ a { color: var(--gold-deep); }
   aspect-ratio: 3 / 4;
   object-fit: cover;
   border: 3px solid var(--gold-light);
-  filter: sepia(6%) saturate(92%);
 }
 
 /* Two offset hairline frames — the "pinned photograph" motif. */
@@ -1136,7 +1227,7 @@ a { color: var(--gold-deep); }
 /* 15. Footer ====================================================== */
 
 .site-footer {
-  background: var(--ink);
+  background: var(--ink-blue);
   color: var(--on-ink-soft);
   border-top: 1px solid var(--on-ink-line);
   padding-block: var(--space-xl) var(--space-md);
@@ -1232,8 +1323,8 @@ a { color: var(--gold-deep); }
 }
 
 @keyframes glow-pulse {
-  0%, 100% { opacity: .5; }
-  50%      { opacity: 1; }
+  0%, 100% { opacity: .66; }
+  50%      { opacity: .94; }
 }
 
 @keyframes kana-drift {
@@ -1329,10 +1420,7 @@ a { color: var(--gold-deep); }
     var(--cream);
 }
 
-.book-hero--announce .book-hero__title em { color: var(--blue); }
-.book-hero--announce .book-hero__hook { border-inline-start-color: var(--blue-light); }
-.book-hero--announce .eyebrow { color: var(--blue-deep); }
-.book-hero--announce .book-hero__kana { color: rgba(43, 100, 163, .10); }
+/* Colour comes from [data-book] in §18 — nothing to repeat here. */
 
 /* A sign lifted out of the artwork: the chalkboard, the umbrella stand. */
 .sign-card {
@@ -1417,4 +1505,70 @@ a { color: var(--gold-deep); }
 
 @media (max-width: 860px) {
   .announce { grid-template-columns: 1fr; }
+}
+
+
+/* 18. Per-book accent ============================================= */
+
+/* Each book page sets --accent (decoration: washes, hairlines, the kana
+   watermark) and --accent-ink (the text-safe variant, verified at 4.5:1 or
+   better on --paper-deep). Sampled from each cover's own dominant band.
+   Space-separated --accent-rgb so washes can be built with plain rgb()
+   alpha syntax rather than relative colour, which is not yet Baseline. */
+[data-book="from-tomorrow"] {
+  --accent: #e4733a; --accent-ink: var(--ember);      --accent-rgb: 228 115 58;
+}
+[data-book="sakura-slice-cafe"] {
+  --accent: #d4687a; --accent-ink: var(--rose-deep);  --accent-rgb: 212 104 122;
+}
+[data-book="the-perfect-sunrise"] {
+  --accent: #f2ba75; --accent-ink: var(--amber-deep); --accent-rgb: 242 186 117;
+}
+[data-book="when-you-were-there"] {
+  --accent: #e9aa5d; --accent-ink: var(--olive-deep); --accent-rgb: 233 170 93;
+}
+[data-book="the-blue-bookmark-bookshop"] {
+  --accent: #4381c3; --accent-ink: var(--cobalt);     --accent-rgb: 67 129 195;
+}
+
+/* The seven places --accent is allowed to appear. Adding an eighth is how a
+   site with five accents loses its centre. */
+[data-book] .book-hero {
+  background:
+    radial-gradient(ellipse 70% 60% at 28% 45%, rgb(var(--accent-rgb) / .14) 0%, transparent 70%),
+    var(--grain), var(--cream);
+}
+[data-book] .book-hero__title em { color: var(--accent-ink); }
+[data-book] .book-hero__kana { color: rgb(var(--accent-rgb) / .13); }
+[data-book] .book-hero__hook::before {
+  background: linear-gradient(to bottom, var(--accent) 0%, rgb(var(--accent-rgb) / .08) 100%);
+}
+[data-book] .book-hero .eyebrow { color: var(--accent-ink); }
+[data-book] .retailer:hover { border-color: var(--accent); }
+[data-book] .cover { box-shadow: 8px 14px 38px rgb(var(--accent-rgb) / .26); }
+
+
+/* 19. Synopsis lead =============================================== */
+
+/* A sunk initial on the opening paragraph of a book's synopsis. Scoped to
+   .prose--lead rather than every .prose: the press kit and the ARC page are
+   reference pages, not chapters.
+
+   initial-letter does the sinking and cap-alignment by spec, which a floated
+   ::first-letter cannot — a float sizes to the glyph's em box, so the letter
+   sits high and the wrap indents wrongly. Where initial-letter is missing
+   (Firefox today) the letter simply renders at text size in the accent
+   colour, which is a clean fallback rather than a broken one. */
+.prose--lead > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--accent-ink, var(--ember));
+}
+
+@supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
+  .prose--lead > p:first-of-type::first-letter {
+    -webkit-initial-letter: 2;
+    initial-letter: 2;
+    margin-inline-end: .09em;
+  }
 }

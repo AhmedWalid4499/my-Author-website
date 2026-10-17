@@ -239,6 +239,76 @@ for (const file of htmlFiles) {
   }
 }
 
+/* ---- colour: every accent must survive the deepest ground ---- */
+{
+  // Resolve a token to a hex literal, following one level of var() aliasing.
+  const vars = new Map();
+  for (const m of cssText.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) {
+    vars.set(m[1], m[2].trim());
+  }
+  const hexOf = (name, depth = 0) => {
+    let v = vars.get(name);
+    if (!v || depth > 4) return null;
+    const ref = v.match(/^var\((--[\w-]+)\)$/);
+    if (ref) return hexOf(ref[1], depth + 1);
+    const hex = v.match(/^#([0-9a-f]{6})\b/i);
+    return hex ? hex[1] : null;
+  };
+  const rgb = (h) => [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const lum = (a) => 0.2126 * lin(a[0]) + 0.7152 * lin(a[1]) + 0.0722 * lin(a[2]);
+  const ratio = (a, b) => {
+    const x = lum(a), y = lum(b), [hi, lo] = x > y ? [x, y] : [y, x];
+    return (hi + 0.05) / (lo + 0.05);
+  };
+  const over = (fg, alpha, bg) => fg.map((v, i) => Math.round(v * alpha + bg[i] * (1 - alpha)));
+
+  // --paper-deep is the deepest ground --wash-warm can produce. Accent inks
+  // are tuned against it, not against flat cream, so a wash can never push one
+  // of them under AA.
+  const deepHex = hexOf('--paper-deep');
+  if (!deepHex) {
+    note('site.css', 'colour', '--paper-deep is missing; accent inks cannot be verified');
+  } else {
+    const deep = rgb(deepHex);
+    const inks = ['--ember', '--rose-deep', '--amber-deep', '--olive-deep', '--cobalt', '--ink-soft', '--ink-mute'];
+    for (const token of inks) {
+      const h = hexOf(token);
+      if (!h) { note('site.css', 'colour', `${token} is not a hex colour`); continue; }
+      const r = ratio(rgb(h), deep);
+      if (r < 4.5) {
+        note('site.css', 'colour',
+          `${token} #${h} is ${r.toFixed(2)}:1 on --paper-deep #${deepHex} — needs 4.5:1. ` +
+          `Darken it, or do not use it as text where a wash can sit underneath.`);
+      }
+    }
+    // Every [data-book] must set an --accent-ink, and it must be one of the above.
+    for (const m of cssText.matchAll(/\[data-book="([^"]+)"\]\s*\{([^}]*)\}/g)) {
+      if (!/--accent-ink\s*:/.test(m[2])) {
+        note('site.css', 'colour', `[data-book="${m[1]}"] does not set --accent-ink`);
+      }
+      if (!/--accent-rgb\s*:/.test(m[2])) {
+        note('site.css', 'colour', `[data-book="${m[1]}"] does not set --accent-rgb (washes need it)`);
+      }
+    }
+  }
+
+  // Text inside dark sections, measured against the navy ground.
+  const inkBlueHex = hexOf('--ink-blue');
+  if (inkBlueHex) {
+    const navy = rgb(inkBlueHex);
+    for (const m of cssText.matchAll(/(--on-ink[\w-]*)\s*:\s*rgba\(([^)]+)\)/g)) {
+      if (m[1].endsWith('-line')) continue;           // borders, not text
+      const parts = m[2].split(',').map((x) => parseFloat(x.trim()));
+      const r = ratio(over(parts.slice(0, 3), parts[3], navy), navy);
+      if (r < 4.5) {
+        note('site.css', 'colour',
+          `${m[1]} is ${r.toFixed(2)}:1 on --ink-blue #${inkBlueHex} — needs 4.5:1`);
+      }
+    }
+  }
+}
+
 /* ---- books.json is the source of truth: make sure the site agrees ---- */
 {
   const data = JSON.parse(readFileSync(path.join(ROOT, 'tools/books.json'), 'utf8'));

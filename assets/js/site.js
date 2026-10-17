@@ -117,7 +117,7 @@
     if (!hero) return;
 
     var GLYPHS = ['✿', '❀', '✾', '❁', '✽'];
-    var MAX_LIVE = 14;
+    var MAX_LIVE = 8;
     var timer = null;
     var live = 0;
 
@@ -129,7 +129,7 @@
       petal.textContent = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
       petal.style.left = (Math.random() * 100) + '%';
       petal.style.fontSize = (0.7 + Math.random() * 0.8) + 'rem';
-      petal.style.color = 'rgba(200,145,90,' + (0.16 + Math.random() * 0.2).toFixed(2) + ')';
+      petal.style.color = 'rgba(234,162,172,' + (0.30 + Math.random() * 0.26).toFixed(2) + ')';
 
       var duration = 7 + Math.random() * 7;
       petal.style.animationDuration = duration + 's';
@@ -145,8 +145,8 @@
 
     function start() {
       if (timer || reduceMotion.matches) return;
-      timer = window.setInterval(spawn, 1300);
-      for (var i = 0; i < 4; i++) window.setTimeout(spawn, i * 500);
+      timer = window.setInterval(spawn, 1900);
+      for (var i = 0; i < 3; i++) window.setTimeout(spawn, i * 650);
     }
 
     function stop() {

@@ -1,7 +1,8 @@
 # Ahmed El-Bourgy — author website
 
 The official site for Ahmed El-Bourgy, author of *From Tomorrow*, *Sakura Slice
-Café*, *The Perfect Sunrise* and *When You Were There* — all on Kindle.
+Café*, *The Perfect Sunrise* and *When You Were There* — all on Kindle — and
+*The Blue Bookmark Bookshop*, coming soon.
 
 **Live:** https://ahmedwalid4499.github.io/my-Author-website/
 
@@ -36,6 +37,8 @@ from-tomorrow.html          Book page
 sakura-slice-cafe.html      Book page
 the-perfect-sunrise.html    Book page
 when-you-were-there.html    Book page
+the-blue-bookmark-bookshop.html  Book page (announcement, not yet released)
+arc.html                    Advance copies: what is running, how to verify it
 about.html                  Full biography
 press.html                  Press kit — bios, cover art, headshot, book details
 contact.html                Contact and reading list
@@ -126,6 +129,66 @@ The Japanese webfont is subset down to exactly the characters used on the site
 already there it will fall back to a system font. Add it to `JP_GLYPHS` in
 `tools/build-fonts.mjs` and run `npm run fonts`. `npm run check` fails if you
 forget — that is how the 霧 on the 404 page was caught.
+
+---
+
+## The design, and why
+
+Every cover does the same thing: saturated colour along the top, dissolving into
+bare watercolour paper at the bottom, with the type down on the dry part. The
+site is built from those two materials.
+
+- **Grounds** are paper. `--wash-warm` puts a soft bloom at the top of
+  alternating sections and lets it dissolve before any text starts.
+- **`--paper-deep` #f0e0cb is the contrast floor.** It is the deepest ground a
+  wash can produce, and every accent-text colour is tuned against *it*, not
+  against flat cream. Do not deepen it — `npm run check` fails if an accent
+  stops clearing 4.5:1 there. (That check caught a real bug: the old
+  `--gold-deep` #8f6029 measured 4.19:1 under a wash.)
+- **One accent per book**, sampled from its own cover, set by
+  `<body data-book="slug">`. `--accent` is decoration only; `--accent-ink` is
+  the text-safe variant. Seven uses, listed in §18 of `site.css`. An eighth is
+  how a site with five accents loses its centre.
+- **Dark sections are navy** `--ink-blue` #16304f rather than the old brown.
+  If you prefer the brown, change that one token back — every value on it is
+  verified against both.
+- **Type**: Cormorant ships a 300–500 weight axis and the site only ever used
+  300, which at 5.4rem is a hairline. Displays are 500 now, body Lato is 400.
+  Net cost: 68 bytes. The italic file caps at 400, so italic runs set it
+  explicitly or the browser synthesises a fake bold.
+- **Grain** is a 347-byte SVG tile on `<body>` at 7% opacity. It is texture
+  *and* dither — without it the 10%-alpha washes band on 8-bit panels. Ceiling
+  is 10%. Never put it on a fixed overlay above the art.
+- **Covers are objects**: a spine gradient, a 3px fore-edge sliver sitting
+  *outside* the box, and a shadow mixed from the book's own accent. This is why
+  `.cover` must never get `overflow: hidden`.
+
+---
+
+## Advance reader copies
+
+`tools/arc/` builds one ready-to-send email per advance reader, themed to the
+book, with the EPUB attached.
+
+```bash
+cd tools
+node arc/build.mjs --preview     # look at the email in a browser
+node arc/build.mjs               # one .eml per reader in arc/readers.csv
+```
+
+It writes files and sends nothing — you send each message from your own mail
+client. That matters: a message that genuinely leaves your Gmail carries
+Google's DKIM signature, and *that* is what proves it came from you. A
+well-designed email proves nothing on its own.
+
+The other half is `arc.html`, which states the campaign actually running. The
+email points readers at it so they can check independently. **Keep that page
+current** — it is worth nothing if it goes stale, and the note in the HTML says
+so.
+
+`tools/arc/readers.csv`, `tools/arc/out/` and any `.epub` are git-ignored.
+Reader addresses and an unreleased manuscript must not reach a public repo.
+Full detail in `tools/arc/README.md`.
 
 ---
 
