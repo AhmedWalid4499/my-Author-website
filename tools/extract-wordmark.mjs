@@ -18,9 +18,15 @@ const OUT = path.join(ROOT, 'assets/img/wordmark');
 
 // Blossom petals and a leaf tip, identified once against wordmark-debug.png.
 // Run with DROP= to see every component boxed and numbered, then set this.
-const DROP = new Set((process.env.DROP || '2,3,21,29,30').split(',').filter(Boolean).map(Number));
+const DROP = new Set((process.env.DROP || '2,3,21,28,29,32,33,34').split(',').filter(Boolean).map(Number));
 
-const CROP = { left: 128, top: 18, width: 826, height: 344 };
+// Override while tuning:  CROP=left,top,width,height node tools/extract-wordmark.mjs
+const CROP = (() => {
+  const e = (process.env.CROP || '').split(',').map(Number);
+  return e.length === 4 && e.every((n) => Number.isFinite(n))
+    ? { left: e[0], top: e[1], width: e[2], height: e[3] }
+    : { left: 120, top: 14, width: 850, height: 410 };
+})();
 
 const { data, info } = await sharp(SRC).extract(CROP).ensureAlpha().raw()
   .toBuffer({ resolveWithObject: true });
@@ -81,11 +87,84 @@ function nearKept(i) {
   return false;
 }
 
+/* ---- close the speckle holes ----------------------------------------------
+   The brush let sky show through inside some strokes. Those pixels key out as
+   semi-transparent, so on a dark ground they read as holes in the letter — the
+   'e' of Blue worst of all. Find every not-solid region that does NOT touch the
+   border: small ones are speckles and get filled from the nearest ink pixel,
+   large ones are the counters of e, o, B, p and must stay open. Run with
+   HOLES=report to print the sizes before choosing the cut. */
+const HOLE_MAX = Number(process.env.HOLE_MAX || 60);
+{
+  const seen = new Int32Array(W * H).fill(-1);
+  const regions = [];
+  const st = [];
+  for (let p0 = 0; p0 < W * H; p0++) {
+    if (seen[p0] !== -1 || alpha[p0] >= SOLID) continue;
+    const id = regions.length;
+    let n = 0, touchesBorder = false;
+    const px = [];
+    st.push(p0); seen[p0] = id;
+    while (st.length) {
+      const q = st.pop(); n++; px.push(q);
+      const x = q % W, y = (q / W) | 0;
+      if (x === 0 || y === 0 || x === W - 1 || y === H - 1) touchesBorder = true;
+      for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+        const r = ny * W + nx;
+        if (seen[r] === -1 && alpha[r] < SOLID) { seen[r] = id; st.push(r); }
+      }
+    }
+    regions.push({ id, n, touchesBorder, px });
+  }
+  const enclosed = regions.filter((r) => !r.touchesBorder).sort((a, b) => a.n - b.n);
+  if (process.env.HOLES === 'report') {
+    console.log(`enclosed regions (${enclosed.length}) by size:`);
+    console.log('  ' + enclosed.map((r) => r.n).join(', '));
+  }
+  let filled = 0;
+  for (const r of enclosed) {
+    if (r.n > HOLE_MAX) continue;        // a letter counter, leave it open
+    for (const q of r.px) {
+      alpha[q] = 1;
+      // Take colour from the nearest solid ink pixel so the fill matches the
+      // brush around it rather than inventing a flat patch.
+      const x = q % W, y = (q / W) | 0;
+      let best = null;
+      for (let rad = 1; rad <= 6 && !best; rad++) {
+        for (let dy = -rad; dy <= rad && !best; dy++) {
+          for (let dx = -rad; dx <= rad && !best; dx++) {
+            const nx = x + dx, ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+            const t = ny * W + nx;
+            if (alpha[t] >= SOLID && seen[t] === -1) best = t;
+          }
+        }
+      }
+      if (best !== null) {
+        data[q * C] = data[best * C];
+        data[q * C + 1] = data[best * C + 1];
+        data[q * C + 2] = data[best * C + 2];
+      }
+    }
+    filled++;
+  }
+  console.log(`speckle holes filled: ${filled} (kept ${enclosed.length - filled} counters open)`);
+}
+
 const out = Buffer.alloc(W * H * 4);
 for (let i = 0; i < W * H; i++) {
   const l = label[i];
   const live = l !== -1 ? keep[l] : alpha[i] > 0 && nearKept(i);
-  out[i*4] = data[i*C]; out[i*4+1] = data[i*C+1]; out[i*4+2] = data[i*C+2];
+  // The brush left pale SKY-COLOURED speckles inside the strokes. Against the
+  // cover's own bright sky they vanish; against a deep cobalt they read as
+  // holes in the letter — most visibly in the 'e' of Blue. Both real ink
+  // colours (cream and pink) have blue at or below red, so clamping blue down
+  // to red kills the cast and leaves the brush's light-and-dark intact.
+  let r = data[i*C], g = data[i*C+1], b = data[i*C+2];
+  if (b > r) { const cast = b - r; b = r; g = Math.max(r, g - Math.round(cast * 0.55)); }
+  out[i*4] = r; out[i*4+1] = g; out[i*4+2] = b;
   out[i*4+3] = live ? Math.round(alpha[i] * 255) : 0;
 }
 

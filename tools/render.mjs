@@ -82,7 +82,8 @@ function card(b, o, isFirst) {
               </picture>
             </span>
             <h${L} class="book-card__title mt-md">${esc(b.title)}</h${L}>
-            <p class="jp book-card__jp">${b.jp}</p>
+${b.jp ? `
+            <p class="jp book-card__jp">${b.jp}</p>` : ''}
           </a>${eyebrow}${blurb ? `
           <p class="book-card__blurb">${blurb}</p>` : ''}
           <a class="text-link" href="${p}${b.slug}.html">Read more <span class="text-link__arrow" aria-hidden="true">↗</span><span class="visually-hidden"> about ${esc(b.title)}</span></a>
@@ -144,8 +145,9 @@ function bookFacts() {
         <dl class="facts mt-md">
           <dt>Title</dt>
           <dd>${esc(b.title)}</dd>
+${b.jp ? `
           <dt>Japanese title</dt>
-          <dd><span class="jp">${b.jp}</span></dd>
+          <dd><span class="jp">${b.jp}</span></dd>` : ''}
           <dt>Author</dt>
           <dd>Ahmed El-Bourgy</dd>
           <dt>Format</dt>

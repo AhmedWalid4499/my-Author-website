@@ -909,34 +909,8 @@ a { color: var(--gold-deep); }
 
 /* 11. About ======================================================= */
 
-.about-grid {
-  display: grid;
-  grid-template-columns: minmax(180px, 260px) 1fr;
-  gap: clamp(2rem, 1rem + 4vw, 4rem);
-  align-items: start;
-}
-
 /* Two offset hairline frames — the "pinned photograph" motif. */
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .55rem;
-  margin-top: var(--space-md);
-  padding: 0;
-  list-style: none;
-}
-
-.tag {
-  font-size: var(--text-xs);
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  border: 1px solid var(--gold-light);
-  color: var(--gold-deep);
-  padding: .35rem .85rem;
-}
-
 @media (max-width: 720px) {
-  .about-grid { grid-template-columns: 1fr; justify-items: center; }
   }
 
 
