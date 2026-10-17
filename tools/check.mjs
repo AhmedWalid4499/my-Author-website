@@ -12,7 +12,12 @@ const PAGES_PREFIX = '/my-Author-website/';
 const problems = [];
 const note = (file, kind, msg) => problems.push({ file, kind, msg });
 
-const htmlFiles = readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort();
+// aoi-shiori.html is a bare redirect stub for a URL that was published
+// before the page was renamed; it has no shell to validate.
+const REDIRECTS = new Set(['aoi-shiori.html']);
+const htmlFiles = readdirSync(ROOT)
+  .filter((f) => f.endsWith('.html') && !REDIRECTS.has(f))
+  .sort();
 
 // Class vocabulary defined in the stylesheet.
 const cssText = readFileSync(path.join(ROOT, 'assets/css/site.css'), 'utf8');

@@ -1573,8 +1573,8 @@ a { color: var(--gold-deep); }
 
 .shop-hero__inner { position: relative; }
 .shop-hero .eyebrow { color: var(--sky); }
-.shop-hero__title { color: var(--cream); }
-.shop-hero__title em { color: #f3b9c8; font-style: italic; }
+/* The heading is the lettering lifted from the cover, not type. */
+.shop-hero__title { margin: var(--space-2xs) 0 0; line-height: 1; }
 
 .shop-hero__lede {
   max-width: 40ch;

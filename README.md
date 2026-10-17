@@ -38,7 +38,8 @@ sakura-slice-cafe.html      Book page
 the-perfect-sunrise.html    Book page
 when-you-were-there.html    Book page
 the-blue-bookmark-bookshop.html  Book page (announcement, not yet released)
-aoi-shiori.html             The pastry quiz and the playlist
+the-bookshop.html           The pastry quiz and the playlist
+aoi-shiori.html             Redirect stub for the old URL — delete when unused
 arc.html                    Advance copies: what is running, how to verify it
 about.html                  Full biography
 press.html                  Press kit — bios, cover art, headshot, book details
@@ -175,9 +176,9 @@ site is built from those two materials.
 
 ---
 
-## The Aoi Shiori page
+## The Bookshop page
 
-`aoi-shiori.html` holds two things: the "Which Pastry Are You?" quiz and the
+`the-bookshop.html` holds two things: the "Which Pastry Are You?" quiz and the
 playlist. Both are driven by data files, so the words live in one place:
 
 - `tools/quiz.json` — 7 questions, 6 results, the scoring rule, the share text

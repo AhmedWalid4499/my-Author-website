@@ -192,7 +192,7 @@ await simple('og-contact', 'Reach Out', 'Let’s ', 'Connect', 'Talk about the b
     <text x="600" y="246" text-anchor="middle" font-family="${SERIF}" font-size="74" fill="${INK}">Which Pastry <tspan font-family="${SERIF_I}" font-style="italic" fill="${GOLD}">Are You?</tspan></text>
     <text x="600" y="306" text-anchor="middle" font-family="${SERIF_I}" font-style="italic" font-size="29" fill="${INK_SOFT}">Seven questions, and whatever Mirai decides to bake for you.</text>
   `;
-  await render('og-aoi-shiori', svg, comps);
+  await render('og-the-bookshop', svg, comps);
 }
 
 await simple('og-arc', 'Advance copies', 'Is this really ', 'from me?', 'The advance campaign I am actually running,', 'and how to check an email came from me.');
