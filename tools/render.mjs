@@ -244,7 +244,8 @@ function assetHash(rel) {
  */
 function stampAssets(html) {
   const assets = ['assets/css/fonts.css', 'assets/css/site.css',
-                  'assets/js/site.js', 'assets/js/quiz.js'];
+                  'assets/js/site.js', 'assets/js/quiz.js',
+                  'assets/js/recipes.js'];
   for (const rel of assets) {
     const h = assetHash(rel);
     if (!h) continue;
@@ -256,12 +257,101 @@ function stampAssets(html) {
   return html;
 }
 
+
+/* ---- the book page: pastry cards and recipe data ---------------------- */
+
+const RECIPES = JSON.parse(readFileSync(path.join(ROOT, 'tools/recipes.json'), 'utf8'));
+
+/**
+ * The grid art and the recipes come from different sets: the cards use the
+ * cream-ground squares, the dialog uses the cut-out art. This maps one to the
+ * other, in the order the pastries appear in the book. `recipe: null` means
+ * there is no recipe for it yet, so that card is not a button.
+ */
+const PASTRY_CARDS = [
+  { slug: 'hot-chocolate',    recipe: 'hotchocolate', w: 2000, h: 2000,
+    alt: 'A navy mug of hot chocolate with marshmallows, a blue bookmark ribbon against the cup.' },
+  { slug: 'cheesecake',       recipe: 'cheesecake',   w: 1024, h: 1024,
+    alt: 'A slice of cheesecake with strawberry sauce and a strawberry on top.' },
+  { slug: 'blueberry-tart',   recipe: 'tart',         w: 1024, h: 1024,
+    alt: 'A blueberry tart with one slice cut away, a fork on the plate.' },
+  { slug: 'mille-feuille',    recipe: 'millefeuille', w: 1024, h: 1024,
+    alt: 'A mille-feuille with feathered icing and a single cherry blossom petal beside it.' },
+  { slug: 'cream-puff',       recipe: 'creampuff',    w: 1024, h: 1024,
+    alt: 'A cream puff dusted with icing sugar on a blue-rimmed plate.' },
+  { slug: 'chocolate-pastry', recipe: 'eclair',       w: 1024, h: 1024,
+    alt: 'A chocolate-dipped cream bun in a spotted paper bag, one bite taken.' },
+  { slug: 'birthday-cake',    recipe: null,           w: 1024, h: 1024,
+    name: 'Birthday Cake',
+    alt: 'A small pink birthday cake with sprinkles and one lit candle on a cake stand.' },
+];
+
+function pastryArt(c) {
+  const b = `assets/img/pastries/${c.slug}`;
+  return `<picture>
+              <source type="image/webp" srcset="${b}-240.webp 240w, ${b}-480.webp 480w" sizes="(max-width: 620px) 42vw, 190px">
+              <img src="${b}-240.jpg" srcset="${b}-240.jpg 240w, ${b}-480.jpg 480w" sizes="(max-width: 620px) 42vw, 190px"
+                   width="${c.w}" height="${c.h}" alt="${esc(c.alt)}" loading="lazy" decoding="async">
+            </picture>`;
+}
+
+function pastryGrid() {
+  const rows = PASTRY_CARDS.map((c) => {
+    const r = c.recipe ? RECIPES.recipes[c.recipe] : null;
+    const name = typo(r ? r.name : c.name);
+    const jp = r ? `\n            <span class="pastry__jp jp">${r.japanese}</span>` : '';
+
+    if (!r) {
+      return `        <li class="pastry pastry--plain">
+          <span class="pastry__art">${pastryArt(c)}</span>
+          <span class="pastry__name">${esc(name)}</span>
+        </li>`;
+    }
+    return `        <li class="pastry">
+          <button class="pastry__open" type="button" data-recipe="${c.recipe}" aria-haspopup="dialog">
+            <span class="pastry__art">${pastryArt(c)}</span>
+            <span class="pastry__name">${esc(name)}</span>${jp}
+            <span class="pastry__cue">Recipe</span>
+          </button>
+        </li>`;
+  });
+  return '\n' + rows.join('\n') + '\n      ';
+}
+
+/** Inlined like the quiz data: one request fewer, and it cannot half-load. */
+function recipeData() {
+  const data = JSON.parse(JSON.stringify(RECIPES));
+  data.title = typo(data.title);
+  data.subtitle = typo(data.subtitle);
+  data.tabs.mirai = typo(data.tabs.mirai);
+  data.tabs.recipe = typo(data.tabs.recipe);
+  for (const r of Object.values(data.recipes)) {
+    r.name = typo(r.name);
+    r.chapter = typo(r.chapter);
+    r.mirai.intro = typo(r.mirai.intro);
+    r.mirai.hare = typo(r.mirai.hare);
+    r.mirai.method = r.mirai.method.map(typo);
+    r.recipe.steps = r.recipe.steps.map(typo);
+    r.recipe.tip = typo(r.recipe.tip);
+    r.recipe.ingredients = r.recipe.ingredients.map((g) => ({
+      group: typo(g.group),
+      items: g.items.map(typo),
+    }));
+    // Point the dialog art at the cut-out set rather than the content pack.
+    r.image = 'assets/img/pastry/' + r.image.replace(/^assets\//, '').replace(/\.png$/, '');
+  }
+  return '\n      <script type="application/json" id="recipe-data">'
+    + JSON.stringify(data) + '</script>';
+}
+
 const REGIONS = {
   'books-grid': booksGrid,
   'footer-books': footerBooks,
   'cover-downloads': coverDownloads,
   'book-facts': bookFacts,
   'quiz-data': quizData,
+  'recipe-data': recipeData,
+  'pastry-grid': pastryGrid,
   'tracklist': tracklist,
   'bonus-tracks': bonusTracks,
 };
@@ -279,7 +369,7 @@ for (const file of readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort()) 
   for (const [name, build] of Object.entries(REGIONS)) {
     // Replace from the marker up to the close of its container. Cards contain
     // no <div> and footer rows no <ul>, so the first close tag is the right one.
-    if (name === 'quiz-data') {
+    if (name === 'quiz-data' || name === 'recipe-data') {
       // This region replaces a whole <script> element rather than the text
       // inside one, because a script's content is raw text: a marker comment
       // placed inside it would be parsed as part of the JSON.
@@ -291,7 +381,8 @@ for (const file of readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort()) 
       continue;
     }
 
-    const close = (name === 'footer-books' || name === 'tracklist' || name === 'bonus-tracks')
+    const close = (name === 'footer-books' || name === 'tracklist'
+                   || name === 'bonus-tracks' || name === 'pastry-grid')
       ? '</ul>' : '</div>';
     // Consume everything between the marker and the closing tag, including the
     // final newline + indent, so repeated runs cannot accumulate blank lines.

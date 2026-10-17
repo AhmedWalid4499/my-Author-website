@@ -1958,3 +1958,288 @@ a { color: var(--gold-deep); }
   .result__art { animation: none; }
   .quiz__panel { animation: none; }
 }
+
+
+/* 28. Pastry cards ================================================ */
+
+.pastry__open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+  width: 100%;
+  padding: var(--space-sm) var(--space-xs) var(--space-md);
+  font: inherit;
+  text-align: center;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.pastry--plain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+  padding: var(--space-sm) var(--space-xs) var(--space-md);
+  text-align: center;
+}
+
+.pastry__art { display: block; width: 100%; }
+.pastry__art img { width: 100%; height: auto; }
+
+.pastry__name {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.pastry__jp { font-size: var(--text-xs); }
+
+/* The affordance: a small gold cue that fills in on hover, so a card reads as
+   openable without a button chrome fighting the illustration. */
+.pastry__cue {
+  margin-top: .25rem;
+  padding: .28rem .7rem;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent-ink, var(--ember));
+  border: 1px solid var(--gold-line);
+  border-radius: 999px;
+  transition: background .25s var(--ease), color .25s var(--ease),
+              border-color .25s var(--ease);
+}
+
+.pastry__open:hover .pastry__cue,
+.pastry__open:focus-visible .pastry__cue {
+  background: var(--accent-ink, var(--ember));
+  border-color: var(--accent-ink, var(--ember));
+  color: var(--cream);
+}
+
+.pastry:has(.pastry__open:hover),
+.pastry:has(.pastry__open:focus-visible) {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-cover);
+}
+
+
+/* 29. Recipe dialog =============================================== */
+
+.recipe {
+  /* margin:auto is what centres a dialog in its viewport; without it the UA
+     top-aligns it and the sheet kisses the top edge. */
+  margin: auto;
+  width: min(100% - 2rem, 44rem);
+  max-height: min(88vh, 52rem);
+  padding: 0;
+  border: 1px solid var(--gold-line);
+  border-radius: 4px;
+  background: var(--cream);
+  color: var(--ink-soft);
+  overflow: hidden;
+}
+
+.recipe::backdrop { background: rgba(23, 64, 110, .55); }
+
+.recipe__sheet {
+  --recipe-gutter: clamp(1.1rem, .6rem + 2.4vw, 2.4rem);
+  max-height: min(88vh, 52rem);
+  overflow-y: auto;
+  padding: var(--space-lg) var(--recipe-gutter) var(--space-xl);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* The close button rides in a sticky strip rather than floating on its own:
+   a bare sticky circle sits in the same band the text scrolls through, and a
+   long method step runs straight into it. The strip's paper gradient takes
+   that whole band, so lines fade out under it instead. Its negative bottom
+   margin cancels its own height, leaving the header exactly where it was. */
+.recipe__bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  height: 3.1rem;
+  margin: 0 calc(-1 * var(--recipe-gutter)) -3.1rem;
+  padding: 0 .6rem;
+  background: linear-gradient(to bottom,
+    var(--cream) 0%, var(--cream) 56%, rgba(253, 248, 240, 0) 100%);
+  pointer-events: none;
+}
+
+.recipe__close {
+  width: 40px;
+  height: 40px;
+  font: 400 1.7rem/1 var(--font-body);
+  color: var(--ink-mute);
+  background: var(--cream);
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.recipe__close:hover { color: var(--ink); border-color: var(--gold); }
+
+.recipe__head { text-align: center; }
+
+.recipe__art {
+  width: auto;
+  max-width: min(100%, 230px);
+  max-height: 180px;
+  margin: 0 auto var(--space-sm);
+  filter: drop-shadow(4px 10px 20px rgba(44, 31, 20, .18));
+}
+
+.recipe__jp { font-size: var(--text-sm); margin-top: .2rem; }
+
+/* Two ways to make the same thing. */
+.tabs {
+  display: flex;
+  gap: .4rem;
+  justify-content: center;
+  margin: var(--space-md) 0 var(--space-lg);
+  padding: .3rem;
+  background: var(--cream-2);
+  border-radius: 999px;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+.tab {
+  padding: .55rem 1.1rem;
+  font: inherit;
+  font-size: var(--text-sm);
+  letter-spacing: .04em;
+  color: var(--ink-mute);
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .25s var(--ease), color .25s var(--ease);
+}
+
+.tab[aria-selected="true"] {
+  background: var(--cream-3);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+}
+
+.recipe__panel[hidden] { display: none; }
+.recipe__panel { animation: quiz-in .3s var(--ease) both; }
+.recipe__panel:focus-visible { outline-offset: 4px; }
+
+.recipe__intro {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-lg);
+  line-height: 1.75;
+  text-align: center;
+  color: var(--accent-ink, var(--ember));
+  max-width: 34ch;
+  margin-inline: auto;
+}
+
+.recipe__method {
+  margin: var(--space-lg) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.recipe__method li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 1.9rem 1fr;
+  gap: var(--space-xs);
+  line-height: 1.85;
+}
+
+.recipe__method li::before {
+  content: counter(step);
+  font-family: var(--font-display);
+  font-size: var(--display-4);
+  line-height: 1.2;
+  color: var(--gold);
+}
+
+/* Hare gets the last word. */
+.hare {
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--cream-2);
+  border-inline-start: 3px solid var(--gold-light);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-md);
+  line-height: 1.8;
+  color: var(--ink-soft);
+}
+
+.recipe__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  justify-content: center;
+  list-style: none;
+  padding: 0 0 var(--space-md);
+  margin: 0 0 var(--space-md);
+  border-bottom: 1px solid var(--gold-line);
+}
+
+.recipe__facts li { display: grid; gap: .1rem; text-align: center; font-size: var(--text-sm); }
+
+.recipe__facts-key {
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent-ink, var(--ember));
+}
+
+.recipe__sub {
+  font-family: var(--font-display);
+  font-size: var(--display-4);
+  font-weight: 400;
+  color: var(--ink);
+  margin: var(--space-lg) 0 var(--space-xs);
+}
+
+.recipe__group {
+  margin: var(--space-sm) 0 .3rem;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.recipe__items { margin: 0; padding-inline-start: 1.1rem; }
+.recipe__items li { line-height: 1.8; font-size: var(--text-sm); }
+
+.recipe__steps {
+  margin: 0;
+  padding-inline-start: 1.3rem;
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.recipe__steps li { line-height: 1.85; padding-inline-start: .25rem; }
+
+.recipe__tip {
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--cream-3);
+  border: 1px dashed var(--gold-line);
+  font-size: var(--text-sm);
+  line-height: 1.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recipe__panel { animation: none; }
+}

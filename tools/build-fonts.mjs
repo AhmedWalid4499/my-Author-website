@@ -19,7 +19,7 @@ const FONT_DIR = path.join(ROOT, 'assets/fonts');
 const CSS_OUT = path.join(ROOT, 'assets/css/fonts.css');
 
 // Every Japanese character that appears anywhere on the site.
-const JP_GLYPHS = '物語を紡ぐ人明日から桜スライス・カフェ完璧なの出夢十三静霧君がいたとき青栞雨には温飲みご使用後お返しくださ誰一必要もれません灯籠声つ勇者沈める街～';
+const JP_GLYPHS = '物語を紡ぐ人明日から桜スライス・カフェ完璧なの出夢十三静霧君がいたとき青栞雨には温飲みご使用後お返しくださ誰一必要もれません灯籠声つ勇者沈める街～苺チーズケキレモンブルベリタトミィユシュクムエア塩ひホッョコ';
 
 const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
