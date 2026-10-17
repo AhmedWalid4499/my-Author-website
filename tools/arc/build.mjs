@@ -141,10 +141,14 @@ function buildEml(reader) {
 mkdirSync(OUT, { recursive: true });
 
 const sample = readers[0] || { name: 'Mina Tanaka', email: 'reader@example.com' };
-// The preview swaps cid:hero for the real file so a browser can render it.
+// The preview inlines the hero as a data URI rather than pointing at the file,
+// so preview.html is self-contained and can be opened or forwarded anywhere.
 writeFileSync(
   path.join(OUT, 'preview.html'),
-  template.html(c, sample).replace('src="cid:hero"', `src="${path.relative(OUT, heroPath)}"`)
+  template.html(c, sample).replace(
+    'src="cid:hero"',
+    `src="data:${heroMime};base64,${hero.toString('base64')}"`
+  )
 );
 writeFileSync(path.join(OUT, 'preview.txt'), template.text(c, sample));
 
