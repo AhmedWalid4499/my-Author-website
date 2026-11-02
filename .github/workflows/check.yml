@@ -1,0 +1,69 @@
+# Run the site's own checks on every push, so a broken page cannot quietly
+# reach the live site.
+#
+# The checks are the same ones `npm run check` runs on your Mac — links,
+# headings, alt text, metadata, JSON-LD, the class vocabulary, colour contrast,
+# Japanese glyph coverage, the hand face's glyph list, the sitemap, and whether
+# the generated markup matches tools/books.json. Nothing here needs a secret,
+# a token or an account.
+#
+# If this ever goes red, GitHub emails you and marks the commit on the repo
+# page. The site still deploys — GitHub Pages publishes whatever is on main —
+# so treat a red mark as "fix this now", not as "it was caught in time".
+
+name: Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # So you can run it yourself from the Actions tab without pushing anything.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # A newer push makes an older run pointless; don't queue behind it.
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # `npm ci` wants a lockfile that matches package.json exactly, which is
+      # what we want: the checks run against the same versions you have.
+      - name: Install the tools
+        working-directory: tools
+        run: npm ci
+
+      - name: Generated markup matches tools/books.json
+        working-directory: tools
+        run: node render.mjs --check
+
+      - name: The pages themselves
+        working-directory: tools
+        run: node check.mjs
+
+      # The build scripts are only run by hand, but a syntax error in one is
+      # still a broken repo. Parsing them costs a second and catches that.
+      - name: The build scripts still parse
+        working-directory: tools
+        run: |
+          for f in *.mjs admin/*.mjs arc/*.mjs; do
+            node --check "$f"
+          done
+
+      - name: The site's own JavaScript still parses
+        run: |
+          for f in assets/js/*.js; do
+            node --check "$f"
+          done

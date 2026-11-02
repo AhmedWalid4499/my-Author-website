@@ -28,6 +28,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DATA = JSON.parse(readFileSync(path.join(ROOT, 'tools/books.json'), 'utf8'));
 const BOOKS = DATA.books;
 
+// Where a reader reaches him. One place, so nine pages cannot disagree.
+const EMAIL = 'ahmedwalid4499@gmail.com';
+const GOODREADS = 'https://www.goodreads.com/author/show/70192932.Ahmed_El_Bourgy';
+
 
 /** Straight quotes to typographic ones. Presentation only — source files are
  *  left exactly as written. */
@@ -350,6 +354,38 @@ function recipeData() {
     + JSON.stringify(data) + '</script>';
 }
 
+/**
+ * The "keep in touch" block that closes nine pages.
+ *
+ * It is not a signup. There is no list software behind this site and no
+ * address is collected by it: a reader writes, Ahmed answers, and he adds
+ * them to the list he keeps himself. A form that posted nowhere and quietly
+ * opened a mail app was pretending to be more than that.
+ *
+ * Generated because nine hand-kept copies of the same block is nine chances
+ * for one of them to say something the others do not.
+ */
+function keepInTouch() {
+  const subject = encodeURIComponent('The reading list');
+  const body = encodeURIComponent(
+    "Hello Ahmed,\n\nI'd like to hear when there's a new book.\n\n");
+  return `
+        <p class="eyebrow">The reading list</p>
+        <h2 class="display-2" id="newsletter-heading">Be first to <em>know</em></h2>
+        <p class="lede">${typo(
+          'New books, early chapters, and the occasional note from the caf\u00e9. ' +
+          'Write to me and I\'ll add you to the short list I send them to \u2014 a handful ' +
+          'of letters a year, and nothing else, ever.')}</p>
+        <p class="keep-in-touch__actions">
+          <a class="btn btn--on-ink" href="mailto:${EMAIL}?subject=${subject}&amp;body=${body}">Write to me</a>
+          <a class="btn btn--ghost-on-ink" href="${GOODREADS}" rel="noopener">Follow on Goodreads</a>
+        </p>
+        <p class="keep-in-touch__note">${typo(
+          'That link opens your mail app with a line already written. ' +
+          'No form, no list to join, and your address goes nowhere but my inbox.')}</p>
+      `;
+}
+
 const REGIONS = {
   'books-grid': booksGrid,
   'footer-books': footerBooks,
@@ -360,6 +396,7 @@ const REGIONS = {
   'pastry-grid': pastryGrid,
   'tracklist': tracklist,
   'bonus-tracks': bonusTracks,
+  'keep-in-touch': keepInTouch,
 };
 
 // --check verifies the pages are already up to date without writing.

@@ -247,6 +247,66 @@ for (const file of htmlFiles) {
   }
 }
 
+/* ---- a book's own links reach the book ------------------------------
+   Two pages pointed at the author page where the book page belonged, for
+   months, because the book link did not exist yet and nobody went back when
+   it did. books.json knows which links exist; this checks the page uses
+   them. */
+{
+  const books = JSON.parse(readFileSync(path.join(ROOT, 'tools/books.json'), 'utf8')).books;
+  for (const b of books) {
+    const file = `${b.slug}.html`;
+    if (!htmlFiles.includes(file)) continue;
+    const html = readFileSync(path.join(ROOT, file), 'utf8');
+
+    if (b.goodreads && !html.includes(b.goodreads)) {
+      note(file, 'links', `books.json has a Goodreads page for this book ` +
+        `(${b.goodreads}) and the page never links to it`);
+    }
+    if (b.asin && !html.includes(b.asin)) {
+      note(file, 'links', `books.json has ASIN ${b.asin} and the page never links to it`);
+    }
+    // Linking the author page is right in the footer, wrong where a reader is
+    // looking for this book.
+    const heroEnd = html.indexOf('</section>');
+    const hero = heroEnd === -1 ? '' : html.slice(0, heroEnd);
+    if (b.goodreads && hero.includes('goodreads.com/author/')) {
+      note(file, 'links', `the opening section sends readers to the author page ` +
+        `when this book has a Goodreads page of its own`);
+    }
+  }
+}
+
+/* ---- how many books there are ---------------------------------------
+   Four pages say the number out loud, in prose a generator cannot write for
+   them. The number is right today and will be wrong the morning the fifth
+   book goes up, in the exact places nobody thinks to look. So: find every
+   claim, and hold it against tools/books.json. */
+{
+  const books = JSON.parse(readFileSync(path.join(ROOT, 'tools/books.json'), 'utf8')).books;
+  const published = books.filter((b) => b.status === 'published').length;
+  const total = books.length;
+  const WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6,
+                  seven: 7, eight: 8, nine: 9, ten: 10 };
+
+  for (const file of htmlFiles) {
+    const raw = readFileSync(path.join(ROOT, file), 'utf8');
+    const doc = parse(raw, { comment: false });
+    const body = doc.querySelector('body');
+    // The <head> says it too, in the description and the card's alt text.
+    const prose = [body ? body.text : '',
+                   ...[...raw.matchAll(/content="([^"]*)"/g)].map((m) => m[1])].join(' ');
+
+    for (const m of prose.matchAll(/\b(one|two|three|four|five|six|seven|eight|nine|ten) books?\b/gi)) {
+      const said = WORDS[m[1].toLowerCase()];
+      if (said === published || said === total) continue;
+      note(file, 'content',
+        `says "${m[0]}" — there are ${published} published and ${total} in all. ` +
+        `If a book has just gone up, this is the sentence that forgot.`);
+    }
+  }
+}
+
 /* ---- the hand face's glyph list ------------------------------------
    Blue Bookmark Display carries 104 glyphs: ASCII, the curly quotes, the
    dashes and the ellipsis. No accented letters. A title set in it that

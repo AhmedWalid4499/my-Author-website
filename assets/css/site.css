@@ -934,79 +934,34 @@ a { color: var(--gold-deep); }
   }
 
 
-/* 12. Newsletter ================================================== */
+/* 12. Keep in touch =============================================== */
 
-.newsletter {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(2rem, 1rem + 4vw, 4.5rem);
-  align-items: center;
+/* No form, because there is no list software behind this site and nothing
+   here collects an address. A reader writes; he answers; he keeps the list
+   himself. The block says so plainly rather than looking like a subscribe
+   box that quietly opens a mail app. */
+.keep-in-touch {
+  max-width: 52ch;
+  margin-inline: auto;
+  text-align: center;
 }
 
-@media (max-width: 820px) {
-  .newsletter { grid-template-columns: 1fr; }
-}
+.keep-in-touch .lede { margin-inline: auto; }
 
-.subscribe-form {
+.keep-in-touch__actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
+  justify-content: center;
   margin-top: var(--space-md);
 }
 
-.field { flex: 1 1 15rem; min-width: 0; }
-
-.field__label {
-  display: block;
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: .5rem;
-}
-
-.field__input {
-  width: 100%;
-  min-height: 46px;
-  padding: .7rem .95rem;
-  background: rgba(253, 248, 240, .06);
-  border: 1px solid var(--on-ink-line);
-  color: var(--cream);
-  font-size: var(--text-sm);
-  transition: border-color .25s var(--ease), background-color .25s var(--ease);
-}
-
-.field__input::placeholder { color: rgba(253, 248, 240, .5); }
-.field__input:hover { border-color: rgba(253, 248, 240, .25); }
-.field__input:focus { border-color: var(--gold); background: rgba(253, 248, 240, .09); }
-
-/* Honeypot — visually gone, still reachable by bots. */
-.hp {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
-.subscribe-form__submit { flex: 0 0 auto; align-self: flex-end; }
-
-.form-note {
+.keep-in-touch__note {
   font-size: var(--text-xs);
   line-height: 1.8;
-  color: rgba(253, 248, 240, .5);
-  margin-top: var(--space-xs);
-  max-width: 40ch;
+  color: rgba(253, 248, 240, .55);
+  margin-top: var(--space-sm);
 }
-
-.form-status {
-  margin-top: var(--space-xs);
-  font-size: var(--text-sm);
-  min-height: 1.4em;
-}
-
-.form-status[data-state='ok']  { color: var(--gold-light); }
-.form-status[data-state='err'] { color: #f0a9a9; }
 
 
 /* 13. Press kit =================================================== */

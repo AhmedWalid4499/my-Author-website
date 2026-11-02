@@ -5,17 +5,6 @@
    ------------------------------------------------------------------ */
 (function () {
   'use strict';
-
-  /* --------------------------------------------------------------
-     CONFIG — the one line to change when a mailing-list provider is
-     set up. Paste the provider's form endpoint here (Buttondown,
-     Mailchimp, ConvertKit, Formspree, Kit … all give you a POST URL).
-     While it is empty the signup form falls back to opening a
-     pre-addressed email instead, so it still works.
-     -------------------------------------------------------------- */
-  var NEWSLETTER_ENDPOINT = '';
-  var CONTACT_EMAIL = 'ahmedwalid4499@gmail.com';
-
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   /* ============================================================
@@ -172,72 +161,7 @@
     else if (reduceMotion.addListener) reduceMotion.addListener(onMotionChange);
   }
 
-  /* ============================================================
-     Newsletter signup
-     ============================================================ */
-  function initSubscribe() {
-    var forms = document.querySelectorAll('[data-subscribe]');
-    if (!forms.length) return;
-
-    forms.forEach(function (form) {
-      var status = form.querySelector('[data-status]');
-      var button = form.querySelector('button[type="submit"]');
-      var note = form.parentNode.querySelector('[data-fallback-note]');
-
-      // With no provider wired up yet, say plainly what will happen.
-      if (!NEWSLETTER_ENDPOINT && note) note.hidden = false;
-
-      function say(message, state) {
-        if (!status) return;
-        status.textContent = message;
-        status.setAttribute('data-state', state);
-      }
-
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        // Honeypot: a real person never fills this in.
-        var trap = form.querySelector('[name="company"]');
-        if (trap && trap.value) return;
-
-        var emailField = form.querySelector('input[type="email"]');
-        var email = emailField ? emailField.value.trim() : '';
-        if (!email) { say('Please enter an email address.', 'err'); return; }
-
-        if (!NEWSLETTER_ENDPOINT) {
-          // Fallback: open a pre-addressed message the reader can send.
-          var subject = encodeURIComponent('Reading list signup');
-          var body = encodeURIComponent(
-            'Hello Ahmed,\n\nPlease add me to your reading list.\n\nEmail: ' + email + '\n'
-          );
-          window.location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + subject + '&body=' + body;
-          say('Opening your email app so you can send the request…', 'ok');
-          return;
-        }
-
-        if (button) { button.disabled = true; }
-        say('Sending…', '');
-
-        fetch(NEWSLETTER_ENDPOINT, {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(form)
-        })
-          .then(function (res) {
-            if (!res.ok) throw new Error('Request failed');
-            form.reset();
-            say('Thank you — please check your inbox to confirm.', 'ok');
-          })
-          .catch(function () {
-            say('Something went wrong. Please email ' + CONTACT_EMAIL + ' instead.', 'err');
-          })
-          .finally(function () {
-            if (button) button.disabled = false;
-          });
-      });
-    });
-  }
-
+  
   /* ============================================================
      Copy-to-clipboard (press kit bios)
      ============================================================ */
@@ -293,7 +217,6 @@
     initNav();
     initReveal();
     initPetals();
-    initSubscribe();
     initCopy();
     initYear();
   }
