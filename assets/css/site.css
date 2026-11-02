@@ -964,6 +964,53 @@ a { color: var(--gold-deep); }
 }
 
 
+/* 12b. Praise ===================================================== */
+
+/* The section hides itself until there is a quote in it, so the markup can
+   live on every book page from the day it is written and a review becomes two
+   lines in books.json rather than a page to redesign. :has() is doing the
+   work; a browser without it shows an empty, headed section, which is why the
+   heading alone is not the whole story — the quotes carry it. */
+.praise-section:not(:has(.praise__quote)) { display: none; }
+
+.praise {
+  display: grid;
+  gap: var(--space-md);
+  max-width: 62ch;
+  margin-inline: auto;
+}
+
+.praise__quote {
+  margin: 0;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--cream-3);
+  border-inline-start: 3px solid var(--accent, var(--gold));
+  box-shadow: var(--shadow-card);
+}
+
+.praise__quote p {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-lg);
+  line-height: 1.75;
+  color: var(--ink);
+  margin: 0;
+}
+
+.praise__quote cite {
+  display: block;
+  margin-top: var(--space-sm);
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent-ink, var(--ember));
+}
+
+.praise__quote cite a { color: inherit; }
+
+
 /* 13. Press kit =================================================== */
 
 .press-grid {

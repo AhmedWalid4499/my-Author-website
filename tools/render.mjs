@@ -156,10 +156,12 @@ function bookFacts() {
       : '';
     return `      <article class="fade-in${i ? ' mt-lg' : ''}">
         <h3 class="display-4">${esc(b.title)}</h3>
-        <!-- Publication date, page count and ISBN can be added to this list when they are known. -->
+        <!-- Page count and ISBN can be added to this list when they are known. -->
         <dl class="facts mt-md">
           <dt>Title</dt>
-          <dd>${esc(b.title)}</dd>
+          <dd>${esc(b.title)}</dd>${b.published ? `
+          <dt>Published</dt>
+          <dd>${esc(b.published)}</dd>` : ''}
 ${b.jp ? `
           <dt>Japanese title</dt>
           <dd><span class="jp">${b.jp}</span></dd>` : ''}
@@ -416,6 +418,7 @@ function bookJsonLd(opts) {
     image: `${SITE}/assets/img/covers/${b.slug}-900.jpg`,
     description: typo(b.blurb),
     url: page,
+    ...(b.published ? { datePublished: b.published } : {}),
     ...(b.goodreads ? { sameAs: [b.goodreads] } : {}),
   };
 
@@ -449,6 +452,38 @@ function bookJsonLd(opts) {
     + JSON.stringify(graph, null, 2) + '\n</script>';
 }
 
+/**
+ * What other people said about a book.
+ *
+ * Renders nothing until books.json carries a quote, and the section around it
+ * hides itself while it is empty — see .praise-section in site.css. So the
+ * markup can sit on every book page from today, and a review becomes two
+ * lines of JSON rather than a page to redesign.
+ *
+ * Quotes are other people's words. They are escaped and printed, never
+ * rewritten, and the attribution is required: an unattributed rave is worth
+ * less than no rave at all.
+ */
+function bookPraise(opts) {
+  const b = BOOKS.find((x) => x.slug === opts.book);
+  if (!b) throw new Error(`book-praise: no book "${opts.book}" in books.json`);
+  const praise = b.praise || [];
+  if (!praise.length) return '\n      ';
+
+  return '\n' + praise.map((q) => {
+    if (!q.quote || !q.source) {
+      throw new Error(`book-praise: ${b.slug} has a quote with no ${q.quote ? 'source' : 'quote'}`);
+    }
+    const cite = q.url
+      ? `<a href="${esc(q.url)}" target="_blank" rel="noopener">${esc(q.source)}</a>`
+      : esc(q.source);
+    return `        <blockquote class="praise__quote">
+          <p>${esc(typo(q.quote))}</p>
+          <cite>${cite}</cite>
+        </blockquote>`;
+  }).join('\n') + '\n      ';
+}
+
 const REGIONS = {
   'books-grid': booksGrid,
   'footer-books': footerBooks,
@@ -461,6 +496,7 @@ const REGIONS = {
   'bonus-tracks': bonusTracks,
   'keep-in-touch': keepInTouch,
   'book-jsonld': bookJsonLd,
+  'book-praise': bookPraise,
 };
 
 // --check verifies the pages are already up to date without writing.

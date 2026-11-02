@@ -267,6 +267,49 @@ Two things to know:
 
 ---
 
+## Two things waiting on you
+
+Both are slots the site already has. Fill them in `tools/books.json`, run
+`npm run render`, and they appear. Leave them empty and nothing shows — no
+gap, no placeholder.
+
+### A review someone wrote
+
+```json
+"praise": [
+  {
+    "quote": "What they actually said.",
+    "source": "Who said it",
+    "url": "https://… (optional, links the attribution)"
+  }
+]
+```
+
+The *Praise* section on that book's page hides itself while the list is empty
+and appears the moment it isn't. Quotes are printed as written and never
+rewritten, and `source` is required: an unattributed rave is worth less than
+no rave at all.
+
+### When a book came out
+
+```json
+"published": "14 March 2026"
+```
+
+It then shows in the press kit's fact sheet and as `datePublished` in the
+book's structured data, which is what a search result reads. Nothing invents
+this: while it is `null`, no date is claimed anywhere.
+
+### And one thing the repo cannot hold
+
+There is no photograph of the author on the site. For a reader it is optional;
+for a reviewer, a bookseller or a festival programme it is the first thing
+asked for, and the press kit currently cannot offer one. A plain
+head-and-shoulders shot in reasonable light is enough — `tools/build-images.mjs`
+makes the three sizes and the press-kit download from one file.
+
+---
+
 ## Writing to your readers
 
 `tools/admin/` is your own page for writing to people. It runs on your Mac.
