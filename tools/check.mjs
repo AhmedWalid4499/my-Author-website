@@ -247,6 +247,39 @@ for (const file of htmlFiles) {
   }
 }
 
+/* ---- every real page says what it is --------------------------------
+   Structured data is the only part of a page nobody ever looks at, so it is
+   the part that quietly goes missing. A page without it is invisible to the
+   machines deciding whether to show this site to someone searching for it. */
+{
+  // 404 is not indexed, arc.html is a verification note nobody searches for,
+  // and the redirect stub has no content of its own.
+  const EXEMPT = new Set(['404.html', 'arc.html', ...REDIRECTS]);
+
+  for (const file of htmlFiles) {
+    if (EXEMPT.has(file)) continue;
+    const html = readFileSync(path.join(ROOT, file), 'utf8');
+    const blocks = [...html.matchAll(
+      /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+
+    if (!blocks.length) {
+      note(file, 'metadata', 'no structured data — search engines have nothing to go on');
+      continue;
+    }
+    for (const [, body] of blocks) {
+      try {
+        const data = JSON.parse(body);
+        const graph = data['@graph'] || (Array.isArray(data) ? data : [data]);
+        for (const item of graph) {
+          if (!item['@type']) note(file, 'metadata', 'a structured-data item has no @type');
+        }
+      } catch (e) {
+        note(file, 'metadata', `structured data is not valid JSON: ${e.message}`);
+      }
+    }
+  }
+}
+
 /* ---- a book's own links reach the book ------------------------------
    Two pages pointed at the author page where the book page belonged, for
    months, because the book link did not exist yet and nobody went back when

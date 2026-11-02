@@ -29,6 +29,7 @@ const DATA = JSON.parse(readFileSync(path.join(ROOT, 'tools/books.json'), 'utf8'
 const BOOKS = DATA.books;
 
 // Where a reader reaches him. One place, so nine pages cannot disagree.
+const SITE = DATA.site;
 const EMAIL = 'ahmedwalid4499@gmail.com';
 const GOODREADS = 'https://www.goodreads.com/author/show/70192932.Ahmed_El_Bourgy';
 
@@ -386,6 +387,68 @@ function keepInTouch() {
       `;
 }
 
+/**
+ * The Book and BreadcrumbList a book page declares to search engines.
+ *
+ * Generated for the same reason the visible markup is: every field already
+ * lives in books.json, and a hand-kept copy drifts. The two that drifted
+ * first were the Goodreads links — the pages had them, the structured data
+ * did not, so the one thing a search engine reads to connect this book to its
+ * Goodreads entry was the one thing missing.
+ *
+ * Nothing is asserted that books.json does not know. No price, no publication
+ * date, no rating: a wrong one in structured data is worse than none, because
+ * it is the version a machine believes.
+ */
+function bookJsonLd(opts) {
+  const b = BOOKS.find((x) => x.slug === opts.book);
+  if (!b) throw new Error(`book-jsonld: no book "${opts.book}" in books.json`);
+  const page = `${SITE}/${b.slug}.html`;
+
+  const book = {
+    '@type': 'Book',
+    '@id': `${page}#book`,
+    name: b.title,
+    ...(b.jp ? { alternateName: b.jp } : {}),
+    author: { '@id': `${SITE}/#person` },
+    bookFormat: 'https://schema.org/EBook',
+    inLanguage: 'en',
+    image: `${SITE}/assets/img/covers/${b.slug}-900.jpg`,
+    description: typo(b.blurb),
+    url: page,
+    ...(b.goodreads ? { sameAs: [b.goodreads] } : {}),
+  };
+
+  const crumbs = [
+    ['Home', `${SITE}/`],
+    ['Books', `${SITE}/books.html`],
+    [b.title, page],
+  ].map(([name, item], i) => ({ '@type': 'ListItem', position: i + 1, name, item }));
+
+  // The author entity, inline on every book page rather than only on the home
+  // page. A search engine reading this page alone should not have to fetch
+  // another one to find out who wrote the book.
+  const person = {
+    '@type': 'Person',
+    '@id': `${SITE}/#person`,
+    name: 'Ahmed El-Bourgy',
+    url: `${SITE}/`,
+    sameAs: [DATA.goodreadsAuthor],
+  };
+
+  const graph = {
+    '@context': 'https://schema.org',
+    '@graph': [book, person, {
+      '@type': 'BreadcrumbList',
+      '@id': `${page}#breadcrumb`,
+      itemListElement: crumbs,
+    }],
+  };
+
+  return '\n<script type="application/ld+json">\n'
+    + JSON.stringify(graph, null, 2) + '\n</script>';
+}
+
 const REGIONS = {
   'books-grid': booksGrid,
   'footer-books': footerBooks,
@@ -397,6 +460,7 @@ const REGIONS = {
   'tracklist': tracklist,
   'bonus-tracks': bonusTracks,
   'keep-in-touch': keepInTouch,
+  'book-jsonld': bookJsonLd,
 };
 
 // --check verifies the pages are already up to date without writing.
@@ -412,7 +476,7 @@ for (const file of readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort()) 
   for (const [name, build] of Object.entries(REGIONS)) {
     // Replace from the marker up to the close of its container. Cards contain
     // no <div> and footer rows no <ul>, so the first close tag is the right one.
-    if (name === 'quiz-data' || name === 'recipe-data') {
+    if (name === 'quiz-data' || name === 'recipe-data' || name === 'book-jsonld') {
       // This region replaces a whole <script> element rather than the text
       // inside one, because a script's content is raw text: a marker comment
       // placed inside it would be parsed as part of the JSON.
