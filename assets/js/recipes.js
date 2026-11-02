@@ -116,8 +116,15 @@
 
     showTab('mirai');
     dialog.showModal();
-    dialog.querySelector('.recipe__sheet').scrollTop = 0;
-    el.tabMirai.focus();
+
+    // Focus the sheet rather than the first tab. Focusing a control by script
+    // makes some browsers treat it as keyboard focus and draw the focus ring,
+    // which then follows the selection even for a reader using a mouse. The
+    // sheet is not a control, so it takes focus silently; Tab still starts
+    // inside the dialog and a real keyboard user still gets rings.
+    var sheet = dialog.querySelector('.recipe__sheet');
+    sheet.scrollTop = 0;
+    sheet.focus({ preventScroll: true });
   }
 
   function close() {

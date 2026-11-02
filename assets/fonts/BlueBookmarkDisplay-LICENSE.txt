@@ -1,0 +1,38 @@
+Blue Bookmark Display
+=====================
+
+Built from Purisa Bold by the Thai Linux Working Group (TLWG).
+Purisa is licensed under the GNU GPL v2 or later, with the font exception.
+This derivative stays under the same licence.
+
+In practice:
+- You may install it and use it for your cover, website, bookmarks and print.
+  Text set in it (images, PDFs, printed books) is not affected by the GPL.
+- Embedding it in a PDF or using it as a web font is allowed (that is what the
+  font exception covers).
+- If you share or sell the font file itself, it must stay under GPL and stay
+  free.
+
+                                      — licence note supplied with the font
+
+Distribution notes for this repository
+--------------------------------------
+
+This site serves the font as a web font, which is distribution of the font
+file, so the licence travels with it:
+
+  assets/fonts/blue-bookmark-display.woff2   what the site serves
+  assets/fonts/src/BlueBookmarkDisplay-Regular.ttf
+                                             the file it was built from, kept
+                                             as the source form the GPL asks
+                                             to be available
+  assets/fonts/BlueBookmarkDisplay-LICENSE.txt
+                                             this note
+
+The woff2 is a straight re-compression of that TTF — no glyphs were added,
+removed or redrawn. tools/build-fonts.mjs rebuilds it.
+
+Upstream: Purisa, Thai Linux Working Group — https://linux.thai.net/projects/fonts-tlwg
+GPL v2: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+Font exception: the licence permits embedding the font in a document without
+the document itself becoming GPL.

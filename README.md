@@ -54,6 +54,9 @@ assets/
   css/site.css              The whole design system, sectioned and commented
   css/fonts.css             @font-face rules — generated, do not hand-edit
   fonts/*.woff2             Self-hosted webfonts
+  fonts/src/                Font sources that aren't fetched from Google
+  fonts/BlueBookmarkDisplay-LICENSE.txt
+                            GPL notice — travels with the font it describes
   js/site.js                Nav, scroll reveal, petals, signup form, copy buttons
   img/covers/               Book covers — 4 widths × webp/jpg, plus a full-size master
   img/author/               Portrait — 3 widths × webp/jpg, plus a full-size master
@@ -132,6 +135,32 @@ already there it will fall back to a system font. Add it to `JP_GLYPHS` in
 `tools/build-fonts.mjs` and run `npm run fonts`. `npm run check` fails if you
 forget — that is how the 霧 on the 404 page was caught.
 
+### The hand-lettered titles
+
+*The Blue Bookmark Bookshop* has its own display face, taken from the cover's
+lettering: **Blue Bookmark Display**, built from Purisa Bold (Thai Linux Working
+Group) and licensed GPL v2 or later **with the font exception**. Serving a web
+font is distributing the font, so three things travel together and must stay
+together:
+
+    assets/fonts/blue-bookmark-display.woff2            what the site serves
+    assets/fonts/src/BlueBookmarkDisplay-Regular.ttf    what it was built from
+    assets/fonts/BlueBookmarkDisplay-LICENSE.txt        the notice
+
+`npm run fonts` re-compresses the TTF to woff2; no glyphs are added, removed or
+redrawn. Text *set* in the face — the site, the cover, a PDF — is not affected
+by the GPL. That is what the font exception is for.
+
+Apply it with `.title--hand`, and only inside that book's world: the shop, the
+pastries, the quiz, the playlist. On the site's own furniture it reads as the
+website's voice instead of the book's, which is not what it is for.
+
+The face carries 104 glyphs — ASCII, the curly quotes, the dashes, the ellipsis
+— **and no accented letters**. A title that reaches for one would break into two
+typefaces mid-word, so `npm run check` reads the glyph list out of the TTF and
+fails on any `.title--hand` that sets a character the face hasn't got. Try it:
+put *Sakura Slice Café* in one.
+
 ---
 
 ## The design, and why
@@ -206,6 +235,35 @@ Three things worth knowing before you change it:
 The result card is drawn with `<canvas>` at 1080×1350 — Instagram's portrait
 size — from the same images the page already uses, so it needs no network and
 the canvas is never tainted.
+
+---
+
+## The recipes
+
+Every pastry on the book page opens its recipe in a dialog with two tabs: the
+way Mirai makes it, and the way you actually can. The words live in
+`tools/recipes.json` and are inlined into the page by `npm run render`, the same
+way the quiz data is, so nothing is fetched when a card is clicked and the
+markup can't drift from the source.
+
+A card is wired to a recipe in `PASTRY_CARDS` in `tools/render.mjs`, which maps
+the grid's slug to a key in `recipes.json`. A card may carry its own short
+`name` and `cue`: the birthday cake does, because its real title runs to seven
+words and would make that one card twice its neighbours' height. A card with its
+own label doesn't show the recipe's Japanese either — the two wouldn't match.
+Point a card at `recipe: null` and it renders as an illustration with no button,
+which is what the cake was before it had a recipe.
+
+Two things to know:
+
+- **New Japanese needs new glyphs**, as everywhere else. A pastry name in
+  Japanese means adding its characters to `JP_GLYPHS` and running
+  `npm run fonts`; `npm run check` fails if you forget.
+- **The dialog takes focus on its sheet, not its first tab.** Focusing a control
+  by script makes some browsers treat it as keyboard focus and draw the focus
+  ring, which then follows the selection around for a reader using a mouse. The
+  sheet isn't a control, so it takes focus silently. Keyboard users still get
+  rings, because they're still using the keyboard.
 
 ---
 

@@ -281,8 +281,11 @@ const PASTRY_CARDS = [
     alt: 'A cream puff dusted with icing sugar on a blue-rimmed plate.' },
   { slug: 'chocolate-pastry', recipe: 'eclair',       w: 1024, h: 1024,
     alt: 'A chocolate-dipped cream bun in a spotted paper bag, one bite taken.' },
-  { slug: 'birthday-cake',    recipe: null,           w: 1024, h: 1024,
-    name: 'Birthday Cake',
+  // The cake's real title runs to seven words, which is four lines on a card
+  // and a card twice its neighbours' height. The grid gets the short label it
+  // needs to be scannable; the full title is in the dialog, where it fits.
+  { slug: 'birthday-cake',    recipe: 'birthdaycake', w: 1024, h: 1024,
+    name: 'Birthday Cake', cue: 'Bonus',
     alt: 'A small pink birthday cake with sprinkles and one lit candle on a cake stand.' },
 ];
 
@@ -298,8 +301,11 @@ function pastryArt(c) {
 function pastryGrid() {
   const rows = PASTRY_CARDS.map((c) => {
     const r = c.recipe ? RECIPES.recipes[c.recipe] : null;
-    const name = typo(r ? r.name : c.name);
-    const jp = r ? `\n            <span class="pastry__jp jp">${r.japanese}</span>` : '';
+    // A card with its own label is not showing the recipe's title, so it does
+    // not show the recipe's Japanese either: the two would not match.
+    const name = typo(c.name || r.name);
+    const jp = r && !c.name
+      ? `\n            <span class="pastry__jp jp">${r.japanese}</span>` : '';
 
     if (!r) {
       return `        <li class="pastry pastry--plain">
@@ -311,7 +317,7 @@ function pastryGrid() {
           <button class="pastry__open" type="button" data-recipe="${c.recipe}" aria-haspopup="dialog">
             <span class="pastry__art">${pastryArt(c)}</span>
             <span class="pastry__name">${esc(name)}</span>${jp}
-            <span class="pastry__cue">Recipe</span>
+            <span class="pastry__cue">${esc(c.cue || 'Recipe')}</span>
           </button>
         </li>`;
   });

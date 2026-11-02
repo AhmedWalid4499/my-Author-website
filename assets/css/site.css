@@ -97,6 +97,9 @@
   --font-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
   --font-body:    'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-jp:      'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  /* The cover's own lettering. 104 glyphs and no accents, so it falls back
+     to the display serif for anything it doesn't carry. */
+  --font-hand:    'Blue Bookmark Display', 'Cormorant Garamond', serif;
 
   --text-xs:   .72rem;
   --text-sm:   .82rem;
@@ -237,6 +240,23 @@ h1 em, h2 em, h3 em {
 .display-2 { font-size: var(--display-2); line-height: 1.08; }
 .display-3 { font-size: var(--display-3); font-weight: 400; }
 .display-4 { font-size: var(--display-4); font-weight: 400; }
+
+/* Blue Bookmark Display is the lettering from that book's cover, so it stays
+   inside that book's world — the shop, the pastries, the quiz, the playlist —
+   and never on the site's own furniture, where it would read as the website's
+   voice rather than the book's. It has no accented letters: "Sakura Slice
+   Cafe" would lose its e-acute to the fallback serif mid-word, so
+   tools/check.mjs checks every .title--hand against the face's glyph list. */
+.title--hand {
+  font-family: var(--font-hand);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+/* The face has no italic. Left alone the browser would slant it by hand; the
+   colour change carries the emphasis by itself. */
+.title--hand em { font-style: normal; }
 
 .eyebrow {
   font-family: var(--font-body);
@@ -2044,6 +2064,10 @@ a { color: var(--gold-deep); }
 }
 
 .recipe::backdrop { background: rgba(23, 64, 110, .55); }
+
+/* The sheet takes focus when the dialog opens, so no ring is wanted here:
+   it is a scroll container, not a control. */
+.recipe__sheet:focus, .recipe__sheet:focus-visible { outline: none; }
 
 .recipe__sheet {
   --recipe-gutter: clamp(1.1rem, .6rem + 2.4vw, 2.4rem);

@@ -7,19 +7,26 @@
  *   - Noto Serif JP is subset with Google's `text=` parameter down to exactly
  *     the glyphs this site sets, turning a multi-megabyte family into ~10 KB.
  *
+ *   - Blue Bookmark Display is not on Google Fonts. It is built from the TTF
+ *     kept in assets/fonts/src, re-compressed to woff2 here rather than
+ *     checked in as a binary nobody can retrace. It is GPL v2 with the font
+ *     exception; see assets/fonts/BlueBookmarkDisplay-LICENSE.txt, which
+ *     travels with it because serving a web font is distributing it.
+ *
  * If you add Japanese text to the site, add its characters to JP_GLYPHS below
  * and re-run:  node tools/build-fonts.mjs
  */
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { compress } from 'wawoff2';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FONT_DIR = path.join(ROOT, 'assets/fonts');
 const CSS_OUT = path.join(ROOT, 'assets/css/fonts.css');
 
 // Every Japanese character that appears anywhere on the site.
-const JP_GLYPHS = '物語を紡ぐ人明日から桜スライス・カフェ完璧なの出夢十三静霧君がいたとき青栞雨には温飲みご使用後お返しくださ誰一必要もれません灯籠声つ勇者沈める街～苺チーズケキレモンブルベリタトミィユシュクムエア塩ひホッョコ';
+const JP_GLYPHS = '物語を紡ぐ人明日から桜スライス・カフェ完璧なの出夢十三静霧君がいたとき青栞雨には温飲みご使用後お返しくださ誰一必要もれません灯籠声つ勇者沈める街～苺チーズケキレモンブルベリタトミィユシュクムエア塩ひホッョコ、じゃ';
 
 const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
@@ -37,6 +44,18 @@ const SOURCES = [
       'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400&display=swap&text=' +
       encodeURIComponent(JP_GLYPHS),
     keep: null, // a `text=` request returns a single unlabelled face
+  },
+];
+
+// Fonts built from a file in the repo rather than fetched. No subsetting: the
+// face has 104 glyphs to begin with.
+const LOCAL = [
+  {
+    family: 'Blue Bookmark Display',
+    src: 'src/BlueBookmarkDisplay-Regular.ttf',
+    name: 'blue-bookmark-display.woff2',
+    style: 'normal',
+    weight: '400',
   },
 ];
 
@@ -98,6 +117,15 @@ for (const f of faces) {
   writeFileSync(path.join(FONT_DIR, f.name), buf);
   total += buf.length;
   console.log(`  ${f.name.padEnd(46)} ${(buf.length / 1024).toFixed(1)} KB`);
+}
+
+for (const f of LOCAL) {
+  const ttf = readFileSync(path.join(FONT_DIR, f.src));
+  const buf = Buffer.from(await compress(ttf));
+  writeFileSync(path.join(FONT_DIR, f.name), buf);
+  total += buf.length;
+  faces.push({ ...f, range: '' });
+  console.log(`  ${f.name.padEnd(46)} ${(buf.length / 1024).toFixed(1)} KB  (local)`);
 }
 
 writeFileSync(

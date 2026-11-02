@@ -247,6 +247,57 @@ for (const file of htmlFiles) {
   }
 }
 
+/* ---- the hand face's glyph list ------------------------------------
+   Blue Bookmark Display carries 104 glyphs: ASCII, the curly quotes, the
+   dashes and the ellipsis. No accented letters. A title set in it that
+   reaches for one gets the fallback serif for that letter alone, mid-word,
+   which is worse than not using the face at all — so read the glyph list out
+   of the font itself and check every .title--hand against it. */
+{
+  const ttf = readFileSync(path.join(ROOT, 'assets/fonts/src/BlueBookmarkDisplay-Regular.ttf'));
+  const tables = {};
+  for (let i = 0, n = ttf.readUInt16BE(4); i < n; i++) {
+    const o = 12 + i * 16;
+    tables[ttf.toString('ascii', o, o + 4)] = ttf.readUInt32BE(o + 8);
+  }
+
+  // cmap format 4 is the one a Latin TTF uses for the BMP.
+  const covered = new Set();
+  const cmap = tables['cmap'];
+  for (let i = 0, n = ttf.readUInt16BE(cmap + 2); i < n; i++) {
+    const sub = cmap + ttf.readUInt32BE(cmap + 4 + i * 8 + 4);
+    if (ttf.readUInt16BE(sub) !== 4) continue;
+    const segs = ttf.readUInt16BE(sub + 6) / 2;
+    const endAt = sub + 14, startAt = endAt + segs * 2 + 2;
+    for (let sgm = 0; sgm < segs; sgm++) {
+      const end = ttf.readUInt16BE(endAt + sgm * 2);
+      const start = ttf.readUInt16BE(startAt + sgm * 2);
+      if (start === 0xffff) continue;
+      for (let c = start; c <= end; c++) covered.add(c);
+    }
+  }
+  if (covered.size < 90) {
+    note('assets/fonts', 'font',
+      `read only ${covered.size} glyphs from the hand face — the cmap parse is wrong, so this check proves nothing`);
+  }
+
+  for (const file of htmlFiles) {
+    const doc = parse(readFileSync(path.join(ROOT, file), 'utf8'), { comment: false });
+    const missing = new Set();
+    for (const el of doc.querySelectorAll('.title--hand')) {
+      for (const ch of el.text) {
+        const c = ch.codePointAt(0);
+        if (c > 0x20 && !covered.has(c)) missing.add(ch);
+      }
+    }
+    if (missing.size) {
+      note(file, 'font', `.title--hand sets character(s) the hand face has no glyph for: ` +
+        `${[...missing].join(' ')} — that word would break into two typefaces, so either ` +
+        `reword the title or drop .title--hand from it`);
+    }
+  }
+}
+
 /* ---- colour: every accent must survive the deepest ground ---- */
 {
   // Resolve a token to a hex literal, following one level of var() aliasing.

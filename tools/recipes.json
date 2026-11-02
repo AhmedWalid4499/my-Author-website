@@ -1,7 +1,10 @@
 {
   "title": "Recipes from the Aoi Shiori Kitchen",
   "subtitle": "Mirai never measures. Hare wishes she would. Here's each pastry the way she makes it, and the way you actually can.",
-  "tabs": { "mirai": "Mirai's Way", "recipe": "The Real Recipe" },
+  "tabs": {
+    "mirai": "Mirai's Way",
+    "recipe": "The Real Recipe"
+  },
   "recipes": {
     "cheesecake": {
       "name": "Strawberry Cheesecake",
@@ -25,9 +28,33 @@
         "cook": "55 min",
         "rest": "6 hours or overnight",
         "ingredients": [
-          { "group": "Base", "items": ["200 g digestive biscuits", "80 g butter, melted"] },
-          { "group": "Filling", "items": ["600 g full-fat cream cheese, room temperature", "150 g caster sugar", "2 tbsp cornflour", "3 large eggs, room temperature", "150 ml sour cream", "1 tsp vanilla extract", "Zest of ½ lemon"] },
-          { "group": "Strawberry topping", "items": ["300 g strawberries, hulled and halved", "2 tbsp strawberry jam", "1 tsp lemon juice"] }
+          {
+            "group": "Base",
+            "items": [
+              "200 g digestive biscuits",
+              "80 g butter, melted"
+            ]
+          },
+          {
+            "group": "Filling",
+            "items": [
+              "600 g full-fat cream cheese, room temperature",
+              "150 g caster sugar",
+              "2 tbsp cornflour",
+              "3 large eggs, room temperature",
+              "150 ml sour cream",
+              "1 tsp vanilla extract",
+              "Zest of ½ lemon"
+            ]
+          },
+          {
+            "group": "Strawberry topping",
+            "items": [
+              "300 g strawberries, hulled and halved",
+              "2 tbsp strawberry jam",
+              "1 tsp lemon juice"
+            ]
+          }
         ],
         "steps": [
           "Heat the oven to 160°C (140°C fan). Line the base of a 20 cm springform tin.",
@@ -40,7 +67,6 @@
         "tip": "Every ingredient at room temperature means no lumps and no cracks."
       }
     },
-
     "tart": {
       "name": "Lemon Blueberry Tart",
       "japanese": "レモンとブルーベリーのタルト",
@@ -64,9 +90,36 @@
         "cook": "35 min",
         "rest": "2 hours",
         "ingredients": [
-          { "group": "Press-in crust", "items": ["150 g plain flour", "50 g sugar", "¼ tsp salt", "100 g butter, melted", "1 tsp vanilla extract"] },
-          { "group": "Lemon filling", "items": ["1 can (397 g) sweetened condensed milk", "120 ml fresh lemon juice (about 3 lemons)", "Zest of 1 lemon", "3 egg yolks"] },
-          { "group": "Blueberry sauce", "items": ["200 g blueberries", "2 tbsp sugar", "1 tbsp lemon juice", "A pinch of salt", "1 tsp cornflour mixed with 1 tbsp water", "Fresh mint, to finish"] }
+          {
+            "group": "Press-in crust",
+            "items": [
+              "150 g plain flour",
+              "50 g sugar",
+              "¼ tsp salt",
+              "100 g butter, melted",
+              "1 tsp vanilla extract"
+            ]
+          },
+          {
+            "group": "Lemon filling",
+            "items": [
+              "1 can (397 g) sweetened condensed milk",
+              "120 ml fresh lemon juice (about 3 lemons)",
+              "Zest of 1 lemon",
+              "3 egg yolks"
+            ]
+          },
+          {
+            "group": "Blueberry sauce",
+            "items": [
+              "200 g blueberries",
+              "2 tbsp sugar",
+              "1 tbsp lemon juice",
+              "A pinch of salt",
+              "1 tsp cornflour mixed with 1 tbsp water",
+              "Fresh mint, to finish"
+            ]
+          }
         ],
         "steps": [
           "Heat the oven to 180°C (160°C fan). Mix the flour, sugar and salt, then stir in the melted butter and vanilla until it clumps.",
@@ -79,7 +132,6 @@
         "tip": "The pinch of salt in the sauce is what makes the blueberries taste more like blueberries."
       }
     },
-
     "millefeuille": {
       "name": "Mille-Feuille",
       "japanese": "ミルフィーユ",
@@ -102,9 +154,31 @@
         "cook": "25 min",
         "rest": "3 hours",
         "ingredients": [
-          { "group": "Pastry", "items": ["1 sheet (about 320 g) ready-rolled all-butter puff pastry"] },
-          { "group": "Crème pâtissière", "items": ["500 ml whole milk", "2 tsp vanilla extract (or 1 vanilla pod)", "5 egg yolks", "100 g sugar", "40 g cornflour", "30 g butter"] },
-          { "group": "Icing", "items": ["150 g icing sugar", "1–2 tbsp milk", "20 g dark chocolate, melted"] }
+          {
+            "group": "Pastry",
+            "items": [
+              "1 sheet (about 320 g) ready-rolled all-butter puff pastry"
+            ]
+          },
+          {
+            "group": "Crème pâtissière",
+            "items": [
+              "500 ml whole milk",
+              "2 tsp vanilla extract (or 1 vanilla pod)",
+              "5 egg yolks",
+              "100 g sugar",
+              "40 g cornflour",
+              "30 g butter"
+            ]
+          },
+          {
+            "group": "Icing",
+            "items": [
+              "150 g icing sugar",
+              "1–2 tbsp milk",
+              "20 g dark chocolate, melted"
+            ]
+          }
         ],
         "steps": [
           "Make the crème pâtissière first. Heat the milk with the vanilla until steaming. Whisk the yolks, sugar and cornflour in a bowl, then slowly pour in the hot milk, whisking.",
@@ -117,7 +191,6 @@
         "tip": "Bake the pastry darker than you think. Pale pastry goes soft under the cream."
       }
     },
-
     "creampuff": {
       "name": "Cream Puff",
       "japanese": "シュークリーム",
@@ -140,8 +213,27 @@
         "cook": "35 min",
         "rest": "20 min cooling",
         "ingredients": [
-          { "group": "Choux pastry", "items": ["60 ml water", "60 ml whole milk", "55 g butter, cubed", "1 tsp sugar", "A pinch of salt", "70 g plain flour, sifted", "2 large eggs, beaten (about 110 g)"] },
-          { "group": "Vanilla cream", "items": ["300 ml cold double/heavy cream", "2 tbsp icing sugar", "1 tsp vanilla extract", "Icing sugar, for dusting"] }
+          {
+            "group": "Choux pastry",
+            "items": [
+              "60 ml water",
+              "60 ml whole milk",
+              "55 g butter, cubed",
+              "1 tsp sugar",
+              "A pinch of salt",
+              "70 g plain flour, sifted",
+              "2 large eggs, beaten (about 110 g)"
+            ]
+          },
+          {
+            "group": "Vanilla cream",
+            "items": [
+              "300 ml cold double/heavy cream",
+              "2 tbsp icing sugar",
+              "1 tsp vanilla extract",
+              "Icing sugar, for dusting"
+            ]
+          }
         ],
         "steps": [
           "Heat the oven to 200°C (180°C fan) and line a tray with baking paper.",
@@ -154,7 +246,6 @@
         "tip": "If they collapse when they come out, they needed 5 more minutes. Under-baked choux always sinks."
       }
     },
-
     "eclair": {
       "name": "Chocolate Éclair",
       "japanese": "エクレア",
@@ -177,9 +268,31 @@
         "cook": "35 min",
         "rest": "2 hours",
         "ingredients": [
-          { "group": "Choux pastry", "items": ["1 batch choux pastry (see Cream Puff)"] },
-          { "group": "Chocolate crème pâtissière", "items": ["400 ml whole milk", "4 egg yolks", "80 g sugar", "30 g cornflour", "80 g dark chocolate (60–70%), chopped", "20 g butter"] },
-          { "group": "Chocolate glaze", "items": ["100 g dark chocolate, chopped", "80 ml double/heavy cream", "1 tsp golden syrup or honey"] }
+          {
+            "group": "Choux pastry",
+            "items": [
+              "1 batch choux pastry (see Cream Puff)"
+            ]
+          },
+          {
+            "group": "Chocolate crème pâtissière",
+            "items": [
+              "400 ml whole milk",
+              "4 egg yolks",
+              "80 g sugar",
+              "30 g cornflour",
+              "80 g dark chocolate (60–70%), chopped",
+              "20 g butter"
+            ]
+          },
+          {
+            "group": "Chocolate glaze",
+            "items": [
+              "100 g dark chocolate, chopped",
+              "80 ml double/heavy cream",
+              "1 tsp golden syrup or honey"
+            ]
+          }
         ],
         "steps": [
           "Make the chocolate cream. Heat the milk until steaming. Whisk the yolks, sugar and cornflour, then whisk in the hot milk. Return to the pan and whisk over medium heat until thick and bubbling, then cook 1 more minute.",
@@ -192,7 +305,6 @@
         "tip": "A star nozzle helps the éclairs puff evenly without cracking."
       }
     },
-
     "hotchocolate": {
       "name": "Hot Chocolate with a Pinch of Salt",
       "japanese": "塩ひとつまみのホットチョコレート",
@@ -215,7 +327,18 @@
         "cook": "5 min",
         "rest": "",
         "ingredients": [
-          { "group": "Hot chocolate", "items": ["250 ml whole milk", "30 g dark chocolate (60–70%), chopped", "1 tbsp cocoa powder", "1–2 tsp sugar, to taste", "A small pinch of flaky sea salt", "A drop of vanilla extract", "Whipped cream or marshmallows (optional)"] }
+          {
+            "group": "Hot chocolate",
+            "items": [
+              "250 ml whole milk",
+              "30 g dark chocolate (60–70%), chopped",
+              "1 tbsp cocoa powder",
+              "1–2 tsp sugar, to taste",
+              "A small pinch of flaky sea salt",
+              "A drop of vanilla extract",
+              "Whipped cream or marshmallows (optional)"
+            ]
+          }
         ],
         "steps": [
           "Warm the milk in a small pan over medium-low heat until steaming. Don't let it boil.",
@@ -225,6 +348,75 @@
           "Whisk hard for a few seconds to make it foamy, pour into a big mug, and top with cream or marshmallows."
         ],
         "tip": "The salt doesn't make it salty. It makes the chocolate taste deeper and the sweetness taste rounder."
+      }
+    },
+    "birthdaycake": {
+      "name": "The Delicious Not-So-Perfect Perfect Cake",
+      "japanese": "おいしい、完璧じゃない完璧なケーキ",
+      "image": "assets/cake.png",
+      "chapter": "Interlude Four · The Delicious Not-So-Perfect Perfect Cake",
+      "bonus": true,
+      "mirai": {
+        "intro": "For the people who taught you that perfect was never the point.",
+        "method": [
+          "Wake up very early. Wake Hare up too. He'll forgive you once the sponges come out.",
+          "Three vanilla sponges. Butter, sugar, eggs, flour, milk, and enough vanilla that the whole street knows what you're up to.",
+          "Buttercream for the middle. Hare knows what goes in it. Ask him. He'll push the right things towards you.",
+          "Pink frosting all over. Yes, pink. It has to be pink.",
+          "One candle on top, and a trail of sprinkles running from the candle down the side.",
+          "Step back and look at it. If it looks too perfect, pick it up and give it a good shake. There. Now it's right."
+        ],
+        "hare": "Hare had a name for it long before anyone asked. He only shares it with people he trusts."
+      },
+      "recipe": {
+        "serves": "12–14 slices",
+        "prep": "1 hour",
+        "cook": "28 min",
+        "rest": "1 hour cooling + 30 min chilling",
+        "ingredients": [
+          {
+            "group": "Vanilla sponges (three 20 cm layers)",
+            "items": [
+              "375 g plain flour",
+              "1 tbsp baking powder",
+              "½ tsp salt",
+              "225 g unsalted butter, softened",
+              "400 g caster sugar",
+              "4 large eggs, room temperature",
+              "1 tbsp vanilla extract",
+              "300 ml whole milk, room temperature"
+            ]
+          },
+          {
+            "group": "Vanilla buttercream",
+            "items": [
+              "350 g unsalted butter, softened",
+              "700 g icing sugar, sifted",
+              "3–4 tbsp milk",
+              "2 tsp vanilla extract",
+              "A pinch of salt",
+              "Pink gel food colouring (or 1–2 tbsp freeze-dried strawberry powder)"
+            ]
+          },
+          {
+            "group": "To finish",
+            "items": [
+              "Rainbow sprinkles",
+              "1 birthday candle"
+            ]
+          }
+        ],
+        "steps": [
+          "Heat the oven to 175°C (155°C fan). Grease three 20 cm round tins and line the bases with baking paper.",
+          "Whisk the flour, baking powder and salt together. In another bowl, beat the butter and sugar for 3–4 minutes until pale and fluffy. Beat in the eggs one at a time, then the vanilla.",
+          "Add the flour in three parts, alternating with the milk, mixing on low just until smooth. Divide evenly between the tins.",
+          "Bake for 25–28 minutes, until a skewer comes out clean. Cool in the tins for 10 minutes, then turn out and cool completely.",
+          "For the buttercream, beat the butter for 3 minutes until very pale. Add the icing sugar a little at a time, then the milk, vanilla and salt, and beat for 2 more minutes until light. Set aside about a third, plain, for the filling. Tint the rest pink.",
+          "Stack the sponges with plain buttercream between each layer. Don't level them, and don't line them up perfectly. Let each layer sit a little off-centre.",
+          "Spread a thin layer of pink buttercream over the whole cake and chill for 30 minutes. Then cover it with the rest, in loose, swooping strokes.",
+          "Push the candle into the top and scatter a trail of sprinkles from the candle down one side."
+        ],
+        "tip": "Stack the layers slightly off-centre before you frost, instead of shaking it at the end like Mirai. You get the same lopsided cake without the buttercream sliding off."
       }
     }
   }
