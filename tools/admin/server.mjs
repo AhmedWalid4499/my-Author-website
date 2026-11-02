@@ -363,6 +363,33 @@ const server = createServer(async (req, res) => {
 const seeded = store.seedFromArc(HERE, ARC);
 if (seeded) note(`Started your contact list from the ARC readers — ${seeded} imported, tagged "arc".`);
 
+/**
+ * Starting it twice is the easiest mistake there is to make: the panel is
+ * still running in a terminal tab from this morning. Node's own answer to a
+ * taken port is an unhandled 'error' event and a stack trace, which tells
+ * someone who only wanted to write a letter nothing at all.
+ */
+server.on('error', (e) => {
+  console.log('');
+  if (e.code === 'EADDRINUSE') {
+    console.log(`  Port ${PORT} is already in use.`);
+    console.log('');
+    console.log('  That is almost always the panel itself, still running in');
+    console.log('  another terminal tab. Open it before starting a second:');
+    console.log('');
+    console.log(`      http://127.0.0.1:${PORT}`);
+    console.log('');
+    console.log('  If that page does not load, something else holds the port.');
+    console.log('  Put the panel on a different one:');
+    console.log('');
+    console.log(`      ADMIN_PORT=${PORT + 1} npm run admin`);
+  } else {
+    console.log(`  The panel could not start: ${e.message}`);
+  }
+  console.log('');
+  process.exit(1);
+});
+
 server.listen(PORT, '127.0.0.1', () => {
   console.log('');
   console.log(`  Admin  →  http://127.0.0.1:${PORT}`);

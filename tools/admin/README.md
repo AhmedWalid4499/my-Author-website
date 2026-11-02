@@ -9,6 +9,10 @@ cd tools && npm run admin
 
 Then open **http://127.0.0.1:8899**.
 
+If it says the port is already in use, the panel is already running in another
+terminal tab — open the address above rather than starting a second one. It
+keeps running until you close that tab or press Ctrl-C in it.
+
 ## Why it is not on the website
 
 The site is static files on GitHub Pages. There is no server behind it, so it
