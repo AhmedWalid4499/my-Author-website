@@ -1,5 +1,5 @@
 import { parse } from 'node-html-parser';
-import { readFileSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -245,6 +245,68 @@ for (const file of htmlFiles) {
         `— add them to JP_GLYPHS in tools/build-fonts.mjs and re-run it`);
     }
   }
+}
+
+/* ---- weight ---------------------------------------------------------
+   This site began as one 2 MB index.html with every photograph base64'd into
+   it. Nothing stops that coming back except somebody noticing, so: budgets,
+   set well above where things sit today, and a hard line on data: URIs, which
+   is how it happened the first time.
+
+   The press-kit masters (*-full.jpg) are deliberately large — they exist to
+   be downloaded by a reviewer, not served to a reader — so they are exempt. */
+{
+  const KB = 1024;
+  const BUDGET = {
+    html: 90 * KB,      // largest today: 47 KB, and it inlines every recipe
+    css: 90 * KB,       // largest today: 61 KB
+    js: 25 * KB,        // largest today: 12 KB
+    image: 400 * KB,    // largest reader-facing today: 352 KB
+    dataUri: 2 * KB,    // an icon is fine; a photograph is not
+  };
+
+  const size = (p) => statSync(path.join(ROOT, p)).size;
+  const kb = (n) => `${(n / KB).toFixed(0)} KB`;
+
+  for (const file of htmlFiles) {
+    const bytes = size(file);
+    if (bytes > BUDGET.html) {
+      note(file, 'weight', `${kb(bytes)} of HTML, over the ${kb(BUDGET.html)} budget`);
+    }
+    // The thing that actually went wrong the first time.
+    const html = readFileSync(path.join(ROOT, file), 'utf8');
+    for (const m of html.matchAll(/data:[^;,"')\s]+;base64,([A-Za-z0-9+/=]+)/g)) {
+      const weight = Math.floor(m[1].length * 3 / 4);
+      if (weight > BUDGET.dataUri) {
+        note(file, 'weight', `a ${kb(weight)} file is base64'd into the page. ` +
+          `Put it in assets/ and link it — that is how this site got to 2 MB.`);
+      }
+    }
+  }
+
+  for (const dir of ['assets/css', 'assets/js']) {
+    for (const name of readdirSync(path.join(ROOT, dir))) {
+      const rel = `${dir}/${name}`;
+      const limit = name.endsWith('.css') ? BUDGET.css : BUDGET.js;
+      const bytes = size(rel);
+      if (bytes > limit) note(rel, 'weight', `${kb(bytes)}, over the ${kb(limit)} budget`);
+    }
+  }
+
+  const walk = (dir) => {
+    for (const name of readdirSync(path.join(ROOT, dir))) {
+      const rel = `${dir}/${name}`;
+      if (statSync(path.join(ROOT, rel)).isDirectory()) { walk(rel); continue; }
+      if (!/\.(jpg|jpeg|png|webp|gif|svg)$/i.test(name)) continue;
+      if (name.includes('-full.')) continue;            // press-kit masters
+      const bytes = size(rel);
+      if (bytes > BUDGET.image) {
+        note(rel, 'weight', `${kb(bytes)}, over the ${kb(BUDGET.image)} budget for ` +
+          `an image a reader downloads. Re-run npm run images, or make it a -full master.`);
+      }
+    }
+  };
+  walk('assets/img');
 }
 
 /* ---- every real page says what it is --------------------------------

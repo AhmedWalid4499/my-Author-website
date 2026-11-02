@@ -105,8 +105,10 @@ generated from it, so you never edit those by hand.
    `published` or `coming-soon`, and `og.hook` is the two italic lines on the
    social card.
 3. `cd tools && npm run build` — covers, social card and all generated markup.
-4. Copy a book page to `<slug>.html` and replace the prose, the metadata block
-   and the JSON-LD. Everything below "More stories" regenerates itself.
+4. Copy a book page to `<slug>.html` and replace the prose and the `<head>`
+   metadata. Point the `gen:` markers at the new slug — the structured data,
+   the praise section, the books grid, the footer and the keep-in-touch block
+   all regenerate themselves.
 5. Add the page to `sitemap.xml`, and the book to the `ItemList` in
    `books.html`'s JSON-LD.
 6. If the title uses new Japanese characters, add them to `JP_GLYPHS` in
@@ -359,6 +361,10 @@ reach a public repo. Full detail in `tools/admin/README.md`.
 cd tools && npm run check
 ```
 
+It also runs on GitHub, on every push — see `.github/workflows/check.yml`. A
+red mark on a commit means fix it now, not "it was caught in time": Pages
+publishes whatever is on `main` either way.
+
 `check.mjs` parses every page and reports: broken internal links and missing
 assets, duplicate `id`s, missing or skipped headings, images without
 `alt`/`width`/`height`, `target="_blank"` without `rel="noopener"`, inline
@@ -366,6 +372,25 @@ styles, class names that do not exist in `site.css`, missing or wrong
 canonical/Open Graph metadata, unlabelled form inputs, invalid JSON-LD,
 leading-slash paths that would break on the Pages sub-path, and Japanese
 characters used on a page but missing from the subset webfont.
+
+Five of the checks exist because something specific went wrong once:
+
+- **Accent contrast.** Every book's accent is measured against `--paper-deep`,
+  the deepest ground the washes produce. One accent passed on cream and failed
+  there, invisibly, until a wash landed on top of it.
+- **The hand face's glyphs.** Blue Bookmark Display has no accented letters, so
+  a `.title--hand` that reaches for one breaks into two typefaces mid-word.
+- **How many books there are.** Four pages say the number in prose. It is right
+  today and wrong the morning the fifth goes up, in the places nobody looks.
+- **A book's own links.** Two book pages pointed at the author page where the
+  book page belonged, for months, because the link did not exist when they were
+  written and nobody went back.
+- **Weight.** This site was once a single 2 MB `index.html` with the
+  photographs base64'd into it. There are budgets now, and a hard line on
+  `data:` URIs, which is how it happened.
+
+Each of those was verified to actually fail by breaking the thing on purpose. A
+check that cannot fail is worse than no check: it reports success either way.
 
 It also cross-checks the site against `tools/books.json`: every book has a page,
 a full set of cover derivatives and a social card; a published book shows its
