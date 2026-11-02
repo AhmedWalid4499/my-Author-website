@@ -7,3 +7,10 @@ node_modules/
 tools/arc/readers.csv
 tools/arc/out/
 tools/arc/*.epub
+
+# The admin panel: your contact list, your drafts, what you have sent, and any
+# built mail. None of it belongs in a public repo.
+tools/admin/contacts.csv
+tools/admin/drafts.json
+tools/admin/history.json
+tools/admin/out/

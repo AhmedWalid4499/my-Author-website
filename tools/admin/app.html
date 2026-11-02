@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — Ahmed El-Bourgy</title>
+<style>
+  /* Local tool, so no webfonts and no build step: one file, system faces, the
+     site's palette. It should feel like the site without pretending to be it. */
+  :root {
+    --cream:   #fdf8f0;
+    --cream-2: #f7efe2;
+    --cream-3: #fffdf8;
+    --page:    #efe3d4;
+    --ink:     #2c1f14;
+    --ink-soft:#5c4636;
+    --ink-mute:#7b6450;
+    --line:    #e3d4c0;
+    --cobalt:  #2b64a3;
+    --cobalt-deep:#1e4a7d;
+    --amber:   #9a6428;
+    --ember:   #a83f0b;
+    --good:    #2f6b43;
+    --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink-soft);
+    font: 15px/1.6 var(--sans);
+  }
+  h1, h2, h3 { font-family: var(--serif); font-weight: normal; color: var(--ink); margin: 0; }
+
+  header {
+    background: var(--cream); border-bottom: 1px solid var(--line);
+    padding: 18px 28px; display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
+    position: sticky; top: 0; z-index: 10;
+  }
+  header h1 { font-size: 23px; }
+  header .where {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--amber);
+  }
+  header .spacer { flex: 1; }
+  nav { display: flex; gap: 4px; }
+  nav button {
+    font: inherit; font-size: 14px; padding: 7px 15px; border-radius: 999px;
+    border: 1px solid transparent; background: none; color: var(--ink-mute); cursor: pointer;
+  }
+  nav button:hover { color: var(--ink); }
+  nav button[aria-current="true"] {
+    background: var(--cream-3); border-color: var(--line); color: var(--ink);
+    box-shadow: 0 1px 4px rgba(44,31,20,.07);
+  }
+
+  main { padding: 26px 28px 60px; max-width: 1240px; margin: 0 auto; }
+  section[hidden] { display: none; }
+  .panel {
+    background: var(--cream); border: 1px solid var(--line); border-radius: 3px;
+    padding: 22px 24px; margin-bottom: 20px;
+  }
+  .panel > h2 { font-size: 19px; margin-bottom: 4px; }
+  .panel > .hint, .hint { color: var(--ink-mute); font-size: 13.5px; margin: 0 0 16px; }
+  .hint code { font-family: var(--mono); font-size: 12.5px; background: var(--cream-2); padding: 1px 4px; }
+
+  .cols { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 20px; align-items: start; }
+  @media (max-width: 1000px) { .cols { grid-template-columns: 1fr; } }
+
+  label { display: block; font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+          color: var(--amber); margin: 0 0 5px; }
+  input[type=text], input[type=email], input[type=password], textarea, select {
+    width: 100%; font: inherit; color: var(--ink); background: var(--cream-3);
+    border: 1px solid var(--line); border-radius: 2px; padding: 9px 11px;
+  }
+  textarea { font-family: var(--mono); font-size: 13.5px; line-height: 1.7; resize: vertical; }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--cobalt); outline-offset: 1px; }
+  .field { margin-bottom: 14px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  button.act {
+    font: inherit; padding: 9px 18px; border-radius: 2px; cursor: pointer;
+    border: 1px solid var(--ink); background: var(--ink); color: var(--cream);
+  }
+  button.act.ghost { background: none; color: var(--ink); }
+  button.act.quiet { background: none; color: var(--ink-mute); border-color: var(--line); }
+  button.act.danger { background: var(--ember); border-color: var(--ember); color: #fff; }
+  button.act:disabled { opacity: .45; cursor: not-allowed; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+       color: var(--amber); font-weight: normal; padding: 0 8px 8px; }
+  td { padding: 4px 8px; border-top: 1px solid var(--line); vertical-align: middle; }
+  td input { padding: 6px 8px; }
+  tr.bad td input[data-k="email"] { border-color: var(--ember); background: #fff4ef; }
+  .rowbtn { background: none; border: 0; color: var(--ink-mute); cursor: pointer;
+            font: inherit; font-size: 18px; line-height: 1; padding: 4px 8px; }
+  .rowbtn:hover { color: var(--ember); }
+
+  .chips { display: flex; gap: 7px; flex-wrap: wrap; margin: 2px 0 14px; }
+  .chip { font: inherit; font-size: 13px; padding: 6px 13px; border-radius: 999px;
+          border: 1px solid var(--line); background: var(--cream-3); color: var(--ink-mute); cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--cobalt-deep); border-color: var(--cobalt-deep); color: #fff; }
+  .chip .n { opacity: .65; margin-left: 5px; }
+
+  iframe.preview { width: 100%; height: 640px; border: 1px solid var(--line); background: #fff; }
+  pre.log, pre.plain {
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.65; white-space: pre-wrap;
+    background: var(--cream-3); border: 1px solid var(--line); padding: 14px;
+    max-height: 300px; overflow: auto; margin: 0; color: var(--ink-soft);
+  }
+  .banner { padding: 11px 14px; border-radius: 2px; font-size: 14px; margin-bottom: 14px; }
+  .banner.err { background: #fdeee8; border: 1px solid #e8c3b2; color: #7d2c06; }
+  .banner.ok  { background: #ecf5ee; border: 1px solid #bcd9c4; color: var(--good); }
+  .banner.warn{ background: #fdf3e2; border: 1px solid #e8d4ae; color: #74521c; }
+  .count { font-size: 13px; color: var(--ink-mute); }
+  .hist { border-top: 1px solid var(--line); padding: 11px 0; font-size: 14px; }
+  .hist b { font-weight: normal; color: var(--ink); font-family: var(--serif); font-size: 16px; }
+  .hist .meta { font-size: 12.5px; color: var(--ink-mute); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Admin</h1>
+  <span class="where">Ahmed El-Bourgy &middot; this Mac only</span>
+  <span class="spacer"></span>
+  <nav id="tabs">
+    <button data-tab="write" aria-current="true">Write</button>
+    <button data-tab="people">People</button>
+    <button data-tab="send">Send</button>
+    <button data-tab="history">History</button>
+  </nav>
+</header>
+
+<main>
+  <div id="error" class="banner err" hidden></div>
+
+  <!-- ------------------------------------------------------------- write -->
+  <section id="tab-write">
+    <div class="cols">
+      <div>
+        <div class="panel">
+          <h2>What are you sending?</h2>
+          <p class="hint">Two kinds. The advance copy is the themed letter with the EPUB
+             attached; its words live in <code>tools/arc/template.mjs</code>. A letter is
+             anything else — you write it here.</p>
+          <div class="chips" id="kind">
+            <button class="chip" data-kind="letter" aria-pressed="true">A letter</button>
+            <button class="chip" data-kind="arc" aria-pressed="false">The advance copy</button>
+          </div>
+
+          <div id="letter-fields">
+            <div class="field">
+              <label for="f-subject">Subject</label>
+              <input type="text" id="f-subject" data-d="subject" placeholder="The bookshop opens on Friday">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="f-eyebrow">Small line above the letter</label>
+                <input type="text" id="f-eyebrow" data-d="eyebrow" placeholder="Ahmed El-Bourgy">
+              </div>
+              <div class="field">
+                <label for="f-preheader">Inbox preview line</label>
+                <input type="text" id="f-preheader" data-d="preheader" placeholder="A date, at last.">
+              </div>
+            </div>
+            <div class="field">
+              <label for="f-body">The letter</label>
+              <textarea id="f-body" data-d="body" rows="16" placeholder="Dear {{first}},
+
+It opens on Friday.
+
+I wanted you to know before anyone else did."></textarea>
+              <p class="hint" style="margin-top:7px;">
+                Blank line starts a paragraph. <code>{{first}}</code> their first name,
+                <code>{{name}}</code> their full one. <code>*italic*</code>,
+                <code>**bold**</code>, <code>[words](https://…)</code>,
+                <code># heading</code>, <code>&gt; quoted</code>, <code>---</code> a divider.
+              </p>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="f-image">Picture at the top <span style="text-transform:none;letter-spacing:0;">(file path, optional)</span></label>
+                <input type="text" id="f-image" data-d="image" placeholder="../../assets/img/promo/blue-bookmark-bookshop-1200.jpg">
+              </div>
+              <div class="field">
+                <label for="f-image-alt">What the picture shows</label>
+                <input type="text" id="f-image-alt" data-d="imageAlt" placeholder="A cobalt blue bookshop under cherry blossom.">
+              </div>
+            </div>
+            <div class="field">
+              <label for="f-files">Attachments <span style="text-transform:none;letter-spacing:0;">(one file path per line)</span></label>
+              <textarea id="f-files" rows="2" placeholder="/Users/yuto/Downloads/The Blue Bookmark Bookshop ARC.epub"></textarea>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="f-from-name">From, as readers see it</label>
+                <input type="text" id="f-from-name" placeholder="Ahmed El-Bourgy">
+              </div>
+              <div class="field">
+                <label for="f-from-email">From address</label>
+                <input type="email" id="f-from-email" placeholder="you@gmail.com">
+              </div>
+            </div>
+            <div class="actions">
+              <button class="act ghost" id="save-draft">Save draft</button>
+              <span class="count" id="draft-state"></span>
+            </div>
+          </div>
+
+          <div id="arc-fields" hidden>
+            <p class="hint" id="arc-summary"></p>
+            <div class="field">
+              <label for="a-subject">Subject</label>
+              <input type="text" id="a-subject">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="a-release">Release date</label>
+                <input type="text" id="a-release" placeholder="14 March 2026">
+              </div>
+              <div class="field">
+                <label for="a-review">Reviews by</label>
+                <input type="text" id="a-review" placeholder="7 March 2026">
+              </div>
+            </div>
+            <div class="field">
+              <label for="a-epub">EPUB</label>
+              <input type="text" id="a-epub">
+            </div>
+            <div class="actions">
+              <button class="act ghost" id="save-campaign">Save campaign</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="drafts-panel" hidden>
+          <h2>Saved drafts</h2>
+          <div id="drafts"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <h2>How it will look</h2>
+          <p class="hint" id="preview-to"></p>
+          <iframe class="preview" id="preview" title="Preview of the letter"></iframe>
+          <details style="margin-top:14px;">
+            <summary style="cursor:pointer;color:var(--ink-mute);font-size:13.5px;">
+              The plain-text half, which is what a screen reader gets
+            </summary>
+            <pre class="plain" id="plain" style="margin-top:10px;"></pre>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ people -->
+  <section id="tab-people" hidden>
+    <div class="panel">
+      <h2>People</h2>
+      <p class="hint">Your list, kept in <code>tools/admin/contacts.csv</code> — you can open
+         that in Numbers instead if you prefer. Groups are free text: put
+         <code>arc</code> on your advance readers, <code>press</code> on reviewers, whatever
+         you like, separated by semicolons. Nothing is collected from the website; this list
+         is only what you put in it.</p>
+      <div id="contact-warn"></div>
+      <table>
+        <thead><tr>
+          <th style="width:24%;">Name</th><th style="width:34%;">Email</th>
+          <th style="width:20%;">Groups</th><th>Note</th><th style="width:40px;"></th>
+        </tr></thead>
+        <tbody id="contacts"></tbody>
+      </table>
+      <div class="actions" style="margin-top:16px;">
+        <button class="act ghost" id="add-contact">Add someone</button>
+        <button class="act" id="save-contacts">Save the list</button>
+        <span class="count" id="contact-count"></span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Paste in a lot at once</h2>
+      <p class="hint">One per line. <code>Name &lt;name@example.com&gt;</code>, or
+         <code>Name, name@example.com</code>, or just the address. They are added to the
+         groups ticked below, and anyone already on the list is left alone.</p>
+      <div class="chips" id="paste-groups"></div>
+      <div class="field">
+        <input type="text" id="paste-new-group" placeholder="or type a new group name">
+      </div>
+      <div class="field">
+        <textarea id="paste" rows="6" placeholder="Mina Tanaka &lt;mina@example.com&gt;"></textarea>
+      </div>
+      <div class="actions">
+        <button class="act ghost" id="do-paste">Add them</button>
+        <span class="count" id="paste-result"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------------------- send -->
+  <section id="tab-send" hidden>
+    <div class="cols">
+      <div>
+        <div class="panel">
+          <h2>Who gets it</h2>
+          <p class="hint">No group ticked means everyone on the list.</p>
+          <div class="chips" id="send-groups"></div>
+          <p class="count" id="send-count"></p>
+        </div>
+
+        <div class="panel">
+          <h2>Your Gmail</h2>
+          <p class="hint">Gmail needs an <b>app password</b>, not your normal one:
+             Google Account → Security → 2-Step Verification → App passwords. It is held
+             in memory for the length of one send and never written down.
+             Gmail also stops a normal account after about 500 messages in a day.</p>
+          <div class="field-row">
+            <div class="field">
+              <label for="s-user">Account</label>
+              <input type="email" id="s-user" autocomplete="username" placeholder="you@gmail.com">
+            </div>
+            <div class="field">
+              <label for="s-pass">App password</label>
+              <input type="password" id="s-pass" autocomplete="current-password" placeholder="sixteen letters">
+            </div>
+          </div>
+          <div class="actions">
+            <button class="act quiet" id="check-login">Check the password</button>
+            <span class="count" id="login-state"></span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Send</h2>
+          <p class="hint">Work down the list. Each step is harmless until the last one.</p>
+          <label style="text-transform:none;letter-spacing:0;color:var(--ink-soft);font-size:14px;display:flex;gap:8px;align-items:center;margin-bottom:14px;">
+            <input type="checkbox" id="skip-sent" checked style="width:auto;">
+            Skip anyone who has already had this exact subject
+          </label>
+          <div class="actions">
+            <button class="act quiet" id="btn-dry">Dry run</button>
+            <button class="act quiet" id="btn-eml">Write .eml files</button>
+            <button class="act ghost" id="btn-test">Send one to me</button>
+            <button class="act danger" id="btn-all">Send to everyone selected</button>
+          </div>
+          <div class="field" style="margin-top:14px;">
+            <label for="s-test">Test address</label>
+            <input type="email" id="s-test" placeholder="you@gmail.com">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <h2>What happened</h2>
+          <pre class="log" id="log"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ----------------------------------------------------------- history -->
+  <section id="tab-history" hidden>
+    <div class="panel">
+      <h2>What you have sent</h2>
+      <p class="hint">Kept in <code>tools/admin/history.json</code>, so the panel can warn
+         you before a letter goes to someone twice.</p>
+      <div id="history"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var TOKEN = '__TOKEN__';
+  var S = { contacts: [], groups: [], drafts: [], history: [], campaign: null, site: {}, log: [] };
+  var kind = 'letter';
+  var draft = { id: 'd' + Date.now(), subject: '', eyebrow: '', preheader: '', body: '',
+                image: '', imageAlt: '', files: [], from: { name: '', email: '' } };
+  var picked = [];          // chosen groups for sending
+  var pastePicked = [];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  };
+
+  function showError(msg) {
+    var el = $('error');
+    if (!msg) { el.hidden = true; return; }
+    el.textContent = msg;
+    el.hidden = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function post(path, body) {
+    return fetch(path, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(Object.assign({ token: TOKEN }, body)),
+    }).then(function (r) {
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+        return j;
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------- state */
+
+  function adopt(next) {
+    if (next.contacts) S = Object.assign(S, next);
+    showError('');
+    renderAll();
+  }
+
+  function load() {
+    fetch('/api/state').then(function (r) { return r.json(); }).then(adopt).catch(function (e) {
+      showError('Could not reach the panel: ' + e.message);
+    });
+  }
+
+  /* -------------------------------------------------------------- tabs */
+
+  $('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-tab]');
+    if (!b) return;
+    [].forEach.call($('tabs').children, function (x) {
+      x.setAttribute('aria-current', String(x === b));
+    });
+    ['write', 'people', 'send', 'history'].forEach(function (t) {
+      $('tab-' + t).hidden = t !== b.dataset.tab;
+    });
+  });
+
+  /* -------------------------------------------------------------- kind */
+
+  $('kind').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-kind]');
+    if (!b) return;
+    kind = b.dataset.kind;
+    [].forEach.call($('kind').children, function (x) {
+      x.setAttribute('aria-pressed', String(x.dataset.kind === kind));
+    });
+    $('letter-fields').hidden = kind !== 'letter';
+    $('arc-fields').hidden = kind !== 'arc';
+    refreshPreview();
+  });
+
+  /* ------------------------------------------------------------ compose */
+
+  [].forEach.call(document.querySelectorAll('[data-d]'), function (el) {
+    el.addEventListener('input', function () {
+      draft[el.dataset.d] = el.value;
+      queuePreview();
+      $('draft-state').textContent = 'unsaved';
+    });
+  });
+  $('f-files').addEventListener('input', function () {
+    draft.files = $('f-files').value.split('\n').map(function (s) { return s.trim(); })
+      .filter(Boolean);
+    $('draft-state').textContent = 'unsaved';
+  });
+  ['f-from-name', 'f-from-email'].forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      draft.from = { name: $('f-from-name').value, email: $('f-from-email').value };
+      $('draft-state').textContent = 'unsaved';
+    });
+  });
+
+  var previewTimer = null;
+  function queuePreview() {
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(refreshPreview, 350);
+  }
+
+  function refreshPreview() {
+    post('/api/preview', { kind: kind, draft: draft }).then(function (r) {
+      $('preview').srcdoc = r.html;
+      $('preview-to').textContent = 'Addressed to ' +
+        (r.to.name ? r.to.name + ' <' + r.to.email + '>' : r.to.email) +
+        ' — the first person on your list, so you can see the greeting land.';
+    }).catch(function (e) { showError(e.message); });
+
+    post('/api/text-preview', { kind: kind, draft: draft }).then(function (r) {
+      $('plain').textContent = r.text;
+    }).catch(function () {});
+  }
+
+  $('save-draft').addEventListener('click', function () {
+    draft.savedAt = new Date().toISOString();
+    post('/api/draft', { draft: draft }).then(function (next) {
+      adopt(next);
+      $('draft-state').textContent = 'saved';
+    }).catch(function (e) { showError(e.message); });
+  });
+
+  function renderDrafts() {
+    var box = $('drafts');
+    $('drafts-panel').hidden = !S.drafts.length;
+    box.innerHTML = '';
+    S.drafts.forEach(function (d) {
+      var row = document.createElement('div');
+      row.className = 'hist';
+      row.innerHTML = '<b>' + esc(d.subject || '(no subject)') + '</b>' +
+        '<div class="meta">' + esc((d.savedAt || '').slice(0, 16).replace('T', ' ')) + '</div>';
+      var open = document.createElement('button');
+      open.className = 'act quiet';
+      open.textContent = 'Open';
+      open.style.marginTop = '8px';
+      open.addEventListener('click', function () { loadDraft(d); });
+      var del = document.createElement('button');
+      del.className = 'act quiet';
+      del.textContent = 'Delete';
+      del.style.cssText = 'margin-top:8px;margin-left:8px;';
+      del.addEventListener('click', function () {
+        post('/api/draft-delete', { id: d.id }).then(adopt).catch(function (e) { showError(e.message); });
+      });
+      row.appendChild(open); row.appendChild(del);
+      box.appendChild(row);
+    });
+  }
+
+  function loadDraft(d) {
+    draft = Object.assign({ files: [], from: { name: '', email: '' } }, d);
+    [].forEach.call(document.querySelectorAll('[data-d]'), function (el) {
+      el.value = draft[el.dataset.d] || '';
+    });
+    $('f-files').value = (draft.files || []).join('\n');
+    $('f-from-name').value = (draft.from && draft.from.name) || '';
+    $('f-from-email').value = (draft.from && draft.from.email) || '';
+    $('draft-state').textContent = 'saved';
+    refreshPreview();
+  }
+
+  /* ------------------------------------------------------------ campaign */
+
+  $('save-campaign').addEventListener('click', function () {
+    post('/api/campaign', { campaign: {
+      subject: $('a-subject').value,
+      releaseDate: $('a-release').value,
+      reviewBy: $('a-review').value,
+      epub: $('a-epub').value,
+    } }).then(function (next) { adopt(next); refreshPreview(); })
+      .catch(function (e) { showError(e.message); });
+  });
+
+  function renderCampaign() {
+    var c = S.campaign;
+    if (!c) { $('arc-summary').textContent = 'No advance-copy campaign found.'; return; }
+
+    // Who you are is already settled in the campaign; a letter should not make
+    // you type it again. Only fills blanks, so it never overwrites a draft.
+    if (c.from) {
+      if (!$('f-from-name').value) $('f-from-name').value = c.from.name || '';
+      if (!$('f-from-email').value) $('f-from-email').value = c.from.email || '';
+      if (!draft.from || !draft.from.email) draft.from = { name: c.from.name, email: c.from.email };
+      if (!$('s-user').value) $('s-user').value = c.from.email || '';
+      if (!$('s-test').value) $('s-test').value = c.from.email || '';
+    }
+
+    $('a-subject').value = c.subject || '';
+    $('a-release').value = c.releaseDate || '';
+    $('a-review').value = c.reviewBy || '';
+    $('a-epub').value = c.epub || '';
+    var e = c.epubStatus;
+    $('arc-summary').innerHTML = esc(c.titlePlain) + '. ' + (
+      !e ? 'No EPUB set — the letter will go without one.'
+        : e.ok ? 'EPUB found, ' + e.mb + ' MB.'
+          : '<b style="color:var(--ember)">EPUB missing at ' + esc(e.path) + '</b>');
+  }
+
+  /* ------------------------------------------------------------ contacts */
+
+  function renderContacts() {
+    var body = $('contacts');
+    body.innerHTML = '';
+    S.contacts.forEach(function (c, i) {
+      var tr = document.createElement('tr');
+      if (!c.valid || c.duplicate) tr.className = 'bad';
+      ['name', 'email', 'groups', 'note'].forEach(function (k) {
+        var td = document.createElement('td');
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.dataset.k = k;
+        input.value = k === 'groups' ? (c.groups || []).join('; ') : (c[k] || '');
+        input.addEventListener('input', function () {
+          if (k === 'groups') {
+            S.contacts[i].groups = input.value.split(/[;,]/)
+              .map(function (s) { return s.trim().toLowerCase(); }).filter(Boolean);
+          } else {
+            S.contacts[i][k] = input.value;
+          }
+        });
+        td.appendChild(input);
+        tr.appendChild(td);
+      });
+      var last = document.createElement('td');
+      var del = document.createElement('button');
+      del.className = 'rowbtn';
+      del.title = 'Remove';
+      del.textContent = '×';
+      del.addEventListener('click', function () { S.contacts.splice(i, 1); renderContacts(); });
+      last.appendChild(del);
+      tr.appendChild(last);
+      body.appendChild(tr);
+    });
+
+    var bad = S.contacts.filter(function (c) { return !c.valid; }).length;
+    var dup = S.contacts.filter(function (c) { return c.duplicate; }).length;
+    var warn = $('contact-warn');
+    warn.innerHTML = '';
+    if (bad || dup) {
+      warn.innerHTML = '<div class="banner warn">' +
+        (bad ? bad + ' address' + (bad > 1 ? 'es do' : ' does') + ' not look like an address. ' : '') +
+        (dup ? dup + ' repeated. ' : '') +
+        'They are skipped when sending.</div>';
+    }
+    $('contact-count').textContent = S.contacts.length + ' on the list';
+  }
+
+  $('add-contact').addEventListener('click', function () {
+    S.contacts.push({ name: '', email: '', groups: [], note: '', valid: false, duplicate: false });
+    renderContacts();
+    var rows = $('contacts').querySelectorAll('tr');
+    if (rows.length) rows[rows.length - 1].querySelector('input').focus();
+  });
+
+  $('save-contacts').addEventListener('click', function () {
+    post('/api/contacts', { contacts: S.contacts }).then(adopt)
+      .catch(function (e) { showError(e.message); });
+  });
+
+  $('do-paste').addEventListener('click', function () {
+    var extra = $('paste-new-group').value.trim().toLowerCase();
+    var groups = pastePicked.slice();
+    if (extra && groups.indexOf(extra) === -1) groups.push(extra);
+
+    var have = {};
+    S.contacts.forEach(function (c) { have[(c.email || '').toLowerCase()] = true; });
+
+    var added = 0, skipped = 0;
+    $('paste').value.split('\n').forEach(function (line) {
+      var raw = line.trim();
+      if (!raw) return;
+      var name = '', email = '';
+      var angle = raw.match(/^(.*?)<([^>]+)>$/);
+      if (angle) { name = angle[1].trim().replace(/^["']|["']$/g, ''); email = angle[2].trim(); }
+      else if (raw.indexOf(',') !== -1) {
+        var bits = raw.split(',');
+        email = bits.pop().trim();
+        name = bits.join(',').trim();
+      } else email = raw;
+      if (!email) return;
+      if (have[email.toLowerCase()]) { skipped++; return; }
+      have[email.toLowerCase()] = true;
+      S.contacts.push({ name: name, email: email, groups: groups.slice(), note: '',
+                        valid: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email), duplicate: false });
+      added++;
+    });
+
+    $('paste').value = '';
+    renderContacts();
+    $('paste-result').textContent = added + ' added' +
+      (skipped ? ', ' + skipped + ' already there' : '') + ' — not saved yet.';
+  });
+
+  /* -------------------------------------------------------------- groups */
+
+  function renderChips(box, chosen, onToggle) {
+    box.innerHTML = '';
+    if (!S.groups.length) {
+      box.innerHTML = '<span class="count">No groups yet — put one in the Groups column.</span>';
+      return;
+    }
+    S.groups.forEach(function (g) {
+      var b = document.createElement('button');
+      b.className = 'chip';
+      b.setAttribute('aria-pressed', String(chosen.indexOf(g.name) !== -1));
+      b.innerHTML = esc(g.name) + '<span class="n">' + g.count + '</span>';
+      b.addEventListener('click', function () {
+        var at = chosen.indexOf(g.name);
+        if (at === -1) chosen.push(g.name); else chosen.splice(at, 1);
+        onToggle();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function renderSendGroups() {
+    renderChips($('send-groups'), picked, function () { renderSendGroups(); });
+    var live = S.contacts.filter(function (c) { return c.valid && !c.duplicate; });
+    var chosen = picked.length
+      ? live.filter(function (c) {
+          return c.groups.some(function (g) { return picked.indexOf(g) !== -1; });
+        })
+      : live;
+    $('send-count').textContent = chosen.length + ' ' +
+      (chosen.length === 1 ? 'person' : 'people') + ' selected' +
+      (picked.length ? ' in ' + picked.join(', ') : ' — everyone');
+  }
+
+  /* ---------------------------------------------------------------- send */
+
+  function sendArgs(extra) {
+    return Object.assign({
+      kind: kind,
+      draft: draft,
+      groups: picked,
+      user: $('s-user').value.trim(),
+      pass: $('s-pass').value,
+      skipSent: $('skip-sent').checked,
+    }, extra || {});
+  }
+
+  function busy(on) {
+    ['btn-dry', 'btn-eml', 'btn-test', 'btn-all'].forEach(function (id) { $(id).disabled = on; });
+  }
+
+  function run(args) {
+    busy(true);
+    return post('/api/send', args).then(function (next) {
+      adopt(next);
+      return next.result;
+    }).catch(function (e) { showError(e.message); load(); })
+      .finally(function () { busy(false); });
+  }
+
+  $('check-login').addEventListener('click', function () {
+    $('login-state').textContent = 'checking…';
+    post('/api/login', { user: $('s-user').value.trim(), pass: $('s-pass').value })
+      .then(function () { $('login-state').textContent = 'Gmail accepted it.'; })
+      .catch(function (e) { $('login-state').textContent = e.message; });
+  });
+
+  $('btn-dry').addEventListener('click', function () { run(sendArgs({ dryRun: true })); });
+
+  $('btn-eml').addEventListener('click', function () {
+    busy(true);
+    post('/api/build', { kind: kind, draft: draft, groups: picked })
+      .then(adopt).catch(function (e) { showError(e.message); })
+      .finally(function () { busy(false); });
+  });
+
+  $('btn-test').addEventListener('click', function () {
+    var to = $('s-test').value.trim() || $('s-user').value.trim();
+    if (!to) { showError('Put an address in the test field first.'); return; }
+    run(sendArgs({ only: to, skipSent: false }));
+  });
+
+  $('btn-all').addEventListener('click', function () {
+    var n = ($('send-count').textContent.match(/^\d+/) || ['0'])[0];
+    var what = kind === 'arc' ? 'the advance-copy letter' : ('"' + (draft.subject || 'no subject') + '"');
+    if (!window.confirm('Send ' + what + ' to ' + n + ' people, for real?\n\nThis cannot be taken back.')) return;
+    run(sendArgs());
+  });
+
+  /* ------------------------------------------------------------- history */
+
+  function renderHistory() {
+    var box = $('history');
+    box.innerHTML = S.history.length ? '' : '<p class="count">Nothing sent from here yet.</p>';
+    S.history.forEach(function (h) {
+      var d = document.createElement('div');
+      d.className = 'hist';
+      d.innerHTML = '<b>' + esc(h.subject || '(no subject)') + '</b>' +
+        '<div class="meta">' + esc((h.at || '').slice(0, 16).replace('T', ' ')) +
+        ' &middot; ' + h.sent + ' sent' + (h.failed ? ', ' + h.failed + ' failed' : '') +
+        ' &middot; ' + esc(h.kind === 'arc' ? 'advance copy' : 'letter') + '</div>';
+      box.appendChild(d);
+    });
+  }
+
+  /* -------------------------------------------------------------- render */
+
+  function renderPasteGroups() {
+    renderChips($('paste-groups'), pastePicked, renderPasteGroups);
+  }
+
+  function renderAll() {
+    renderContacts();
+    renderSendGroups();
+    renderPasteGroups();
+    renderDrafts();
+    renderCampaign();
+    renderHistory();
+    $('log').textContent = (S.log || []).join('\n');
+    $('log').scrollTop = $('log').scrollHeight;
+  }
+
+  load();
+  refreshPreview();
+})();
+</script>
+</body>
+</html>

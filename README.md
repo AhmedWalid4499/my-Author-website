@@ -267,36 +267,46 @@ Two things to know:
 
 ---
 
-## Advance reader copies
+## Writing to your readers
 
-`tools/arc/` builds one ready-to-send email per advance reader, themed to the
-book, with the EPUB attached.
+`tools/admin/` is your own page for writing to people. It runs on your Mac.
 
 ```bash
-cd tools && npm run arc        # the panel, at http://127.0.0.1:8787
+cd tools && npm run admin      # http://127.0.0.1:8899
 ```
 
-A local admin page: campaign fields, the reader list, a live preview, and
-buttons to build the `.eml` files or send. **It cannot live on the website** —
-GitHub Pages has no server behind it, so it could not send mail or hold a
-password, and a public send-mail page would let anyone send as you. The panel
-binds to `127.0.0.1` and dies with the terminal.
+Four tabs: write the letter and watch it take shape, keep the contact list,
+send, and see what has already gone out. Two kinds of letter — anything you
+write yourself, and the advance copy, which is themed to the book and carries
+the EPUB.
+
+**It cannot live on the website.** GitHub Pages has no server behind it, so it
+could not send mail or hold a password, and a public send-mail page would let
+anyone write to your readers as you. The panel binds to `127.0.0.1` and dies
+with the terminal.
 
 Sending goes through your own Gmail with an app password you type into the
-page, which is what makes it provably you: a message that genuinely leaves your
-account carries Google's DKIM signature. A well-designed email proves nothing
-on its own.
+page, which is also what makes an advance copy provably you: a message that
+genuinely leaves your account carries Google's DKIM signature. A well-designed
+email proves nothing on its own.
 
-`node arc/build.mjs` does the same thing without the UI.
+Every message is assembled and sent by `tools/mail.mjs` — one builder, so the
+preview, the `.eml` on disk and the mail that leaves are the same bytes.
+Pictures are attached and referenced as `cid:`, never fetched, so nobody gets
+a tracking pixel and the letter still reads with images off.
 
-The other half is `arc.html`, which states the campaign actually running. The
-email points readers at it so they can check independently. **Keep that page
-current** — it is worth nothing if it goes stale, and the note in the HTML says
-so.
+Each person gets their own message. Nobody shares a To: line with anyone else.
 
-`tools/arc/readers.csv`, `tools/arc/out/` and any `.epub` are git-ignored.
-Reader addresses and an unreleased manuscript must not reach a public repo.
-Full detail in `tools/arc/README.md`.
+`node arc/build.mjs` still builds the advance copy without the UI.
+
+The other half of an ARC campaign is `arc.html`, which states the campaign
+actually running. The email points readers at it so they can check
+independently. **Keep that page current** — it is worth nothing if it goes
+stale, and the note in the HTML says so.
+
+Your contact list, drafts, send history and built mail are all git-ignored.
+Reader addresses, your correspondence and an unreleased manuscript must not
+reach a public repo. Full detail in `tools/admin/README.md`.
 
 ---
 

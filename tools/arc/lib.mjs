@@ -7,8 +7,8 @@
  */
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import path from 'path';
-import { randomBytes } from 'crypto';
 import * as template from './template.mjs';
+import { composeMessage, EMAIL_RE as SHARED_EMAIL_RE } from '../mail.mjs';
 
 /* ----------------------------------------------------------- campaign */
 export const readCampaign = (here) =>
@@ -50,7 +50,7 @@ export function parseCsv(text) {
     .map((r) => Object.fromEntries(head.map((h, i) => [h, (r[i] || '').trim()])));
 }
 
-export const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+export const EMAIL_RE = SHARED_EMAIL_RE;
 
 export function readReaders(here) {
   const f = path.join(here, 'readers.csv');
@@ -89,60 +89,26 @@ export function loadAssets(here, campaign) {
 }
 
 /* --------------------------------------------------------------- mime */
-const CRLF = '\r\n';
-const b64 = (buf) => (buf.toString('base64').match(/.{1,76}/g) || []).join(CRLF);
-const needsEncoding = (s) => /[^\x20-\x7E]/.test(s);
-const encodeHeader = (s) =>
-  needsEncoding(s) ? `=?UTF-8?B?${Buffer.from(s, 'utf8').toString('base64')}?=` : s;
-const address = (name, email) => (name ? `${encodeHeader(name)} <${email}>` : email);
-const boundary = (tag) => `----=_${tag}_${randomBytes(12).toString('hex')}`;
 
 /**
- * One complete RFC 822 message.
+ * The advance-copy letter as one complete message.
  *
- *   multipart/mixed
- *   ├── multipart/related
- *   │   ├── multipart/alternative
- *   │   │   ├── text/plain
- *   │   │   └── text/html
- *   │   └── image/jpeg  (Content-ID: hero, inline)
- *   └── application/epub+zip  (attachment)
+ * The assembly itself lives in tools/mail.mjs, which the admin panel uses too,
+ * so a message built here and a message built there are built by the same
+ * code. What is particular to this letter — the hero attached inline, the EPUB
+ * hanging off the end — is just what gets handed over.
  */
 export function buildMessage(c, reader, assets) {
-  const MIX = boundary('mix'), REL = boundary('rel'), ALT = boundary('alt');
-  const domain = c.from.email.split('@')[1] || 'localhost';
-  const msgId = `<${Date.now()}.${randomBytes(8).toString('hex')}@${domain}>`;
-
-  const head = [
-    `From: ${address(c.from.name, c.from.email)}`,
-    `To: ${address(reader.name, reader.email)}`,
-    c.replyTo ? `Reply-To: ${c.replyTo}` : null,
-    `Subject: ${encodeHeader(template.subject(c))}`,
-    `Date: ${new Date().toUTCString().replace('GMT', '+0000')}`,
-    `Message-ID: ${msgId}`,
-    'MIME-Version: 1.0',
-    `Content-Type: multipart/mixed; boundary="${MIX}"`,
-  ].filter(Boolean).join(CRLF);
-
-  const parts = [];
-  parts.push(`--${MIX}`, `Content-Type: multipart/related; boundary="${REL}"`, '');
-  parts.push(`--${REL}`, `Content-Type: multipart/alternative; boundary="${ALT}"`, '');
-  parts.push(`--${ALT}`, 'Content-Type: text/plain; charset="UTF-8"',
-    'Content-Transfer-Encoding: base64', '', b64(Buffer.from(template.text(c, reader), 'utf8')));
-  parts.push(`--${ALT}`, 'Content-Type: text/html; charset="UTF-8"',
-    'Content-Transfer-Encoding: base64', '', b64(Buffer.from(template.html(c, reader), 'utf8')));
-  parts.push(`--${ALT}--`, '');
-  parts.push(`--${REL}`, `Content-Type: ${assets.heroMime}; name="bookshop.jpg"`,
-    'Content-Transfer-Encoding: base64', 'Content-ID: <hero>',
-    'Content-Disposition: inline; filename="bookshop.jpg"', '', b64(assets.hero));
-  parts.push(`--${REL}--`, '');
-  if (assets.epub) {
-    parts.push(`--${MIX}`,
-      `Content-Type: application/epub+zip; name="${assets.epub.name}"`,
-      'Content-Transfer-Encoding: base64',
-      `Content-Disposition: attachment; filename="${assets.epub.name}"`, '', b64(assets.epub.buf));
-  }
-  parts.push(`--${MIX}--`, '');
-
-  return head + CRLF + CRLF + parts.join(CRLF);
+  return composeMessage({
+    from: c.from,
+    to: { name: reader.name, email: reader.email },
+    replyTo: c.replyTo,
+    subject: template.subject(c),
+    text: template.text(c, reader),
+    html: template.html(c, reader),
+    inline: [{ cid: 'hero', filename: 'bookshop.jpg', mime: assets.heroMime, buf: assets.hero }],
+    attachments: assets.epub
+      ? [{ filename: assets.epub.name, mime: 'application/epub+zip', buf: assets.epub.buf }]
+      : [],
+  });
 }

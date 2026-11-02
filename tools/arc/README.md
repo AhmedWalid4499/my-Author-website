@@ -2,35 +2,17 @@
 
 Writes and sends the advance-copy email: themed to the book, EPUB attached.
 
-## The panel
+## The panel moved
+
+Writing and sending now happens in the admin panel, which handles this letter
+and any other:
 
 ```bash
-cd tools && npm run arc
+cd tools && npm run admin
 ```
 
-Then open **http://127.0.0.1:8787**. One page with the campaign fields, the
-reader list, a live preview of the email, and buttons to build the `.eml`
-files or send.
-
-### Why it is not on the website
-
-The site is static files on GitHub Pages — there is no server behind it, so it
-cannot send mail, read your reader list, or hold a password. And a send-mail
-page on a public URL would let anyone who found it send mail as you.
-
-So the panel runs on your Mac instead. It binds to `127.0.0.1`, which means
-nothing else on your network can reach it (verified: the machine's own LAN
-address refuses the connection), and it stops when you close the terminal.
-
-### Sending
-
-Gmail needs an **app password**, not your normal one: Google Account →
-Security → 2-Step Verification → App passwords. Type it into the panel; it is
-held in memory for the length of one send and never written to disk.
-
-Use **Dry run** first — it lists exactly who would receive the mail and sends
-nothing. Then **Send test** to your own address. Only then **Send to all**,
-which asks you to confirm.
+See `../admin/README.md`. What stays here is the letter itself — its words and
+its design, in `template.mjs` — and the command-line build below.
 
 ## Or from the command line
 
